@@ -57,3 +57,11 @@ flowchart TB
     combined--Make final prediction-->webInterface
     end
 ```
+
+## How to set up the project
+
+### Docker
+```commandline
+docker build -t bot-detection .
+docker run bot-detection
+```
