@@ -1,11 +1,5 @@
+from code.data_parser import parse_comment_ids, parse_comment_data
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('Valeria')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    parse_comment_ids()
+    parse_comment_data()
