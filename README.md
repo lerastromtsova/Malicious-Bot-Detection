@@ -1,5 +1,7 @@
 # Malicious Bot Detection
 ![CI](https://github.com/lerastromtsova/Malicious-Bot-Detection/actions/workflows/ci-workflow.yml/badge.svg)
+![License](https://img.shields.io/github/license/lerastromtsova/Malicious-Bot-Detection)
+![Open issues](https://img.shields.io/github/issues-raw/lerastromtsova/Malicious-Bot-Detection)
 
 Detection of malicious bots spreading propaganda on Russian social media during the Russian-Ukrainian armed conflict 2022.
 
