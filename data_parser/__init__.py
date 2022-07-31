@@ -2,7 +2,6 @@ from github import Github  # type: ignore
 import base64
 
 
-# TODO: Implement
 def parse_comment_ids(
         comment_id_source_repo: str,
         github_access_token: str,
@@ -28,6 +27,7 @@ def parse_comment_ids(
                 content = cur_file.content
                 content_str = base64.b64decode(content).decode('utf-8')
                 comment_ids[cur_file.path] = content_str.split('\n')
+    # TODO: Save comment_ids to a file (JSON)
     return comment_ids
 
 
