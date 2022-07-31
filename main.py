@@ -1,4 +1,4 @@
-from dotenv import dotenv_values
+from dotenv import dotenv_values  # type: ignore
 from data_parser import parse_comment_ids, parse_comment_data
 
 config = dotenv_values(".env")
