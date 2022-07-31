@@ -1,7 +1,13 @@
 from dotenv import dotenv_values  # type: ignore
 from data_parser import parse_comment_ids, parse_comment_data
+import logging
 
 config = dotenv_values(".env")
+logging.basicConfig(
+    filename='log/data_parsing.log',
+    encoding='utf-8',
+    level=getattr(logging, config['LOG_LEVEL'].upper())
+)
 
 if __name__ == '__main__':
     comment_ids = parse_comment_ids(
