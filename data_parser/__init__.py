@@ -1,4 +1,4 @@
-from github import Github  # type: ignore
+import github  # type: ignore
 import base64
 import os.path
 import json
@@ -26,7 +26,7 @@ def parse_comment_ids(
         logging.info(f"No existing data found. Parsing comment IDs "
                      f"from repository {comment_id_source_repo}.")
         comment_ids = {}
-        g = Github(github_access_token)
+        g = github.Github(github_access_token)
         repo = g.get_repo(comment_id_source_repo)
         for path in paths_to_data:
             logging.info(f"Parsing path {path}")
@@ -41,7 +41,7 @@ def parse_comment_ids(
                         content = cur_file.content
                         content_str = base64.b64decode(content).decode('utf-8')
                         comment_ids[cur_file.path] = content_str.split('\n')
-            except Github.RateLimitExceededException:
+            except github.GithubException:
                 pass
         with open(f'data/{comment_id_file_name}.json', 'w') as fp:
             json.dump(comment_ids, fp)
