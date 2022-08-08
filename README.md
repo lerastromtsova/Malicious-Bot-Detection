@@ -64,6 +64,17 @@ flowchart TB
 
 ## How to set up the project
 
+### Environment variables
+
+Place an `.env` file in the root folder of the project and insert the following values:
+```
+COMMENT_ID_SOURCE_REPO=chan0park/VoynaSlov
+GITHUB_ACCESS_TOKEN=...
+LOG_LEVEL=INFO
+VK_API_TOKEN=...
+MONGO_DB_PASSWORD=...
+```
+
 ### Docker
 ```commandline
 docker build -t bot-detection .
