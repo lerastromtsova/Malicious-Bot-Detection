@@ -64,14 +64,22 @@ def parse_comment_data(
     :return:
     """
     for root, dirs, files in os.walk("./data"):
-        if root not in ['./data', './data/independent', './data/state-affiliated', './data/output']:
+        if root not in [
+            './data',
+            './data/independent',
+            './data/state-affiliated',
+            './data/output'
+        ]:
             media_name = root.split('/')[-1]
-            media_id = api.utils.resolveScreenName(screen_name=media_name, v='5.131')['object_id']
+            media_id = api.utils.resolveScreenName(
+                screen_name=media_name, v='5.131'
+            )['object_id']
             logging.info(f"Parsing media {media_name}, id {media_id}")
             for file in files:
                 if file != '.DS_Store':
                     comments = {}
                     filepath = os.path.join(root, file)
+                    filename = file.replace(".txt", "")
                     with open(filepath, 'r') as f:
                         comment_ids = f.read().split('\n')
                         for comment_id in comment_ids:
@@ -87,18 +95,27 @@ def parse_comment_data(
                                 comments[comment_id] = comment
                             except vk.exceptions.VkAPIError:
                                 pass
-                    with open(f'data/output/{media_name}_{file.replace(".txt", "")}.json', 'w') as fp:
+                    with open(
+                            f'data/output/{media_name}_{filename}.json',
+                            'w'
+                    ) as fp:
                         json.dump(comments, fp)
             logging.info(f"Parsed media {media_name}, id {media_id}")
 
 
 def delete_old_files() -> None:
     """
-    Utility function to delete files older than 24.02.2022 from the data directory.
+    Utility function to delete files older than 24.02.2022
+    from the data directory.
     :return:
     """
     for root, dirs, files in os.walk("./data"):
-        if root not in ['./data', './data/independent', './data/state-affiliated', './data/output']:
+        if root not in [
+            './data',
+            './data/independent',
+            './data/state-affiliated',
+            './data/output'
+        ]:
             for file in files:
                 if file != '.DS_Store':
                     date = file.split('.')[0]

@@ -1,5 +1,5 @@
 from dotenv import dotenv_values  # type: ignore
-from data_parser import parse_comment_data, delete_old_files
+from data_parser import parse_comment_data
 import logging
 import vk
 
@@ -12,5 +12,4 @@ logging.basicConfig(
 api = vk.API(access_token=config['VK_API_TOKEN'])
 
 if __name__ == '__main__':
-    # delete_old_files()
     parse_comment_data(api)
