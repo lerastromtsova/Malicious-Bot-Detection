@@ -1,7 +1,7 @@
 from dotenv import dotenv_values  # type: ignore
 from data_parser import parse_comment_data
 import logging
-import vk
+import vk  # type: ignore
 
 config = dotenv_values(".env")
 logging.basicConfig(
