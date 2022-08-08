@@ -6,8 +6,8 @@ import logging
 import time
 from datetime import datetime
 
-import vk.exceptions # type: ignore
-from vk import API # type: ignore
+import vk.exceptions  # type: ignore
+from vk import API  # type: ignore
 
 
 def parse_comment_ids(
