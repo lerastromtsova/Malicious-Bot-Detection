@@ -1,5 +1,6 @@
 from dotenv import dotenv_values  # type: ignore
 from data_parser import parse_comment_data
+from database_adapter import write_comment_to_db
 import logging
 import vk  # type: ignore
 import pymongo
@@ -14,7 +15,10 @@ api = vk.API(access_token=config['VK_API_TOKEN'])
 db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 f"lerastromtsova:{config['MONGO_DB_PASSWORD']}"
                                 f"@cluster0.ubfnhtk.mongodb.net/"
-                                f"?retryWrites=true&w=majority")
+                                f"?retryWrites=true&w=majority",
+                                tls=True,
+                                tlsAllowInvalidCertificates=True)
 
 if __name__ == '__main__':
-    parse_comment_data(api)
+    for comment in parse_comment_data(api):
+        write_comment_to_db(comment, db_client)

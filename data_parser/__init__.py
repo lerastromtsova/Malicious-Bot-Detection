@@ -56,7 +56,7 @@ def parse_comment_ids(
 
 def parse_comment_data(
         api: API
-) -> None:
+) -> iter:
     """
     Parses comments on Vkontakte based on comment_ids.
     Writes the output to data/output dir.
@@ -79,7 +79,6 @@ def parse_comment_data(
                 if file != '.DS_Store':
                     comments = {}
                     filepath = os.path.join(root, file)
-                    filename = file.replace(".txt", "")
                     with open(filepath, 'r') as f:
                         comment_ids = f.read().split('\n')
                         for comment_id in comment_ids:
@@ -93,13 +92,9 @@ def parse_comment_data(
                                 )
                                 logging.info(f"Parsed comment {comment_id}")
                                 comments[comment_id] = comment
+                                yield comment
                             except vk.exceptions.VkAPIError:
                                 pass
-                    with open(
-                            f'data/output/{media_name}_{filename}.json',
-                            'w'
-                    ) as fp:
-                        json.dump(comments, fp)
             logging.info(f"Parsed media {media_name}, id {media_id}")
 
 
