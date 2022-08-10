@@ -3,7 +3,7 @@ from data_parser import parse_comment_data
 from database_adapter import write_comment_to_db
 import logging
 import vk  # type: ignore
-import pymongo
+import pymongo  # type: ignore
 
 config = dotenv_values(".env")
 logging.basicConfig(

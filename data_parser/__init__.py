@@ -56,7 +56,7 @@ def parse_comment_ids(
 
 def parse_comment_data(
         api: API
-) -> iter:
+) -> list:
     """
     Parses comments on Vkontakte based on comment_ids.
     Writes the output to data/output dir.
