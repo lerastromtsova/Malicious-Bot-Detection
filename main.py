@@ -4,8 +4,12 @@ from database_adapter import write_comment_to_db
 import logging
 import vk  # type: ignore
 import pymongo  # type: ignore
+import os
 
 config = dotenv_values(".env")
+if not config:
+    config = os.environ
+
 logging.basicConfig(
     filename='log/data_parsing.log',
     encoding='utf-8',
