@@ -1,4 +1,4 @@
-import pymongo
+import pymongo  # type: ignore
 from datetime import datetime
 
 
