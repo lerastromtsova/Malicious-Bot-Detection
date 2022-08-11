@@ -5,6 +5,7 @@ import json
 import logging
 import time
 from datetime import datetime
+from typing import Generator
 
 import vk.exceptions  # type: ignore
 from vk import API  # type: ignore
@@ -56,7 +57,7 @@ def parse_comment_ids(
 
 def parse_comment_data(
         api: API
-) -> list:
+) -> Generator:
     """
     Parses comments on Vkontakte based on comment_ids.
     Writes the output to data/output dir.
