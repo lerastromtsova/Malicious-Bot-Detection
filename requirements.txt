@@ -5,3 +5,4 @@ pyflakes==2.5.0
 PyGithub==1.55
 python-dotenv==0.20.0
 vk==3.0
+pymongo==4.2.0
