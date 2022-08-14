@@ -122,7 +122,12 @@ def delete_old_files() -> None:
                         logging.info(f'Removed file {file}')
 
 
-def count_all_comments():
+def count_all_comments() -> int:
+    """
+    Provides information about the number of
+    all comments in the data directory.
+    :return:
+    """
     total_count = 0
     for root, dirs, files in os.walk("./data"):
         if root not in [

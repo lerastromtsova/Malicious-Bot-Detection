@@ -87,6 +87,12 @@ def check_num_of_collection(
         db_client: pymongo.MongoClient,
         collection: str
 ):
+    """
+    Checks the number of documents in a collection.
+    :param db_client:
+    :param collection:
+    :return:
+    """
     db = db_client.dataVKnodup
     if collection == 'users':
         return db.users.count_documents({})
@@ -97,6 +103,12 @@ def delete_duplicates(
         db_client: pymongo.MongoClient,
         collection: str
 ):
+    """
+    Deletes duplicates in a collection.
+    :param db_client:
+    :param collection:
+    :return:
+    """
     if collection == 'users':
         cursor = db_client.dataVKnodup.users.aggregate(
             [
@@ -140,6 +152,12 @@ def insert_comment_ids(
         db_client: pymongo.MongoClient,
         api: API
 ) -> None:
+    """
+    Forms an initial comments collection populated by comment ids.
+    :param db_client:
+    :param api:
+    :return:
+    """
     for root, dirs, files in os.walk("./data"):
         if root not in [
             './data',
