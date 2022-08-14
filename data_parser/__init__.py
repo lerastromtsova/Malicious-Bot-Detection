@@ -120,3 +120,21 @@ def delete_old_files() -> None:
                     if d < date_24_02:
                         os.remove(root+'/'+file)
                         logging.info(f'Removed file {file}')
+
+
+def count_all_comments():
+    total_count = 0
+    for root, dirs, files in os.walk("./data"):
+        if root not in [
+            './data',
+            './data/independent',
+            './data/state-affiliated',
+            './data/output'
+        ]:
+            for file in files:
+                if file != '.DS_Store':
+                    filepath = os.path.join(root, file)
+                    with open(filepath, 'r') as f:
+                        comment_ids = f.read().split('\n')
+                        total_count += len(comment_ids)
+    return total_count

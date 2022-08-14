@@ -1,6 +1,5 @@
 from dotenv import dotenv_values  # type: ignore
-from data_parser import parse_comment_data
-from database_adapter import write_comment_to_db
+from database_adapter import insert_comment_ids
 import logging
 import vk  # type: ignore
 import pymongo  # type: ignore
@@ -24,5 +23,4 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tlsAllowInvalidCertificates=True)
 
 if __name__ == '__main__':
-    for comment in parse_comment_data(api):
-        write_comment_to_db(comment, db_client)
+    insert_comment_ids(db_client, api)
