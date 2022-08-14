@@ -70,6 +70,7 @@ def parse_comment_data(
     comments = db_client.dataVKnodup.comments.find({})
     for comment in comments:
         try:
+            time.sleep(0.5)
             comment = api.wall.getComment(
                 owner_id=-comment['media_id'],
                 comment_id=comment['vk_id'],
