@@ -68,17 +68,33 @@ def write_comment_to_db(
     :return:
     """
     db = db_client.dataVKnodup
-    for item in comment['items']:
-        item['date'] = datetime.utcfromtimestamp(item['date'])
-        item['_id'] = item['id']
-        del item['id']
     try:
         if comment['items']:
-            db.comments.insert_many(comment['items'])
+            for item in comment['items']:
+                item['date'] = datetime.utcfromtimestamp(item['date'])
+                item['vk_id'] = item['id']
+                del item['id']
+                item['processed'] = True
+                db.comments.update_one(
+                    {'vk_id': item['vk_id']},
+                    {'$`set': item}
+                )
         if comment['groups']:
-            db.groups.insert_many(comment['groups'])
+            for group in comment['groups']:
+                group['vk_id'] = group['id']
+                del group['id']
+                db.groups.update_one(
+                    {'vk_id': group['vk_id']},
+                    {'$`set': group}
+                )
         if comment['profiles']:
-            db.users.insert_many(comment['profiles'])
+            for profile in comment['profiles']:
+                profile['vk_id'] = profile['id']
+                del profile['id']
+                db.users.update_one(
+                    {'vk_id': profile['vk_id']},
+                    {'$`set': profile}
+                )
     except pymongo.errors.BulkWriteError:
         logging.warning("Trying to insert duplicate key")
 
