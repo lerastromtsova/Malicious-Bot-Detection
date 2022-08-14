@@ -4,6 +4,7 @@ import pymongo  # type: ignore
 from datetime import datetime
 import os
 from vk import API  # type: ignore
+import bson
 
 
 def write_comment_to_db(
@@ -157,7 +158,7 @@ def insert_comment_ids(
                     with open(filepath, 'r') as f:
                         comment_ids = f.read().split('\n')
                         result = [{
-                            "_id": i,
+                            "_id": bson.ObjectId(i),
                             "media_name": media_name,
                             "media_id": media_id,
                             "processed": False
