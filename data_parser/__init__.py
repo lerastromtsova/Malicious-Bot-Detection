@@ -67,7 +67,7 @@ def parse_comment_data(
     :param api: API to parse from
     :return:
     """
-    comments = db_client.dataVKnodup.comments.find({})
+    comments = db_client.dataVKnodup.comments.find({"processed": False})
     for comment in comments:
         try:
             time.sleep(0.5)
@@ -77,7 +77,7 @@ def parse_comment_data(
                 v='5.131',
                 extended=1
             )
-            logging.info(f"Parsed comment {comment['vk_id']}")
+            logging.info(f"Parsed comment")
             yield comment
         except vk.exceptions.VkAPIError:
             pass

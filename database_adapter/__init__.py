@@ -68,35 +68,37 @@ def write_comment_to_db(
     :return:
     """
     db = db_client.dataVKnodup
-    try:
-        if comment['items']:
-            for item in comment['items']:
-                item['date'] = datetime.utcfromtimestamp(item['date'])
-                item['vk_id'] = item['id']
-                del item['id']
-                item['processed'] = True
+    if comment['items']:
+        for item in comment['items']:
+            item['date'] = datetime.utcfromtimestamp(item['date'])
+            item['vk_id'] = str(item['id'])
+            del item['id']
+            item['processed'] = True
+            try:
                 db.comments.update_one(
                     {'vk_id': item['vk_id']},
-                    {'$`set': item}
+                    {'$set': item}
                 )
-        if comment['groups']:
-            for group in comment['groups']:
-                group['vk_id'] = group['id']
-                del group['id']
-                db.groups.update_one(
-                    {'vk_id': group['vk_id']},
-                    {'$`set': group}
-                )
-        if comment['profiles']:
-            for profile in comment['profiles']:
-                profile['vk_id'] = profile['id']
-                del profile['id']
-                db.users.update_one(
-                    {'vk_id': profile['vk_id']},
-                    {'$`set': profile}
-                )
-    except pymongo.errors.BulkWriteError:
-        logging.warning("Trying to insert duplicate key")
+                print(item)
+            except pymongo.errors.DuplicateKeyError:
+                logging.warning("Trying to insert duplicate key in comments")
+    if comment['groups']:
+        for group in comment['groups']:
+            group['vk_id'] = group['id']
+            del group['id']
+        try:
+            db.groups.insert_many(comment['groups'])
+        except pymongo.errors.BulkWriteError:
+            logging.warning("Trying to insert duplicate key in groups")
+    if comment['profiles']:
+        for profile in comment['profiles']:
+            profile['vk_id'] = profile['id']
+            del profile['id']
+        try:
+            db.users.insert_many(comment['profiles'])
+        except pymongo.errors.BulkWriteError:
+            logging.warning("Trying to insert duplicate key in users")
+
 
 
 def check_num_of_collection(
