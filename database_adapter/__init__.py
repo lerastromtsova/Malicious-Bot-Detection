@@ -179,6 +179,7 @@ def delete_duplicates(
 
         db_client.dataVKnodup.groups.delete_many({"_id": {"$in": response}})
 
+
 def insert_comment_ids(
         db_client: pymongo.MongoClient,
         api: API
