@@ -7,7 +7,7 @@ import time
 from datetime import datetime
 from typing import Generator
 
-import pymongo
+import pymongo  # type: ignore
 import vk.exceptions  # type: ignore
 from vk import API  # type: ignore
 
