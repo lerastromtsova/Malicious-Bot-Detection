@@ -79,7 +79,6 @@ def write_comment_to_db(
                     {'vk_id': item['vk_id']},
                     {'$set': item}
                 )
-                print(item)
             except pymongo.errors.DuplicateKeyError:
                 logging.warning("Trying to insert duplicate key in comments")
     if comment['groups']:
@@ -98,7 +97,6 @@ def write_comment_to_db(
             db.users.insert_many(comment['profiles'])
         except pymongo.errors.BulkWriteError:
             logging.warning("Trying to insert duplicate key in users")
-
 
 
 def check_num_of_collection(

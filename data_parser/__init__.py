@@ -77,7 +77,7 @@ def parse_comment_data(
                 v='5.131',
                 extended=1
             )
-            logging.info(f"Parsed comment")
+            logging.info("Parsed comment")
             yield comment
         except vk.exceptions.VkAPIError:
             pass
