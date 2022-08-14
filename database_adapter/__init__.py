@@ -158,7 +158,7 @@ def insert_comment_ids(
                     with open(filepath, 'r') as f:
                         comment_ids = f.read().split('\n')
                         result = [{
-                            "_id": bson.ObjectId(i),
+                            "vk_id": i,
                             "media_name": media_name,
                             "media_id": media_id,
                             "processed": False
