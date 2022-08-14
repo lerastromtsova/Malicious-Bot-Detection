@@ -4,7 +4,6 @@ import pymongo  # type: ignore
 from datetime import datetime
 import os
 from vk import API  # type: ignore
-import bson  # type: ignore
 
 
 def write_comment_to_db(
