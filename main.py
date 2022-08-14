@@ -1,6 +1,6 @@
 from dotenv import dotenv_values  # type: ignore
 from data_parser import parse_comment_data
-from database_adapter import write_comment_to_db
+from database_adapter import write_comment_to_db, delete_duplicates
 import logging
 import vk  # type: ignore
 import pymongo  # type: ignore

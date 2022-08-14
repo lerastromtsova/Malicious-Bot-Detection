@@ -142,7 +142,6 @@ def delete_duplicates(
             for i in doc["unique_ids"]:
                 response.append(i)
         db_client.dataVKnodup.users.delete_many({"_id": {"$in": response}})
-        db_client.dataVKnodup.users.create_index("id")
     elif collection == 'comments':
         cursor = db_client.dataVKnodup.comments.aggregate(
             [
@@ -161,8 +160,24 @@ def delete_duplicates(
                 response.append(i)
 
         db_client.dataVKnodup.comments.delete_many({"_id": {"$in": response}})
-        db_client.dataVKnodup.comments.create_index("id")
+    elif collection == 'groups':
+        cursor = db_client.dataVKnodup.groups.aggregate(
+            [
+                {"$group": {
+                    "_id": "$vk_id",
+                    "unique_ids": {"$addToSet": "$_id"},
+                    "count": {"$sum": 1}
+                }},
+                {"$match": {"count": {"$gte": 2}}}
+            ]
+        )
+        response = []
+        for doc in cursor:
+            del doc["unique_ids"][0]
+            for i in doc["unique_ids"]:
+                response.append(i)
 
+        db_client.dataVKnodup.groups.delete_many({"_id": {"$in": response}})
 
 def insert_comment_ids(
         db_client: pymongo.MongoClient,
