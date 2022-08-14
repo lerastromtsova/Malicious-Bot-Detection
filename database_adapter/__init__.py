@@ -162,4 +162,7 @@ def insert_comment_ids(
                             "media_id": media_id,
                             "processed": False
                         } for i in comment_ids]
-                        db_client.dataVKnodup.comments.insert_many(result)
+                        try:
+                            db_client.dataVKnodup.comments.insert_many(result)
+                        except pymongo.errors.BulkWriteError:
+                            logging.warning("Trying to insert duplicate key")
