@@ -129,7 +129,7 @@ def delete_duplicates(
         cursor = db_client.dataVKnodup.users.aggregate(
             [
                 {"$group": {
-                    "_id": "$id",
+                    "_id": "$vk_id",
                     "unique_ids": {"$addToSet": "$_id"},
                     "count": {"$sum": 1}
                 }},
@@ -147,7 +147,7 @@ def delete_duplicates(
         cursor = db_client.dataVKnodup.comments.aggregate(
             [
                 {"$group": {
-                    "_id": "$ID",
+                    "_id": "$vk_id",
                     "unique_ids": {"$addToSet": "$_id"},
                     "count": {"$sum": 1}
                 }},
