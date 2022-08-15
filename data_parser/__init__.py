@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 from typing import Generator
 
+import pymongo  # type: ignore
 import vk.exceptions  # type: ignore
 from vk import API  # type: ignore
 
@@ -56,47 +57,30 @@ def parse_comment_ids(
 
 
 def parse_comment_data(
+        db_client: pymongo.MongoClient,
         api: API
 ) -> Generator:
     """
     Parses comments on Vkontakte based on comment_ids.
     Writes the output to data/output dir.
+    :param db_client:
     :param api: API to parse from
     :return:
     """
-    for root, dirs, files in os.walk("./data"):
-        if root not in [
-            './data',
-            './data/independent',
-            './data/state-affiliated',
-            './data/output'
-        ]:
-            media_name = root.split('/')[-1]
-            media_id = api.utils.resolveScreenName(
-                screen_name=media_name, v='5.131'
-            )['object_id']
-            logging.info(f"Parsing media {media_name}, id {media_id}")
-            for file in files:
-                if file != '.DS_Store':
-                    comments = {}
-                    filepath = os.path.join(root, file)
-                    with open(filepath, 'r') as f:
-                        comment_ids = f.read().split('\n')
-                        for comment_id in comment_ids:
-                            time.sleep(1)
-                            try:
-                                comment = api.wall.getComment(
-                                    owner_id=-media_id,
-                                    comment_id=comment_id,
-                                    v='5.131',
-                                    extended=1
-                                )
-                                logging.info(f"Parsed comment {comment_id}")
-                                comments[comment_id] = comment
-                                yield comment
-                            except vk.exceptions.VkAPIError:
-                                pass
-            logging.info(f"Parsed media {media_name}, id {media_id}")
+    comments = db_client.dataVKnodup.comments.find({"processed": False})
+    for comment in comments:
+        try:
+            time.sleep(0.5)
+            comment = api.wall.getComment(
+                owner_id=-comment['media_id'],
+                comment_id=comment['vk_id'],
+                v='5.131',
+                extended=1
+            )
+            logging.info("Parsed comment")
+            yield comment
+        except vk.exceptions.VkAPIError:
+            pass
 
 
 def delete_old_files() -> None:
@@ -120,3 +104,26 @@ def delete_old_files() -> None:
                     if d < date_24_02:
                         os.remove(root+'/'+file)
                         logging.info(f'Removed file {file}')
+
+
+def count_all_comments() -> int:
+    """
+    Provides information about the number of
+    all comments in the data directory.
+    :return:
+    """
+    total_count = 0
+    for root, dirs, files in os.walk("./data"):
+        if root not in [
+            './data',
+            './data/independent',
+            './data/state-affiliated',
+            './data/output'
+        ]:
+            for file in files:
+                if file != '.DS_Store':
+                    filepath = os.path.join(root, file)
+                    with open(filepath, 'r') as f:
+                        comment_ids = f.read().split('\n')
+                        total_count += len(comment_ids)
+    return total_count
