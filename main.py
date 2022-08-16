@@ -26,5 +26,5 @@ if __name__ == '__main__':
     # insert_comment_ids(db_client, api)
     # for comment in parse_comment_data(db_client, api):
     #     write_comment_to_db(comment, db_client)
-    for i in ['9849780', '328772767', '6830693', '243783196', '349297371']:
+    for i in ['635410348', '3169374', '115014625', '303693052', '93584656']:
         print(get_foaf_data(i))

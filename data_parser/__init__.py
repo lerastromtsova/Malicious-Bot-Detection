@@ -133,7 +133,7 @@ def count_all_comments() -> int:
 
 def get_foaf_data(
         vk_user_id: str
-) -> Tuple:
+) -> dict:
 
     url = f"https://vk.com/foaf.php?id={vk_user_id}"
     response = requests.get(url)
@@ -141,6 +141,8 @@ def get_foaf_data(
     created_at = None
     timezone = None
     followee_rate = None
+    follower_rate = None
+    follower_to_followee = None
 
     created_at_start_str = '<ya:created dc:date="'
     created_at_end_str = '"/>'
@@ -173,4 +175,26 @@ def get_foaf_data(
             followee_rate_end_str
         )[0])
 
-    return created_at, timezone, followee_rate
+    follower_rate_start_str = '<ya:subscribersCount>'
+    follower_rate_end_str = '</ya:subscribersCount>'
+    follower_rate_str = re.search(
+        f'{follower_rate_start_str}(.*){follower_rate_end_str}',
+        xml
+    )
+    if follower_rate_str:
+        follower_rate = int(follower_rate_str.group().split(
+            follower_rate_start_str
+        )[1].split(
+            follower_rate_end_str
+        )[0])
+
+    if follower_rate and followee_rate:
+        follower_to_followee = round(follower_rate / followee_rate, 4)
+
+    return {
+        "created_at": created_at,
+        "timezone": timezone,
+        "followee_rate": followee_rate,
+        "follower_rate": follower_rate,
+        "follower_to_followee": follower_to_followee
+    }
