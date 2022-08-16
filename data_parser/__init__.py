@@ -5,11 +5,13 @@ import json
 import logging
 import time
 from datetime import datetime
-from typing import Generator
+from typing import Generator, Tuple
 
 import pymongo  # type: ignore
 import vk.exceptions  # type: ignore
 from vk import API  # type: ignore
+import requests
+import re
 
 
 def parse_comment_ids(
@@ -102,7 +104,7 @@ def delete_old_files() -> None:
                     d = datetime.strptime(date, '%Y-%m-%d')
                     date_24_02 = datetime.strptime('24-02-2022', '%d-%m-%Y')
                     if d < date_24_02:
-                        os.remove(root+'/'+file)
+                        os.remove(root + '/' + file)
                         logging.info(f'Removed file {file}')
 
 
@@ -127,3 +129,48 @@ def count_all_comments() -> int:
                         comment_ids = f.read().split('\n')
                         total_count += len(comment_ids)
     return total_count
+
+
+def get_foaf_data(
+        vk_user_id: str
+) -> Tuple:
+
+    url = f"https://vk.com/foaf.php?id={vk_user_id}"
+    response = requests.get(url)
+    xml = response.text
+    created_at = None
+    timezone = None
+    followee_rate = None
+
+    created_at_start_str = '<ya:created dc:date="'
+    created_at_end_str = '"/>'
+    created_at_str = re.search(
+        f'{created_at_start_str}(.*){created_at_end_str}', xml
+    )
+    if created_at_str:
+        created_at = created_at_str.group().split(
+            created_at_start_str
+        )[1].split(
+            created_at_end_str
+        )[0]
+        created_at_tuple = created_at.split('+')
+        created_at = datetime.strptime(
+            created_at_tuple[0],
+            '%Y-%m-%dT%H:%M:%S'
+        )
+        timezone = created_at_tuple[1]
+
+    followee_rate_start_str = '<ya:subscribedToCount>'
+    followee_rate_end_str = '</ya:subscribedToCount>'
+    followee_rate_str = re.search(
+        f'{followee_rate_start_str}(.*){followee_rate_end_str}',
+        xml
+    )
+    if followee_rate_str:
+        followee_rate = int(followee_rate_str.group().split(
+            followee_rate_start_str
+        )[1].split(
+            followee_rate_end_str
+        )[0])
+
+    return created_at, timezone, followee_rate

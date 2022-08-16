@@ -1,6 +1,5 @@
 from dotenv import dotenv_values  # type: ignore
-from data_parser import parse_comment_data
-from database_adapter import write_comment_to_db
+from data_parser import get_foaf_data
 import logging
 import vk  # type: ignore
 import pymongo  # type: ignore
@@ -25,5 +24,7 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
 
 if __name__ == '__main__':
     # insert_comment_ids(db_client, api)
-    for comment in parse_comment_data(db_client, api):
-        write_comment_to_db(comment, db_client)
+    # for comment in parse_comment_data(db_client, api):
+    #     write_comment_to_db(comment, db_client)
+    for i in ['9849780', '328772767', '6830693', '243783196', '349297371']:
+        print(get_foaf_data(i))
