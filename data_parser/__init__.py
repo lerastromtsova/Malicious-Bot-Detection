@@ -198,3 +198,12 @@ def get_foaf_data(
         "follower_rate": follower_rate,
         "follower_to_followee": follower_to_followee
     }
+
+
+def get_activity_count(
+        vk_user_id: int,
+        db_client: pymongo.MongoClient
+) -> int:
+    return db_client.dataVKnodup.comments.count_documents({
+        'from_id': vk_user_id
+    })

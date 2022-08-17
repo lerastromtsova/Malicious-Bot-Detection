@@ -1,5 +1,5 @@
 from dotenv import dotenv_values  # type: ignore
-from data_parser import get_foaf_data
+from data_parser import get_activity_count
 import logging
 import vk  # type: ignore
 import pymongo  # type: ignore
@@ -26,5 +26,3 @@ if __name__ == '__main__':
     # insert_comment_ids(db_client, api)
     # for comment in parse_comment_data(db_client, api):
     #     write_comment_to_db(comment, db_client)
-    for i in ['635410348', '3169374', '115014625', '303693052', '93584656']:
-        print(get_foaf_data(i))
