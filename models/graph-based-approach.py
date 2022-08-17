@@ -1,6 +1,6 @@
 """
 Steps:
-1. Collect user features:
+1. Collect user features - DONE:
     - FOAF XML ya:created
     - FOAF XML ya:created timezone
     - FOAF XML ya:subscribersCount
