@@ -67,7 +67,7 @@ def parse_comment_data(
     :param api: API to parse from
     :return:
     """
-    comments = db_client.dataVKnodup.comments.find({"processed": False})
+    comments = db_client.dataVKnodup.comments.find({"processed": False, "invalid": {"$ne": True}})
     for comment in comments:
         try:
             time.sleep(0.5)
@@ -79,8 +79,10 @@ def parse_comment_data(
             )
             logging.info("Parsed comment")
             yield comment
-        except vk.exceptions.VkAPIError:
-            pass
+        except vk.exceptions.VkAPIError as e:
+            if e.code == 15:
+                comment['invalid'] = True
+                yield comment
 
 
 def delete_old_files() -> None:
