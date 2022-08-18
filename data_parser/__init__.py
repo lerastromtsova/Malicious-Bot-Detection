@@ -84,6 +84,7 @@ def parse_comment_data(
         except vk.exceptions.VkAPIError as e:
             if e.code == 15:
                 comment['invalid'] = True
+                comment['processed'] = True
                 yield comment
 
 

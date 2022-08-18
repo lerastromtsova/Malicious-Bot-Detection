@@ -29,5 +29,6 @@ if __name__ == '__main__':
     pool = mp.Pool(mp.cpu_count())
     # insert_comment_ids(db_client, api)
     for comment in parse_comment_data(db_client, api):
+        # write_comment_to_db(comment, db_client)
         pool.apply_async(write_comment_to_db, args=(comment, db_client))
     pool.close()

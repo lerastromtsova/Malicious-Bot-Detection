@@ -68,6 +68,12 @@ def write_comment_to_db(
     :return:
     """
     db = db_client.dataVKnodup
+    if comment['invalid']:
+        db.comments.update_one(
+            {'vk_id': comment['vk_id']},
+            {'$set': comment}
+        )
+        return
     if comment['items']:
         for item in comment['items']:
             item['date'] = datetime.utcfromtimestamp(item['date'])
