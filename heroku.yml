@@ -1,6 +1,7 @@
 build:
   docker:
     worker: Dockerfile
+    orange: Dockerfile
 run:
   worker:
     command:
