@@ -4,4 +4,7 @@ build:
 run:
   worker:
     command:
-      - python main.py
+      - python main.py VK_API_TOKEN
+  orange:
+    command:
+      - python main.py VK_API_TOKEN_ORANGE

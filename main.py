@@ -6,6 +6,7 @@ import vk  # type: ignore
 import pymongo  # type: ignore
 import os
 import multiprocessing as mp
+import sys
 
 from data_parser import parse_comment_data
 from database_adapter import write_comment_to_db
@@ -19,7 +20,7 @@ logging.basicConfig(
     encoding='utf-8',
     level=getattr(logging, config['LOG_LEVEL'].upper())
 )
-api = vk.API(access_token=config['VK_API_TOKEN'])
+api = vk.API(access_token=config[sys.argv[1]])
 db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 f"lerastromtsova:{config['MONGO_DB_PASSWORD']}"
                                 f"@cluster0.ubfnhtk.mongodb.net/"
