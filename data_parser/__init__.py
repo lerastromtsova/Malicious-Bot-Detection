@@ -58,7 +58,8 @@ def parse_comment_ids(
 
 def parse_comment_data(
         db_client: pymongo.MongoClient,
-        api: API
+        api: API,
+        db_writer
 ) -> Generator:
     """
     Parses comments on Vkontakte based on comment_ids.
@@ -91,9 +92,9 @@ def parse_comment_data(
         v="5.131"
     )
     response = filter(lambda x: not isinstance(x, bool), response)
-    for r in response:
-        for comment in r['items']:
-            comment['processed'] = True
+    for comment in response:
+        comment['processed'] = True
+        db_writer(comment, db_client)
     return response
 
 

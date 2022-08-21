@@ -9,7 +9,6 @@ import multiprocessing as mp
 import sys
 
 from data_parser import parse_comment_data
-from database_adapter import write_comment_to_db
 
 config = dotenv_values(".env")
 if not config:
@@ -30,8 +29,7 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
 
 if __name__ == '__main__':
     while True:
-        for comment in parse_comment_data(db_client, api):
-            write_comment_to_db(comment, db_client)
+        parse_comment_data(db_client, api, write_comment_to_db)
 
 #
 # var i = 0;
