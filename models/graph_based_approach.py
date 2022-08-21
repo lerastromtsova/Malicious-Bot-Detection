@@ -26,10 +26,9 @@ from typing import Tuple
 from datetime import datetime
 import pandas as pd
 import itertools
-import random
 import networkx as nx
 import markov_clustering as mc
-import matplotlib as plt
+import json
 
 
 def enrich_users_data(
@@ -92,47 +91,94 @@ def get_real_similarity(
     return 1 / (1 + abs(values[0] - values[1]))
 
 
-def construct_similarity_matrix(
-        users: list,
-        sim_threshold: float = 0.6
-) -> pd.DataFrame:
-    indices = [user['vk_id'] for user in users]
-    result = pd.DataFrame(
-        index=indices,
-        columns=indices,
-        dtype=int
-    )
-    for pair in itertools.product(users, repeat=2):
-        if pair[0]['vk_id'] == pair[1]['vk_id']:
-            result.at[pair[0]['vk_id'], pair[1]['vk_id']] = 0
-        else:
-            sim = get_similarity(pair)
-            sim_int = int(sim * 10) if sim >= sim_threshold else 0
-            result.at[pair[0]['vk_id'], pair[1]['vk_id']] = sim_int
-    return result
+class MarkovClusteringModel:
+    def __init__(
+            self,
+            users,
+            sim_threshold=0.6,
+            inf_rate=1.1
+    ):
+        self.users = users
+        self.sim_threshold = sim_threshold
+        self.inflation_rate = inf_rate
+        self.similarity_matrix = pd.DataFrame([])
+        self.adjacency_matrix = pd.DataFrame([])
+        self.clusters = []
+        self.matrix = []
+        self.raw_clusters = []
+        self.modularity = 0
 
+    def _construct_similarity_matrix(self):
+        indices = [user['vk_id'] for user in self.users]
+        result = pd.DataFrame(
+            index=indices,
+            columns=indices,
+            dtype=int
+        )
+        for pair in itertools.product(self.users, repeat=2):
+            if pair[0]['vk_id'] == pair[1]['vk_id']:
+                result.at[pair[0]['vk_id'], pair[1]['vk_id']] = 0
+            else:
+                sim = get_similarity(pair)
+                result.at[pair[0]['vk_id'], pair[1]['vk_id']] = sim
+        self.similarity_matrix = result
 
-def run_markov_clustering(
-        similarity_matrix: pd.DataFrame
-):
-    graph = nx.from_pandas_adjacency(similarity_matrix)
-    matrix = nx.to_scipy_sparse_array(graph)
-    inflation_rates = [i / 10 for i in range(11, 51)]
-    infl_mod = {}
-    for inflation in inflation_rates:
-        result = mc.run_mcl(matrix, inflation=inflation)
-        clusters = mc.get_clusters(result)
-        q = mc.modularity(matrix=result, clusters=clusters)
-        infl_mod[inflation] = q
-    best_inflation = max(infl_mod, key=infl_mod.get)
-    print("Best inflation", best_inflation)
-    result = mc.run_mcl(matrix, inflation=best_inflation)  # run MCL with default parameters
-    clusters = mc.get_clusters(result)
-    mc.draw_graph(matrix, clusters, node_size=50, with_labels=False, edge_color="silver")
-    result = []
-    for cluster in clusters:
-        result.append(tuple(similarity_matrix.columns[i] for i in cluster))
-    return result
+    def _apply_similarity_threshold(self, sim):
+        return int(sim * 10) if sim >= self.sim_threshold else 0
+
+    def _get_adjacency_matrix(self):
+        sim_mat = self.similarity_matrix
+        self.adjacency_matrix = sim_mat.applymap(self._apply_similarity_threshold)
+
+    def _get_clusters(self):
+        self.clusters = []
+        graph = nx.from_pandas_adjacency(self.adjacency_matrix)
+        self.matrix = nx.to_scipy_sparse_array(graph)
+        result = mc.run_mcl(self.matrix, inflation=self.inflation_rate)
+        self.raw_clusters = mc.get_clusters(result)
+        for cluster in self.raw_clusters:
+            self.clusters.append(tuple(self.similarity_matrix.columns[i] for i in cluster))
+        return result, self.raw_clusters
+
+    def train(self, sim_thresholds, inflation_rates):
+        print("===TRAINING===")
+        self._construct_similarity_matrix()
+        modularities = {}
+        for pair in itertools.product(sim_thresholds, inflation_rates):
+            self.sim_threshold, self.inflation_rate = pair
+            self._get_adjacency_matrix()
+            result, clusters = self._get_clusters()
+            modularity = mc.modularity(matrix=result, clusters=clusters)
+            modularities[(self.sim_threshold, self.inflation_rate)] = modularity
+            print(self.sim_threshold, self.inflation_rate, modularity)
+        best_sim_threshold, best_infl_rate = max(modularities, key=modularities.get)
+        best_modularity = max(modularities.values())
+        print("Found best params:", best_sim_threshold, best_infl_rate, best_modularity)
+        self.sim_threshold, self.inflation_rate = best_sim_threshold, best_infl_rate
+        self.modularity = best_modularity
+        self._get_adjacency_matrix()
+        self._get_clusters()
+        print("===TRAINING END===")
+
+    def draw_graph(self):
+        mc.draw_graph(
+            self.matrix,
+            self.raw_clusters,
+            node_size=50,
+            with_labels=False,
+            edge_color="silver"
+        )
+
+    def save(self, filepath):
+        with open(filepath, 'w') as f:
+            json.dump({
+                'similarity_threshold': str(self.sim_threshold),
+                'inflation_rate': str(self.inflation_rate),
+                'modularity': str(self.modularity),
+                'clusters': [
+                    str(cluster) for cluster in self.clusters
+                ]
+            }, f)
 
 
 db_client = pymongo.MongoClient(f"mongodb+srv://"
@@ -141,6 +187,10 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 f"?retryWrites=true&w=majority",
                                 tls=True,
                                 tlsAllowInvalidCertificates=True)
-users = db_client.dataVKnodup.users.find({'enriched': True})
-sim_matrix = construct_similarity_matrix(list(users))
-run_markov_clustering(sim_matrix)
+users = db_client.dataVKnodup.users.find({'enriched': True, 'deactivated': {'$ne': 'deleted'}})
+model = MarkovClusteringModel(list(users))
+similarities = [i/100 for i in range(30, 100, 5)]
+inflations = [i/10 for i in range(11, 51)]
+model.train(similarities, inflations)
+model.draw_graph()
+model.save('model_outputs/graph_based_approach.json')
