@@ -14,8 +14,8 @@ Steps:
     - real data type
 3. Construct multi-attributed graph Gm
 4. Convert to similarity graph Gs using (2)
-5. Construct similarity matrix from Gs
-6. Apply Markov clustering to the matrix:
+5. Construct similarity matrix from Gs - DONE
+6. Apply Markov clustering to the matrix - DONE:
     - expansion
     - inflation
 7. Analyse each cluster one by one
@@ -24,6 +24,12 @@ import pymongo  # type: ignore
 from data_parser import get_foaf_data, get_activity_count
 from typing import Tuple
 from datetime import datetime
+import pandas as pd
+import itertools
+import random
+import networkx as nx
+import markov_clustering as mc
+import matplotlib as plt
 
 
 def enrich_users_data(
@@ -84,3 +90,57 @@ def get_real_similarity(
         values: Tuple
 ) -> float:
     return 1 / (1 + abs(values[0] - values[1]))
+
+
+def construct_similarity_matrix(
+        users: list,
+        sim_threshold: float = 0.6
+) -> pd.DataFrame:
+    indices = [user['vk_id'] for user in users]
+    result = pd.DataFrame(
+        index=indices,
+        columns=indices,
+        dtype=int
+    )
+    for pair in itertools.product(users, repeat=2):
+        if pair[0]['vk_id'] == pair[1]['vk_id']:
+            result.at[pair[0]['vk_id'], pair[1]['vk_id']] = 0
+        else:
+            sim = get_similarity(pair)
+            sim_int = int(sim * 10) if sim >= sim_threshold else 0
+            result.at[pair[0]['vk_id'], pair[1]['vk_id']] = sim_int
+    return result
+
+
+def run_markov_clustering(
+        similarity_matrix: pd.DataFrame
+):
+    graph = nx.from_pandas_adjacency(similarity_matrix)
+    matrix = nx.to_scipy_sparse_array(graph)
+    inflation_rates = [i / 10 for i in range(11, 51)]
+    infl_mod = {}
+    for inflation in inflation_rates:
+        result = mc.run_mcl(matrix, inflation=inflation)
+        clusters = mc.get_clusters(result)
+        q = mc.modularity(matrix=result, clusters=clusters)
+        infl_mod[inflation] = q
+    best_inflation = max(infl_mod, key=infl_mod.get)
+    print("Best inflation", best_inflation)
+    result = mc.run_mcl(matrix, inflation=best_inflation)  # run MCL with default parameters
+    clusters = mc.get_clusters(result)
+    mc.draw_graph(matrix, clusters, node_size=50, with_labels=False, edge_color="silver")
+    result = []
+    for cluster in clusters:
+        result.append(tuple(similarity_matrix.columns[i] for i in cluster))
+    return result
+
+
+db_client = pymongo.MongoClient(f"mongodb+srv://"
+                                f"lerastromtsova:fiTmr8nKcKZEB7K"
+                                f"@cluster0.ubfnhtk.mongodb.net/"
+                                f"?retryWrites=true&w=majority",
+                                tls=True,
+                                tlsAllowInvalidCertificates=True)
+users = db_client.dataVKnodup.users.find({'enriched': True})
+sim_matrix = construct_similarity_matrix(list(users))
+run_markov_clustering(sim_matrix)
