@@ -31,15 +31,15 @@ if __name__ == '__main__':
     while True:
         parse_comment_data(db_client, api, write_comment_to_db)
 
-#
+# #
 # var i = 0;
 # var comment;
 # var comments = [];
-# var comment_ids = [233556, 233557, 233559, 233560, 233561];
-# var media_ids = [75895730, 75895730, 75895730, 75895730, 75895730];
-# while (i != 4) {
-#     i = i + 1;
-#     comment = API.wall.getComment({"owner_id": (-media_ids[i]), "comment_id": (comment_ids[i]), "v": 5.131, "extended": 1});
+# var comment_ids = [797550];
+# var media_ids = [-11982368];
+# while (i != 1) {
+#     comment = API.wall.getComment({"owner_id": (media_ids[i]), "comment_id": (comment_ids[i]), "v": 5.131, "extended": 1});
 #     comments.push(comment);
+#     i = i + 1;
 # };
 # return comments;
