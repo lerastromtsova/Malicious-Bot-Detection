@@ -35,9 +35,14 @@ if __name__ == '__main__':
         write_comment_to_db(comment, db_client)
 
 #
-# var c = 25;
-# while (c != 0) {
-#     c = c - 1;
-#     var comment = API.wall.getComment({"owner_id"="-129244038","comment_id"="2787368","v"="5.131","extended"="1"});
+# var i = 0;
+# var comment;
+# var comments = [];
+# var comment_ids = [233556, 233557, 233559, 233560, 233561];
+# var media_ids = [75895730, 75895730, 75895730, 75895730, 75895730];
+# while (i != 4) {
+#     i = i + 1;
+#     comment = API.wall.getComment({"owner_id": (-media_ids[i]), "comment_id": (comment_ids[i]), "v": 5.131, "extended": 1});
+#     comments.push(comment);
 # };
-# return comment;
+# return comments;
