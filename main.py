@@ -4,6 +4,7 @@ import vk  # type: ignore
 import pymongo  # type: ignore
 import os
 import multiprocessing as mp
+import sys
 
 from data_parser import parse_comment_data
 from database_adapter import write_comment_to_db
@@ -18,7 +19,7 @@ logging.basicConfig(
     encoding='utf-8',
     level=getattr(logging, config['LOG_LEVEL'].upper())
 )
-api = vk.API(access_token=config['VK_API_TOKEN'])
+api = vk.API(access_token=config[sys.argv[1]])
 db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 f"lerastromtsova:{config['MONGO_DB_PASSWORD']}"
                                 f"@cluster0.ubfnhtk.mongodb.net/"
@@ -27,17 +28,18 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tlsAllowInvalidCertificates=True)
 
 if __name__ == '__main__':
-    # pool = mp.Pool(mp.cpu_count())
-    # insert_comment_ids(db_client, api)
-    # for comment in parse_comment_data(db_client, api):
-    # write_comment_to_db(comment, db_client)
-    # pool.apply_async(write_comment_to_db, args=(comment, db_client))
-    # pool.close()
-    #     The idea for testing the models is to test on a small sample (e.g. 10) of comment/user ids
-    # Then, after collecting all the data, we can run the models remotely on a server on all the dataset
-    # enrich_users_data(db_client)
-    users = db_client.dataVKnodup.users.find({'enriched': True})
-    for user1 in users:
-        for user2 in users:
-            if user1 != user2:
-                print(get_similarity((user1, user2)))
+    while True:
+        parse_comment_data(db_client, api, write_comment_to_db)
+
+# #
+# var i = 0;
+# var comment;
+# var comments = [];
+# var comment_ids = [797550];
+# var media_ids = [-11982368];
+# while (i != 1) {
+#     comment = API.wall.getComment({"owner_id": (media_ids[i]), "comment_id": (comment_ids[i]), "v": 5.131, "extended": 1});
+#     comments.push(comment);
+#     i = i + 1;
+# };
+# return comments;

@@ -1,4 +1,5 @@
 import logging
+import time
 
 import pymongo  # type: ignore
 from datetime import datetime
@@ -68,7 +69,7 @@ def write_comment_to_db(
     :return:
     """
     db = db_client.dataVKnodup
-    if comment['invalid']:
+    if 'invalid' in comment and comment['invalid']:
         db.comments.update_one(
             {'vk_id': comment['vk_id']},
             {'$set': comment}
@@ -222,3 +223,10 @@ def insert_comment_ids(
                             db_client.dataVKnodup.comments.insert_many(result)
                         except pymongo.errors.BulkWriteError:
                             logging.warning("Trying to insert duplicate key")
+
+
+def get_writing_speed(db_client, time_to_sleep=10):
+    start_count = db_client.dataVKnodup.comments.count_documents({'processed': True})
+    time.sleep(time_to_sleep)
+    end_count = db_client.dataVKnodup.comments.count_documents({'processed': True})
+    return (end_count - start_count) / time_to_sleep

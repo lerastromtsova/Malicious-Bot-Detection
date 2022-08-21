@@ -60,7 +60,8 @@ def parse_comment_ids(
 
 def parse_comment_data(
         db_client: pymongo.MongoClient,
-        api: API
+        api: API,
+        db_writer
 ) -> Generator:
     """
     Parses comments on Vkontakte based on comment_ids.
@@ -69,23 +70,42 @@ def parse_comment_data(
     :param api: API to parse from
     :return:
     """
-    comments = db_client.dataVKnodup.comments.find({"processed": False, "invalid": {"$ne": True}})
-    for comment in comments:
-        try:
-            time.sleep(0.5)
-            comment = api.wall.getComment(
-                owner_id=-comment['media_id'],
-                comment_id=comment['vk_id'],
-                v='5.131',
-                extended=1
-            )
-            logging.info("Parsed comment")
-            yield comment
-        except vk.exceptions.VkAPIError as e:
-            if e.code == 15:
-                comment['invalid'] = True
-                comment['processed'] = True
-                yield comment
+    comments = db_client.dataVKnodup.comments.find({"processed": False, "invalid": {"$ne": True}}).limit(25)
+    comment_ids, media_ids = zip(*[(comment['vk_id'], str(comment['media_id'])) for comment in comments])
+    response = api.execute(
+        code=f'var i = 0;'
+             f'var comment;'
+             f'var comments = [];'
+             f'var comment_ids = {"["+",".join(comment_ids)+"]"};'
+             f'var media_ids = {"[-"+",-".join(media_ids)+"]"};'
+             f'while (i != 25) {{'
+             f'comment = API.wall.getComment('
+             f'{{'
+                 f'"owner_id": (media_ids[i]), '
+                 f'"comment_id": (comment_ids[i]), '
+                 f'"v": "5.131", '
+                 f'"extended": "1"'
+             f'}}'
+             f'); '
+             f'i = i + 1;'
+             f'comments.push(comment);'
+             f'}};'
+             f'return comments;',
+        v="5.131"
+    )
+    response = list(response)
+    for i in range(len(response)):
+        if not response[i]:
+            response[i] = {
+                'vk_id': comment_ids[i],
+                'media_id': int(media_ids[i]),
+                'processed': True,
+                'invalid': True
+            }
+        else:
+            response[i]['processed'] = True
+        db_writer(response[i], db_client)
+    return response
 
 
 def delete_old_files() -> None:
