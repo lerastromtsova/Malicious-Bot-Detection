@@ -90,12 +90,10 @@ def parse_comment_data(
              f'return comments;',
         v="5.131"
     )
+    response = filter(lambda x: not isinstance(x, bool), response)
     for r in response:
-        if not isinstance(r, bool):
-            for comment in r['items']:
-                comment['processed'] = True
-        else:
-            response.remove(r)
+        for comment in r['items']:
+            comment['processed'] = True
     return response
 
 
