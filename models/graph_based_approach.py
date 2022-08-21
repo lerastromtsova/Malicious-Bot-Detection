@@ -29,6 +29,15 @@ import itertools
 import networkx as nx
 import markov_clustering as mc
 import json
+import logging
+from dotenv import dotenv_values
+
+config = dotenv_values("../.env")
+logging.basicConfig(
+    filename='../log/training_graph_based_approach.log',
+    encoding='utf-8',
+    level=getattr(logging, config['LOG_LEVEL'].upper())
+)
 
 
 def enrich_users_data(
@@ -141,7 +150,7 @@ class MarkovClusteringModel:
         return result, self.raw_clusters
 
     def train(self, sim_thresholds, inflation_rates):
-        print("===TRAINING===")
+        logging.info("===TRAINING===")
         self._construct_similarity_matrix()
         modularities = {}
         for pair in itertools.product(sim_thresholds, inflation_rates):
@@ -150,15 +159,17 @@ class MarkovClusteringModel:
             result, clusters = self._get_clusters()
             modularity = mc.modularity(matrix=result, clusters=clusters)
             modularities[(self.sim_threshold, self.inflation_rate)] = modularity
-            print(self.sim_threshold, self.inflation_rate, modularity)
         best_sim_threshold, best_infl_rate = max(modularities, key=modularities.get)
         best_modularity = max(modularities.values())
-        print("Found best params:", best_sim_threshold, best_infl_rate, best_modularity)
+        logging.info(f"Found best params: "
+                     f"{best_sim_threshold}, "
+                     f"{best_infl_rate}, "
+                     f"{best_modularity}")
         self.sim_threshold, self.inflation_rate = best_sim_threshold, best_infl_rate
         self.modularity = best_modularity
         self._get_adjacency_matrix()
         self._get_clusters()
-        print("===TRAINING END===")
+        logging.info("===TRAINING END===")
 
     def draw_graph(self):
         mc.draw_graph(
