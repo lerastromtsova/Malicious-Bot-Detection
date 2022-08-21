@@ -29,10 +29,9 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tlsAllowInvalidCertificates=True)
 
 if __name__ == '__main__':
-    # insert_comment_ids(db_client, api)
-    for comment in parse_comment_data(db_client, api):
-        # write_comment_to_db(comment, db_client)
-        write_comment_to_db(comment, db_client)
+    while True:
+        for comment in parse_comment_data(db_client, api):
+            write_comment_to_db(comment, db_client)
 
 #
 # var i = 0;
