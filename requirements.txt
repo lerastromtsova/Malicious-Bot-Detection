@@ -7,3 +7,4 @@ python-dotenv==0.20.0
 vk==3.0
 pymongo==4.2.0
 dnspython==2.2.1
+Flask==2.2.2
