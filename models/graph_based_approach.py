@@ -27,7 +27,7 @@ from datetime import datetime
 import pandas as pd
 import itertools
 import networkx as nx
-import markov_clustering as mc
+import markov_clustering as mc  # type: ignore
 import json
 import logging
 
