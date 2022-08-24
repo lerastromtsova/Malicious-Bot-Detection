@@ -32,8 +32,7 @@ if __name__ == '__main__':
                     }
          }
     ]))
-    users = list(db_client.dataVKnodup.users.find({'enriched': {'$ne': True},
-                                                   'comment_rate': {'$exists': False}}))
+    users = list(db_client.dataVKnodup.users.find({'comment_rate': {'$exists': False}}))
     for user in users:
         for a in agg:
             if user['vk_id'] == a['_id']:
