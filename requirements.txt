@@ -12,3 +12,4 @@ xmltodict==0.13.0
 pandas==1.4.3
 networkx==2.8.5
 markov-clustering==0.0.6.dev0
+matplotlib==3.5.3
