@@ -30,14 +30,6 @@ import networkx as nx
 import markov_clustering as mc
 import json
 import logging
-from dotenv import dotenv_values
-
-config = dotenv_values("../.env")
-logging.basicConfig(
-    filename='../log/training_graph_based_approach.log',
-    encoding='utf-8',
-    level=getattr(logging, config['LOG_LEVEL'].upper())
-)
 
 
 def enrich_users_data(
