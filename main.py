@@ -25,4 +25,22 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tlsAllowInvalidCertificates=True)
 
 if __name__ == '__main__':
-    enrich_users_data(db_client)
+    # enrich_users_data(db_client)
+    agg = list(db_client.dataVKnodup.comments.aggregate([
+        {'$group': {'_id': "$from_id",
+                    'count': {'$sum': 1}
+                    }
+         }
+    ]))
+    users = list(db_client.dataVKnodup.users.find({'enriched': {'$ne': True},
+                                                   'comment_rate': {'$exists': False}}))
+    for user in users:
+        for a in agg:
+            if user['vk_id'] == a['_id']:
+                db_client.dataVKnodup.users.update_one(
+                    {'_id': user['vk_id']},
+                    {'$set': {
+                        'comment_rate': a['count']
+                    }}
+                )
+

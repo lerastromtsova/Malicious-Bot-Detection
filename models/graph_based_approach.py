@@ -21,7 +21,7 @@ Steps:
 7. Analyse each cluster one by one
 """
 import pymongo  # type: ignore
-from data_parser import get_foaf_data, get_activity_count
+from data_parser import get_foaf_multithread, get_activity_count
 from typing import Tuple
 from datetime import datetime
 import pandas as pd
@@ -35,24 +35,23 @@ import logging
 def enrich_users_data(
         db_client: pymongo.MongoClient,
 ) -> None:
-    users = db_client.dataVKnodup.users.find({'enriched': {'$ne': True}})
-    for i, user in enumerate(users):
-        foaf = get_foaf_data(user['vk_id'])
-        activity = get_activity_count(user['vk_id'], db_client)
-        if foaf['created_at']:
-            vk_age = (datetime(2022, 8, 1, 0, 0, 0) - foaf['created_at']).days
+    users = db_client.dataVKnodup.users.find({'enriched': {'$ne': True}}).limit(20)
+    foaf = get_foaf_multithread([u['vk_id'] for u in users])
+    for user in foaf:
+        # activity = get_activity_count(user['vk_id'], db_client)
+        if user['created_at']:
+            vk_age = (datetime(2022, 8, 1, 0, 0, 0) - user['created_at']).days
         else:
             vk_age = None
         db_client.dataVKnodup.users.update_one(
-            {'_id': user['_id']},
+            {'vk_id': user['vk_id']},
             {'$set': {
-                'created_at': foaf['created_at'],
+                'created_at': user['created_at'],
                 'vk_age': vk_age,
-                'timezone': foaf['timezone'],
-                'followee_rate': foaf['followee_rate'],
-                'follower_rate': foaf['follower_rate'],
-                'follower_to_followee': foaf['follower_to_followee'],
-                'comment_rate': activity,
+                'timezone': user['timezone'],
+                'followee_rate': user['followee_rate'],
+                'follower_rate': user['follower_rate'],
+                'follower_to_followee': user['follower_to_followee'],
                 'enriched': True
             }}
         )

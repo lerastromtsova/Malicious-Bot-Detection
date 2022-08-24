@@ -1,3 +1,5 @@
+import concurrent.futures
+
 import github  # type: ignore
 import base64
 import os
@@ -154,6 +156,17 @@ def count_all_comments() -> int:
     return total_count
 
 
+def get_foaf_multithread(vk_user_ids):
+    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+        futures = []
+        results = []
+        for vk_user_id in vk_user_ids:
+            futures.append(executor.submit(get_foaf_data, vk_user_id))
+        for future in concurrent.futures.as_completed(futures):
+            results.append(future.result())
+    return results
+
+
 def get_foaf_data(
         vk_user_id: str
 ) -> dict:
@@ -215,6 +228,7 @@ def get_foaf_data(
         follower_to_followee = round(follower_rate / followee_rate, 4)
 
     return {
+        "vk_id": vk_user_id,
         "created_at": created_at,
         "timezone": timezone,
         "followee_rate": followee_rate,
