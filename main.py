@@ -38,7 +38,7 @@ if __name__ == '__main__':
         for a in agg:
             if user['vk_id'] == a['_id']:
                 db_client.dataVKnodup.users.update_one(
-                    {'_id': user['vk_id']},
+                    {'vk_id': user['vk_id']},
                     {'$set': {
                         'comment_rate': a['count']
                     }}
