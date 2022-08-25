@@ -16,7 +16,7 @@ logging.basicConfig(
     encoding='utf-8',
     level=getattr(logging, config['LOG_LEVEL'].upper())
 )
-api = vk.API(access_token=config[sys.argv[1]])
+# api = vk.API(access_token=config[sys.argv[1]])
 db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 f"lerastromtsova:{config['MONGO_DB_PASSWORD']}"
                                 f"@cluster0.ubfnhtk.mongodb.net/"
@@ -25,21 +25,5 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tlsAllowInvalidCertificates=True)
 
 if __name__ == '__main__':
-    # enrich_users_data(db_client)
-    agg = list(db_client.dataVKnodup.comments.aggregate([
-        {'$group': {'_id': "$from_id",
-                    'count': {'$sum': 1}
-                    }
-         }
-    ]))
-    users = list(db_client.dataVKnodup.users.find({'comment_rate': {'$exists': False}}))
-    for user in users:
-        for a in agg:
-            if user['vk_id'] == a['_id']:
-                db_client.dataVKnodup.users.update_one(
-                    {'vk_id': user['vk_id']},
-                    {'$set': {
-                        'comment_rate': a['count']
-                    }}
-                )
-
+    while True:
+        enrich_users_data(db_client)
