@@ -240,10 +240,14 @@ def populate_similarities(db_client):
     for pair in itertools.product(users, repeat=2):
         if pair[0]['vk_id'] != pair[1]['vk_id']:
             sim = get_similarity(pair)
-            db_client.dataVKnodup.similarities.insert_one(
-                {
-                    'user1': pair[0]['vk_id'],
-                    'user2': pair[1]['vk_id'],
-                    'similarity': sim
-                }
-            )
+            if sim >= 0.35:
+                try:
+                    db_client.dataVKnodup.similarities.insert_one(
+                        {
+                            'user1': pair[0]['vk_id'],
+                            'user2': pair[1]['vk_id'],
+                            'similarity': sim
+                        }
+                    )
+                except pymongo.errors.DuplicateKeyError:
+                    pass
