@@ -5,7 +5,8 @@ import pymongo  # type: ignore
 import os
 import sys
 
-from models.graph_based_approach import enrich_users_data
+from database_adapter import populate_similarities
+from models.graph_based_approach import MarkovClusteringModel
 
 config = dotenv_values(".env")
 if not config:
@@ -25,5 +26,21 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tlsAllowInvalidCertificates=True)
 
 if __name__ == '__main__':
-    while True:
-        enrich_users_data(db_client)
+    # TRAINING
+    # users = list(db_client.dataVKnodup.users.find({}).limit(10**2))
+    # model = MarkovClusteringModel(users)
+    # sim_thresholds = [i/100 for i in range(20, 100, 5)]
+    # inflation_rates = [i/10 for i in range(11, 51)]
+    # model.train(sim_thresholds, inflation_rates)
+    # model.save('models/model_outputs/graph_based_approach.json')
+
+    # SIMILARITIES
+    populate_similarities(db_client)
+
+    # GETTING CLUSTERS
+    # users = list(db_client.dataVKnodup.users.find({}))
+    # model = MarkovClusteringModel(users)
+    # model.read_from_saved('models/model_outputs/graph_based_approach.json')
+    # clusters = model.get_clusters()
+    # model.save('models/model_outputs/graph_based_approach_all_clusters.json')
+

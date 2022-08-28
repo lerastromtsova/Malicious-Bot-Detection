@@ -101,48 +101,39 @@ class MarkovClusteringModel:
         self.users = users
         self.sim_threshold = sim_threshold
         self.inflation_rate = inf_rate
-        self.similarity_matrix = pd.DataFrame([])
-        self.adjacency_matrix = pd.DataFrame([])
+        self.adjacency_matrix = {}
         self.clusters = []
         self.matrix = []
         self.raw_clusters = []
         self.modularity = 0
 
-    def _construct_similarity_matrix(self):
-        indices = [user['vk_id'] for user in self.users]
-        result = pd.DataFrame(
-            index=indices,
-            columns=indices,
-            dtype=int
-        )
-        for pair in itertools.product(self.users, repeat=2):
-            if pair[0]['vk_id'] == pair[1]['vk_id']:
-                result.at[pair[0]['vk_id'], pair[1]['vk_id']] = 0
-            else:
-                sim = get_similarity(pair)
-                result.at[pair[0]['vk_id'], pair[1]['vk_id']] = sim
-        self.similarity_matrix = result
-
-    def _apply_similarity_threshold(self, sim):
-        return int(sim * 10) if sim >= self.sim_threshold else 0
-
     def _get_adjacency_matrix(self):
-        sim_mat = self.similarity_matrix
-        self.adjacency_matrix = sim_mat.applymap(self._apply_similarity_threshold)
+        result = {}
+        for pair in itertools.product(self.users, repeat=2):
+            if pair[0]['vk_id'] != pair[1]['vk_id']:
+                sim = get_similarity(pair)
+                if sim >= self.sim_threshold:
+                    result[(pair[0]['vk_id'], pair[1]['vk_id'])] = sim
+        self.adjacency_matrix = result
 
     def _get_clusters(self):
         self.clusters = []
-        graph = nx.from_pandas_adjacency(self.adjacency_matrix)
+        edges = []
+        for ids, adj in self.adjacency_matrix.items():
+            edges.append((ids[0], ids[1], adj))
+        graph = nx.from_edgelist([(item[0], item[1]) for item in edges])
+        print(graph.nodes)
+        graph.add_weighted_edges_from(edges)
         self.matrix = nx.to_scipy_sparse_array(graph)
         result = mc.run_mcl(self.matrix, inflation=self.inflation_rate)
         self.raw_clusters = mc.get_clusters(result)
         for cluster in self.raw_clusters:
-            self.clusters.append(tuple(self.similarity_matrix.columns[i] for i in cluster))
+            self.clusters.append(tuple(self.users[i]['vk_id'] for i in cluster))
         return result, self.raw_clusters
 
     def train(self, sim_thresholds, inflation_rates):
         logging.info("===TRAINING===")
-        self._construct_similarity_matrix()
+        self._get_adjacency_matrix()
         modularities = {}
         for pair in itertools.product(sim_thresholds, inflation_rates):
             self.sim_threshold, self.inflation_rate = pair
@@ -181,3 +172,15 @@ class MarkovClusteringModel:
                     str(cluster) for cluster in self.clusters
                 ]
             }, f)
+
+    def read_from_saved(self, filepath):
+        with open(filepath, 'r') as f:
+            content = json.load(f)
+            self.sim_threshold = float(content['similarity_threshold'])
+            self.inflation_rate = float(content['inflation_rate'])
+            self.modularity = float(content['modularity'])
+
+    def get_clusters(self):
+        self._get_adjacency_matrix()
+        print(len(self.adjacency_matrix))
+        self._get_clusters()

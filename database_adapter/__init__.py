@@ -1,3 +1,4 @@
+import itertools
 import logging
 import time
 
@@ -5,6 +6,8 @@ import pymongo  # type: ignore
 from datetime import datetime
 import os
 from vk import API  # type: ignore
+
+from models.graph_based_approach import get_similarity
 
 
 def write_comment_to_db(
@@ -230,3 +233,17 @@ def get_writing_speed(db_client, time_to_sleep=10):
     time.sleep(time_to_sleep)
     end_count = db_client.dataVKnodup.comments.count_documents({'processed': True})
     return (end_count - start_count) / time_to_sleep
+
+
+def populate_similarities(db_client):
+    users = db_client.dataVKnodup.users.find({})
+    for pair in itertools.product(users, repeat=2):
+        if pair[0]['vk_id'] != pair[1]['vk_id']:
+            sim = get_similarity(pair)
+            db_client.dataVKnodup.similarities.insert_one(
+                {
+                    'user1': pair[0]['vk_id'],
+                    'user2': pair[1]['vk_id'],
+                    'similarity': sim
+                }
+            )
