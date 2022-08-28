@@ -35,7 +35,8 @@ if __name__ == '__main__':
     # model.save('models/model_outputs/graph_based_approach.json')
 
     # SIMILARITIES
-    populate_similarities(db_client)
+    while True:
+        populate_similarities(db_client)
 
     # GETTING CLUSTERS
     # users = list(db_client.dataVKnodup.users.find({}))
