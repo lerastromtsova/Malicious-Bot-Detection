@@ -236,7 +236,7 @@ def get_writing_speed(db_client, time_to_sleep=10):
 
 
 def populate_similarities(db_client):
-    users = db_client.dataVKnodup.users.find({})
+    users = db_client.dataVKnodup.users.find({}).limit(100000)
     for pair in itertools.product(users, repeat=2):
         if pair[0]['vk_id'] != pair[1]['vk_id']:
             sim = get_similarity(pair)
