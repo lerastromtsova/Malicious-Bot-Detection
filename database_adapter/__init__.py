@@ -1,4 +1,5 @@
 import logging
+import re
 import time
 
 import pymongo  # type: ignore
@@ -238,5 +239,9 @@ def get_user_data(db_client, user_id):
 
 
 def get_comments_by_user(db_client, user_id):
-    users = db_client.dataVKnodup.comments.find({'from_id': int(user_id)})
-    return list(users)
+    comments = list(db_client.dataVKnodup.comments.find({'from_id': int(user_id)}))
+    for c in comments:
+        split = re.split(r'\[*\], ', c['text'])
+        if len(split) >= 2:
+            c['text'] = ' '.join(split[1:])
+    return comments
