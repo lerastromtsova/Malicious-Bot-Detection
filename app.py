@@ -1,6 +1,6 @@
 import pymongo
 from dotenv import dotenv_values
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, redirect, url_for
 from flask_babel import Babel
 
 from database_adapter import get_user_data, get_comments_by_user
@@ -27,6 +27,30 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/language=<language>')
+def set_language(language=None):
+    session['language'] = language
+    return redirect(url_for('index'))
+
+
 @babel.localeselector
 def get_locale():
-    return request.accept_languages.best_match(['en', 'ru'])
+    if request.args.get('language'):
+        session['language'] = request.args.get('language')
+    return session.get('language', 'en')
+
+
+app.config['LANGUAGES'] = {
+    'en': '🇬🇧 English',
+    'ru': '🇷🇺 Русский',
+}
+
+app.secret_key = "super secret key"
+
+
+@app.context_processor
+def inject_conf_var():
+    return dict(AVAILABLE_LANGUAGES=app.config['LANGUAGES'],
+                CURRENT_LANGUAGE=session.get(
+                    'language', request.accept_languages.best_match(app.config['LANGUAGES'].keys()))
+                )
