@@ -45,26 +45,65 @@
           Our scientific method helps you understand when your opinion is being manipulated.
         </div>
       </div>
-        <div class="row mt-3">
-            <div class="col-12">
-                <form class="d-flex" role="search">
-                  <input
-                          class="form-control me-2 shadow"
-                          list="datalistOptions"type="search"
-                          placeholder="Paste a user ID or start typing a name"
-                          aria-label="Search"
-                  >
-                  <button class="btn btn-dark shadow" type="submit">CHECK</button>
-                    <datalist id="datalistOptions">
-                      <option value="Maria I">
-                      <option value="Johanna K">
-                      <option value="John Yu">
-                      <option value="Andrew Chu">
-                      <option value="Valeria S">
-                    </datalist>
-                </form>
+      <div class="row mt-3">
+          <div class="col-12">
+              <form class="d-flex" role="search">
+                <input
+                        class="form-control me-2 shadow"
+                        type="number"
+                        placeholder="Paste a user ID (numbers only)"
+                        aria-label="Search"
+                        id="searchBar"
+                        name="user"
+                >
+                <button class="btn btn-dark shadow">SEARCH</button>
+              </form>
+          </div>
+      </div>
+      {% if users %}
+      <div class="row mt-5">
+        <h5>Here's what we found:</h5>
+      </div>
+      <div class="row mt-3">
+        <div class="col-12">
+          {% for user in users %}
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-2">
+                    <img src="{{user.photo_100}}" style="border-radius: 8px"/>
+                  </div>
+                  <div class="col-8 align-items-center">
+                    <h5 class="card-title">{{user.first_name}} {{user.last_name}}</h5>
+                    {% if user.deactivated %}
+                      <p class="card-text"><span class="badge bg-danger">{{user.deactivated}}</span></p>
+                    {% else %}
+                      <p class="card-text"><span class="badge bg-success">Active</span></p>
+                    {% endif %}
+                  </div>
+                  <div class="col-2">
+                    <a href="#" class="btn btn-primary shadow me-auto">Check</a>
+                  </div>
+                </div>
+              </div>
             </div>
+          {% endfor %}
         </div>
+        <div class="col-12">
+          {% for comment in comments %}
+            {% if not comment.invalid %}
+              <div class="card mt-2">
+                <div class="card-body">
+                 <p>{{ comment.text }}</p>
+                  <p class="text-secondary">{{comment.date}}</p>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      {% endif %}
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
   </body>
