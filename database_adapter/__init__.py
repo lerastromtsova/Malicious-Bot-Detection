@@ -237,13 +237,12 @@ def get_writing_speed(db_client, time_to_sleep=10):
 
 
 def populate_similarities(db_client):
+    n = mp.cpu_count() * 32
     users = db_client.dataVKnodup.users.aggregate([
         {"$match": {"vk_id": {"$exists": True}}},
-        {"$sample": {"size": 4}}
+        {"$sample": {"size": n**(-0.5)}}
     ])
     products = itertools.product(users, repeat=2)
-    with mp.Pool(16) as p:
+    with mp.Pool(n) as p:
         result = p.map(get_similarity, products)
-    result = [r for r in result if r is not None]
-    if result:
-        db_client.dataVKnodup.similarities.insert_many(result)
+    db_client.dataVKnodup.similarities.insert_many(result)
