@@ -60,6 +60,8 @@ def enrich_users_data(
 def get_similarity(
         users: Tuple
 ) -> dict[str, float | Any]:
+    if users[0]['vk_id'] == users[1]['vk_id']:
+        return None
     features = {
         'vk_age': 'real',
         'timezone': 'nominal',
