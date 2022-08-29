@@ -22,7 +22,7 @@ Steps:
 """
 import pymongo  # type: ignore
 from data_parser import get_foaf_multithread, get_activity_count
-from typing import Tuple
+from typing import Tuple, Any, Dict
 from datetime import datetime
 import pandas as pd
 import itertools
@@ -59,7 +59,7 @@ def enrich_users_data(
 
 def get_similarity(
         users: Tuple
-) -> float:
+) -> dict[str, float | Any]:
     features = {
         'vk_age': 'real',
         'timezone': 'nominal',
@@ -76,7 +76,11 @@ def get_similarity(
             elif typ == 'nominal':
                 similarities.append(get_nominal_similarity((users[0][feature], users[1][feature])))
     avg_similarity = sum(similarities) / len(similarities)
-    return avg_similarity
+    return {
+        'user1': users[0]['vk_id'],
+        'user2': users[1]['vk_id'],
+        'similarity': avg_similarity
+    }
 
 
 def get_nominal_similarity(

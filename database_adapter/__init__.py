@@ -6,6 +6,7 @@ import pymongo  # type: ignore
 from datetime import datetime
 import os
 from vk import API  # type: ignore
+import multiprocessing as mp
 
 from models.graph_based_approach import get_similarity
 
@@ -236,21 +237,12 @@ def get_writing_speed(db_client, time_to_sleep=10):
 
 
 def populate_similarities(db_client):
+    n = mp.cpu_count() * 32
     users = db_client.dataVKnodup.users.aggregate([
         {"$match": {"vk_id": {"$exists": True}}},
-        {"$sample": {"size": 100000}}
+        {"$sample": {"size": n**(-0.5)}}
     ])
-    for pair in itertools.product(users, repeat=2):
-        if pair[0]['vk_id'] != pair[1]['vk_id']:
-            sim = get_similarity(pair)
-            if sim >= 0.35:
-                try:
-                    db_client.dataVKnodup.similarities.insert_one(
-                        {
-                            'user1': pair[0]['vk_id'],
-                            'user2': pair[1]['vk_id'],
-                            'similarity': sim
-                        }
-                    )
-                except pymongo.errors.DuplicateKeyError:
-                    pass
+    products = itertools.product(users, repeat=2)
+    with mp.Pool(n) as p:
+        result = p.map(get_similarity, products)
+    db_client.dataVKnodup.similarities.insert_many(result)
