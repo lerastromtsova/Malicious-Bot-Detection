@@ -45,7 +45,7 @@ app.config['LANGUAGES'] = {
     'ru': '🇷🇺 Русский',
 }
 
-app.secret_key = "super secret key"
+app.secret_key = config['WEB_SECRET']
 
 
 @app.context_processor
