@@ -2,11 +2,13 @@ import base64
 import json
 import logging
 import os
+import time
 from datetime import datetime
 from typing import Generator
 
 import github  # type: ignore
 import pymongo  # type: ignore
+import vk.exceptions
 from vk import API  # type: ignore
 
 
@@ -153,3 +155,19 @@ def count_all_comments() -> int:
                         comment_ids = f.read().split('\n')
                         total_count += len(comment_ids)
     return total_count
+
+
+def get_friends_of_friends(
+        db_client: pymongo.MongoClient,
+        api: API
+):
+    my_friends = api.friends.get(v="5.131")['items']
+    friends_of_friends = dict.fromkeys(my_friends)
+    for i, friend in enumerate(my_friends):
+        time.sleep(0.4)
+        try:
+            friends_of_friends[friend] = api.friends.get(user_id=friend, v="5.131")['items']
+        except vk.exceptions.VkAPIError:
+            pass
+        print(i)
+    return friends_of_friends
