@@ -1,4 +1,5 @@
 import os
+import sys
 
 import pymongo
 from dotenv import dotenv_values
@@ -62,4 +63,4 @@ def inject_conf_var():
 
 
 if __name__ == "__main__":
-    app.run(port=8080)
+    app.run(port=int(sys.argv[1]))

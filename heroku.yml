@@ -12,4 +12,4 @@ run:
       - python main.py VK_API_TOKEN_ORANGE
   web:
     command:
-      - python app.py
+      - python app.py $PORT
