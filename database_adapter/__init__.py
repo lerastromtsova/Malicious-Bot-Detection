@@ -227,9 +227,13 @@ def insert_comment_ids(
 
 
 def get_writing_speed(db_client, time_to_sleep=10):
-    start_count = db_client.dataVKnodup.comments.count_documents({'processed': True})
+    start_count = db_client.dataVKnodup.comments.count_documents(
+        {'processed': True}
+    )
     time.sleep(time_to_sleep)
-    end_count = db_client.dataVKnodup.comments.count_documents({'processed': True})
+    end_count = db_client.dataVKnodup.comments.count_documents(
+        {'processed': True}
+    )
     return (end_count - start_count) / time_to_sleep
 
 
@@ -239,7 +243,9 @@ def get_user_data(db_client, user_id):
 
 
 def get_comments_by_user(db_client, user_id):
-    comments = list(db_client.dataVKnodup.comments.find({'from_id': int(user_id)}))
+    comments = list(db_client.dataVKnodup.comments.find(
+        {'from_id': int(user_id)}
+    ))
     for c in comments:
         split = re.split(r'\[*\], ', c['text'])
         if len(split) >= 2:

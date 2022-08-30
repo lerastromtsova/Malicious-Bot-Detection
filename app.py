@@ -1,9 +1,8 @@
 import os
-import sys
 
 import pymongo
 from dotenv import dotenv_values
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect
 from flask_babel import Babel
 
 from database_adapter import get_user_data, get_comments_by_user
@@ -40,7 +39,11 @@ def is_bot():
         user_id = request.args.get('user')
         user = list(get_user_data(db_client, user_id))[0]
         bot_check_result = bot_check_results(user_id)
-        return render_template('bot-check-results.html', user=user, is_bot=bot_check_result)
+        return render_template(
+            'bot-check-results.html',
+            user=user,
+            is_bot=bot_check_result
+        )
     return render_template('index.html')
 
 
@@ -79,8 +82,11 @@ app.secret_key = config['WEB_SECRET']
 def inject_conf_var():
     return dict(AVAILABLE_LANGUAGES=app.config['LANGUAGES'],
                 CURRENT_LANGUAGE=session.get(
-                    'language', request.accept_languages.best_match(app.config['LANGUAGES'].keys()))
-                )
+                    'language',
+                    request.accept_languages.best_match(
+                        app.config['LANGUAGES'].keys()
+                    )
+                ))
 
 
 if __name__ == "__main__":
