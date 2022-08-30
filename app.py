@@ -2,8 +2,8 @@ import os
 
 import pymongo  # type: ignore
 from dotenv import dotenv_values  # type: ignore
-from flask import Flask, render_template, request, \
-    session, redirect  # type: ignore
+from flask import Flask, render_template, request  # type: ignore
+from flask import session, redirect  # type: ignore
 from flask_babel import Babel  # type: ignore
 
 from database_adapter import get_user_data, get_comments_by_user
