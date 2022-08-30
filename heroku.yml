@@ -2,7 +2,7 @@ build:
   docker:
     worker: Dockerfile
     orange: Dockerfile
-    kiwi: Dockerfile
+    web: Dockerfile
 run:
   worker:
     command:
@@ -10,6 +10,3 @@ run:
   orange:
     command:
       - python main.py VK_API_TOKEN_ORANGE
-  kiwi:
-    command:
-      - python main.py VK_API_TOKEN_KIWI

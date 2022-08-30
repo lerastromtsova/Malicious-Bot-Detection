@@ -1,14 +1,12 @@
-import github  # type: ignore
 import base64
-import os
 import json
 import logging
-import time
+import os
 from datetime import datetime
 from typing import Generator
 
+import github  # type: ignore
 import pymongo  # type: ignore
-import vk.exceptions  # type: ignore
 from vk import API  # type: ignore
 
 
@@ -68,21 +66,26 @@ def parse_comment_data(
     :param api: API to parse from
     :return:
     """
-    comments = db_client.dataVKnodup.comments.find({"processed": False, "invalid": {"$ne": True}}).limit(25)
-    comment_ids, media_ids = zip(*[(comment['vk_id'], str(comment['media_id'])) for comment in comments])
+    comments = db_client.dataVKnodup.comments.find({
+        "processed": False,
+        "invalid": {"$ne": True}
+    }).limit(25)
+    comment_ids, media_ids = zip(*[
+        (comment['vk_id'], str(comment['media_id']))
+        for comment in comments])
     response = api.execute(
         code=f'var i = 0;'
              f'var comment;'
              f'var comments = [];'
-             f'var comment_ids = {"["+",".join(comment_ids)+"]"};'
-             f'var media_ids = {"[-"+",-".join(media_ids)+"]"};'
+             f'var comment_ids = {"[" + ",".join(comment_ids) + "]"};'
+             f'var media_ids = {"[-" + ",-".join(media_ids) + "]"};'
              f'while (i != 25) {{'
              f'comment = API.wall.getComment('
              f'{{'
-                 f'"owner_id": (media_ids[i]), '
-                 f'"comment_id": (comment_ids[i]), '
-                 f'"v": "5.131", '
-                 f'"extended": "1"'
+             f'"owner_id": (media_ids[i]), '
+             f'"comment_id": (comment_ids[i]), '
+             f'"v": "5.131", '
+             f'"extended": "1"'
              f'}}'
              f'); '
              f'i = i + 1;'
@@ -125,7 +128,7 @@ def delete_old_files() -> None:
                     d = datetime.strptime(date, '%Y-%m-%d')
                     date_24_02 = datetime.strptime('24-02-2022', '%d-%m-%Y')
                     if d < date_24_02:
-                        os.remove(root+'/'+file)
+                        os.remove(root + '/' + file)
                         logging.info(f'Removed file {file}')
 
 
