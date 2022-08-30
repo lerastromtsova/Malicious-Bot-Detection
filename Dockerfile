@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 RUN pybabel compile -d translations
 
-CMD [ "python", "./app.py" ]
+CMD [ "gunicorn", "app:app" ]
