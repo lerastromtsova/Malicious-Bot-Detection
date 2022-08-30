@@ -19,6 +19,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
+#: templates/contact.html:45
+msgid "Contact us if you have any questions or comments"
+msgstr "Свяжитесь с нами, если у вас есть вопросы или предложения"
+
 #: templates/index.html:19
 msgid "Methods"
 msgstr "Методы"
@@ -53,3 +57,6 @@ msgstr "ПОИСК"
 msgid "Here is what we found:"
 msgstr "Вот что мы нашли:"
 
+#: templates/methods.html:45
+msgid "Our bot detection method is backed up by scientific research"
+msgstr "Наш метод обнаружения ботов основан на научных исследованиях"

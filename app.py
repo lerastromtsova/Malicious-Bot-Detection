@@ -33,10 +33,20 @@ def index():
     return render_template('index.html')
 
 
+@app.route("/contact")
+def contact():
+    return render_template('contact.html')
+
+
+@app.route("/methods")
+def methods():
+    return render_template('methods.html')
+
+
 @app.route('/language=<language>')
 def set_language(language=None):
     session['language'] = language
-    return redirect(url_for('index'))
+    return redirect(request.referrer)
 
 
 @babel.localeselector

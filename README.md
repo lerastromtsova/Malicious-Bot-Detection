@@ -80,3 +80,10 @@ MONGO_DB_PASSWORD=...
 docker build -t bot-detection .
 docker run bot-detection
 ```
+
+### Babel
+```commandline
+pybabel extract -F babel.cfg -o messages.pot templates/index.html
+pybabel init -i messages.pot -d translations -l ru 
+pybabel compile -d translations
+```
