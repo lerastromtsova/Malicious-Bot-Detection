@@ -96,7 +96,7 @@
         </div>
         <div class="col-12">
           {% for comment in comments %}
-            {% if not comment.invalid %}
+            {% if not comment.invalid and comment.text %}
               <div class="card mt-2">
                 <div class="card-body">
                  <p>{{ comment.text }}</p>
