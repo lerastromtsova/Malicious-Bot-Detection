@@ -54,3 +54,7 @@ def inject_conf_var():
                 CURRENT_LANGUAGE=session.get(
                     'language', request.accept_languages.best_match(app.config['LANGUAGES'].keys()))
                 )
+
+
+if __name__ == "__main__":
+    app.run()
