@@ -1,3 +1,5 @@
+import os
+
 import pymongo
 from dotenv import dotenv_values
 from flask import Flask, render_template, request, session, redirect, url_for
@@ -9,6 +11,9 @@ app = Flask(__name__)
 babel = Babel(app)
 
 config = dotenv_values(".env")
+if not config:
+    config = os.environ
+
 db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 f"lerastromtsova:{config['MONGO_DB_PASSWORD']}"
                                 f"@cluster0.ubfnhtk.mongodb.net/"
