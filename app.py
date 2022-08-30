@@ -7,6 +7,7 @@ from flask import Flask, render_template, request, session, redirect, url_for
 from flask_babel import Babel
 
 from database_adapter import get_user_data, get_comments_by_user
+from models import bot_check_results
 
 app = Flask(__name__)
 babel = Babel(app)
@@ -30,6 +31,16 @@ def index():
         users = get_user_data(db_client, user_id)
         comments = get_comments_by_user(db_client, user_id)
         return render_template('index.html', users=users, comments=comments)
+    return render_template('index.html')
+
+
+@app.route("/is_bot")
+def is_bot():
+    if request.args:
+        user_id = request.args.get('user')
+        user = list(get_user_data(db_client, user_id))[0]
+        bot_check_result = bot_check_results(user_id)
+        return render_template('bot-check-results.html', user=user, is_bot=bot_check_result)
     return render_template('index.html')
 
 
