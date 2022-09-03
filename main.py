@@ -45,14 +45,17 @@ if __name__ == '__main__':
     # print(len(other_friends_in_db), other_friends_in_db)
     for user in users:
         time.sleep(0.3)
-        user_info = api.users.get(
-            user_id=user['vk_id'],
-            fields='verified',
-            v='5.131'
-        )[0]
-        if 'verified' in user_info:
-            db_client.dataVKnodup.users.update_one(
-                {'vk_id': user['vk_id']},
-                {'$set': {'verified': user_info['verified']}}
-            )
+        try:
+            user_info = api.users.get(
+                user_id=user['vk_id'],
+                fields='verified',
+                v='5.131'
+            )[0]
+            if 'verified' in user_info:
+                db_client.dataVKnodup.users.update_one(
+                    {'vk_id': user['vk_id']},
+                    {'$set': {'verified': user_info['verified']}}
+                )
+        except vk.exceptions.VkAPIError:
+            pass
     db_client.close()
