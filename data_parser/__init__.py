@@ -165,7 +165,10 @@ def get_friends_of_friends(
     for i, friend in enumerate(my_friends):
         time.sleep(0.4)
         try:
-            friends_of_friends[friend] = api.friends.get(user_id=friend, v="5.131")['items']
+            friends_of_friends[friend] = api.friends.get(
+                user_id=friend,
+                v="5.131"
+            )['items']
         except vk.exceptions.VkAPIError:
             pass
         print(i)

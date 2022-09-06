@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import sys
@@ -7,9 +6,6 @@ import time
 import pymongo  # type: ignore
 import vk  # type: ignore
 from dotenv import dotenv_values  # type: ignore
-
-from data_parser import parse_comment_data, get_friends_of_friends
-from database_adapter import write_comment_to_db
 
 config = dotenv_values(".env")
 if not config:
