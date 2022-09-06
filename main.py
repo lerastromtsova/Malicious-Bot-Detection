@@ -1,7 +1,6 @@
 import logging
 import os
 import sys
-import time
 
 import pymongo  # type: ignore
 import vk  # type: ignore
