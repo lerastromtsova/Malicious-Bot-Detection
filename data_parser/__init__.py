@@ -158,7 +158,6 @@ def count_all_comments() -> int:
 
 
 def get_friends_of_friends(
-        db_client: pymongo.MongoClient,
         api: API
 ):
     my_friends = api.friends.get(v="5.131")['items']
