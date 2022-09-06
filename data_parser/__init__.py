@@ -8,7 +8,7 @@ from typing import Generator
 
 import github  # type: ignore
 import pymongo  # type: ignore
-import vk.exceptions
+import vk.exceptions  # type: ignore
 from vk import API  # type: ignore
 
 
