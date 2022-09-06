@@ -6,9 +6,6 @@ import pymongo  # type: ignore
 import vk  # type: ignore
 from dotenv import dotenv_values  # type: ignore
 
-from data_parser import parse_comment_data
-from database_adapter import write_comment_to_db
-
 config = dotenv_values(".env")
 if not config:
     config = os.environ
@@ -27,5 +24,4 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tlsAllowInvalidCertificates=True)
 
 if __name__ == '__main__':
-    while True:
-        parse_comment_data(db_client, api, write_comment_to_db)
+    pass

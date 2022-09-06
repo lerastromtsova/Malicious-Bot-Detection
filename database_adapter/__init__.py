@@ -5,7 +5,7 @@ import time
 import pymongo  # type: ignore
 from datetime import datetime
 import os
-from vk import API  # type: ignore
+from vk import API, exceptions  # type: ignore
 
 
 def write_comment_to_db(
@@ -251,3 +251,26 @@ def get_comments_by_user(db_client, user_id):
         if len(split) >= 2:
             c['text'] = ' '.join(split[1:])
     return comments
+
+
+def add_verified_users(db_client, api):
+    users = db_client.dataVKnodup.users.find({
+        'verified': {'$exists': 0}},
+        {'vk_id': 1, '_id': 0}
+    )
+    for user in users:
+        time.sleep(0.3)
+        try:
+            user_info = api.users.get(
+                user_id=user['vk_id'],
+                fields='verified',
+                v='5.131'
+            )[0]
+            if 'verified' in user_info:
+                db_client.dataVKnodup.users.update_one(
+                    {'vk_id': user['vk_id']},
+                    {'$set': {'verified': user_info['verified']}}
+                )
+        except exceptions.VkAPIError:
+            pass
+    db_client.close()
