@@ -1,10 +1,19 @@
+import json
 import logging
 import os
 import sys
 
 import pymongo  # type: ignore
 import vk  # type: ignore
+from community import community_louvain
 from dotenv import dotenv_values  # type: ignore
+
+from data_parser import get_friends_graph
+import matplotlib.pyplot as plt
+import networkx as nx
+from datetime import datetime
+
+from models import get_clustered_graph
 
 config = dotenv_values(".env")
 if not config:
@@ -24,4 +33,7 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tlsAllowInvalidCertificates=True)
 
 if __name__ == '__main__':
-    pass
+    start_time = datetime.now()
+    print('Started at: ', start_time)
+    get_clustered_graph(db_client, api)
+    print('Finished in: ', datetime.now() - start_time)

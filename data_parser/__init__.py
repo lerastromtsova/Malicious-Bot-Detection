@@ -1,13 +1,16 @@
 import base64
+import concurrent
 import json
 import logging
 import os
+import re
 import time
 from datetime import datetime
 from typing import Generator
 
 import github  # type: ignore
 import pymongo  # type: ignore
+import requests
 import vk.exceptions  # type: ignore
 from vk import API  # type: ignore
 
@@ -173,3 +176,136 @@ def get_friends_of_friends(
             pass
         print(i)
     return friends_of_friends
+
+
+def get_foaf_multithread(vk_user_ids):
+    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+        futures = []
+        results = []
+        for vk_user_id in vk_user_ids:
+            futures.append(executor.submit(get_foaf_data, vk_user_id))
+        for future in concurrent.futures.as_completed(futures):
+            results.append(future.result())
+    return results
+
+
+def get_foaf_data(
+        vk_user_id: str
+) -> dict:
+
+    url = f"https://vk.com/foaf.php?id={vk_user_id}"
+    response = requests.get(url)
+    xml = response.text
+    created_at = None
+    timezone = None
+    followee_rate = None
+    follower_rate = None
+    follower_to_followee = None
+
+    created_at_start_str = '<ya:created dc:date="'
+    created_at_end_str = '"/>'
+    created_at_str = re.search(
+        f'{created_at_start_str}(.*){created_at_end_str}', xml
+    )
+    if created_at_str:
+        created_at = created_at_str.group().split(
+            created_at_start_str
+        )[1].split(
+            created_at_end_str
+        )[0]
+        created_at_tuple = created_at.split('+')
+        created_at = datetime.strptime(
+            created_at_tuple[0],
+            '%Y-%m-%dT%H:%M:%S'
+        )
+        timezone = created_at_tuple[1]
+
+    followee_rate_start_str = '<ya:subscribedToCount>'
+    followee_rate_end_str = '</ya:subscribedToCount>'
+    followee_rate_str = re.search(
+        f'{followee_rate_start_str}(.*){followee_rate_end_str}',
+        xml
+    )
+    if followee_rate_str:
+        followee_rate = int(followee_rate_str.group().split(
+            followee_rate_start_str
+        )[1].split(
+            followee_rate_end_str
+        )[0])
+
+    follower_rate_start_str = '<ya:subscribersCount>'
+    follower_rate_end_str = '</ya:subscribersCount>'
+    follower_rate_str = re.search(
+        f'{follower_rate_start_str}(.*){follower_rate_end_str}',
+        xml
+    )
+    if follower_rate_str:
+        follower_rate = int(follower_rate_str.group().split(
+            follower_rate_start_str
+        )[1].split(
+            follower_rate_end_str
+        )[0])
+
+    if follower_rate and followee_rate:
+        follower_to_followee = round(follower_rate / followee_rate, 4)
+
+    return {
+        "vk_id": vk_user_id,
+        "created_at": created_at,
+        "timezone": timezone,
+        "followee_rate": followee_rate,
+        "follower_rate": follower_rate,
+        "follower_to_followee": follower_to_followee
+    }
+
+
+def get_activity_count(
+        vk_user_id: int,
+        db_client: pymongo.MongoClient
+) -> int:
+    return db_client.dataVKnodup.comments.count_documents({
+        'from_id': vk_user_id
+    })
+
+
+def get_friends_graph(
+        users,
+        api,
+        db_client
+):
+    error_count = 0
+    vk_ids = set([user['vk_id'] for user in users])
+    graph = set()
+    for user in users:
+        try:
+            if 'friends' not in user:
+                time.sleep(0.3)
+                friends = api.friends.get(
+                    user_id=user['vk_id'],
+                    v='5.131'
+                )['items']
+            # If there is a number stored in the friends field,
+            # this number indicates an error:
+            elif isinstance(user['friends'], int):
+                friends = set()
+            else:
+                friends = user['friends']
+            inters = set(friends).intersection(vk_ids)
+            if inters:
+                db_client.dataVKnodup.users.update_one(
+                    {'vk_id': user['vk_id']},
+                    {'$set': {'friends': friends}}
+                )
+                for i in inters:
+                    graph.add((user['vk_id'], i))
+        except vk.exceptions.VkAPIError as e:
+            db_client.dataVKnodup.users.update_one(
+                {'vk_id': user['vk_id']},
+                {'$set': {'friends': e.code}}
+            )
+            error_count += 1
+            pass
+    print('Total users: ', len(users))
+    print('Total errors: ', error_count)
+    return graph
+
