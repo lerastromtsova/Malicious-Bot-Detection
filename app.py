@@ -6,7 +6,7 @@ from flask import Flask, render_template, request  # type: ignore
 from flask import session, redirect  # type: ignore
 from flask_babel import Babel  # type: ignore
 
-from database_adapter import get_user_data, get_comments_by_user
+from database_adapter import get_user_data, get_comments_by_user, get_users_by_name
 from models import bot_check_results
 
 app = Flask(__name__)
@@ -23,14 +23,18 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tls=True,
                                 tlsAllowInvalidCertificates=True)
 
+USERS_LIMIT = 10
 
 @app.route("/search")
 def index():
     if request.args:
-        user_id = request.args.get('user')
-        users = get_user_data(db_client, user_id)
-        comments = get_comments_by_user(db_client, user_id)
-        return render_template('index.html', users=users, comments=comments)
+        user_data = request.args.get('user')
+        if user_data.isdigit():
+            users = get_user_data(db_client, user_data)
+        else:
+            users = get_users_by_name(db_client, user_data, users_limit=USERS_LIMIT)
+        # comments = get_comments_by_user(db_client, user_id)
+        return render_template('index.html', users=users, comments=[])
     return render_template('index.html')
 
 

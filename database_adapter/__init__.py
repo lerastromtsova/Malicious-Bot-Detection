@@ -238,7 +238,7 @@ def get_writing_speed(db_client, time_to_sleep=10):
 
 
 def get_user_data(db_client, user_id):
-    users = db_client.dataVKnodup.users.find({'vk_id': int(user_id)})
+    users = db_client.dataVKnodup.users.find({'vk_id': user_id})
     return list(users)
 
 
@@ -251,3 +251,21 @@ def get_comments_by_user(db_client, user_id):
         if len(split) >= 2:
             c['text'] = ' '.join(split[1:])
     return comments
+
+
+def get_users_by_name(db_client, user_data, users_limit=10):
+    to_search = user_data.split()
+    if len(to_search) == 2:
+        users = list(db_client.dataVKnodup.users.find(
+            {'first_name': {'$regex': to_search[0], '$options': 'i'},
+             'last_name': {'$regex': to_search[1], '$options': 'i'}}
+        ).limit(users_limit))
+    else:
+        users_by_lname = db_client.dataVKnodup.users.find(
+            {'last_name': {'$regex': to_search[0], '$options': 'i'}}
+        ).limit(users_limit)
+        users_by_fname = db_client.dataVKnodup.users.find(
+            {'first_name': {'$regex': to_search[0], '$options': 'i'}}
+        ).limit(users_limit)
+        users = list(users_by_lname) + list(users_by_fname)
+    return users
