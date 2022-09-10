@@ -74,6 +74,7 @@ def get_locale():
 app.config['LANGUAGES'] = {
     'en': '🇬🇧 English',
     'ru': '🇷🇺 Русский',
+    'uk': '🇺🇦 Ukrainian'
 }
 
 app.secret_key = config['WEB_SECRET']

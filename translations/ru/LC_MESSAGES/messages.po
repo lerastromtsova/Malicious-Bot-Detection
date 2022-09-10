@@ -60,3 +60,16 @@ msgstr "Вот что мы нашли:"
 #: templates/methods.html:45
 msgid "Our bot detection method is backed up by scientific research"
 msgstr "Наш метод обнаружения ботов основан на научных исследованиях"
+
+#: templates/bot-check-results.html:46
+msgid "Our results"
+msgstr "Результаты"
+
+#: templates/bot-check-results.html:51
+msgid "This user is likely a bot"
+msgstr "Скорее всего, этот пользователь - бот"
+
+#: templates/bot-check-results.html:58
+msgid "This user does not appear to be a bot"
+msgstr "Скорее всего, этот пользователь - не бот"
+
