@@ -47,8 +47,8 @@ msgid "This user does not appear to be a bot"
 msgstr "Швидше за все, цей користувач – не бот"
 
 #: templates/contact.html:45
-msgid "Contact us if you have any questions or comments"
-msgstr "Зв'яжіться з нами, якщо у вас є запитання чи пропозиції"
+msgid "Contact me if you have any questions or comments"
+msgstr "Зв'яжіться зi мною, якщо у вас є запитання чи пропозиції"
 
 #: templates/index.html:45
 msgid "Easily check if a VK user is a bot or real human"

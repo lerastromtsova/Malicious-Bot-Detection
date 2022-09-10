@@ -20,8 +20,8 @@ msgstr ""
 "Generated-By: Babel 2.9.0\n"
 
 #: templates/contact.html:45
-msgid "Contact us if you have any questions or comments"
-msgstr "Свяжитесь с нами, если у вас есть вопросы или предложения"
+msgid "Contact me if you have any questions or comments"
+msgstr "Свяжитесь со мной, если у вас есть вопросы или предложения"
 
 #: templates/index.html:19
 msgid "Methods"
