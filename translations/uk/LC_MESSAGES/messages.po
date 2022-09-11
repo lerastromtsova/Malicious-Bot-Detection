@@ -1,0 +1,78 @@
+# Ukrainian translations for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-08-30 15:23+0200\n"
+"PO-Revision-Date: 2022-09-10 17:35+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk\n"
+"Language-Team: uk <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: templates/bot-check-results.html:20 templates/contact.html:19
+#: templates/index.html:19 templates/methods.html:19
+msgid "Methods"
+msgstr "Методи"
+
+#: templates/bot-check-results.html:23 templates/contact.html:22
+#: templates/index.html:22 templates/methods.html:22
+msgid "Contact"
+msgstr "Контакти"
+
+#: templates/bot-check-results.html:27 templates/contact.html:26
+#: templates/index.html:26 templates/methods.html:26
+msgid "Language"
+msgstr "Мова"
+
+#: templates/bot-check-results.html:46
+msgid "Our results"
+msgstr "Результати"
+
+#: templates/bot-check-results.html:51
+msgid "This user is likely a bot"
+msgstr "Швидше за все, цей користувач - бот"
+
+#: templates/bot-check-results.html:58
+msgid "This user does not appear to be a bot"
+msgstr "Швидше за все, цей користувач – не бот"
+
+#: templates/contact.html:45
+msgid "Contact me if you have any questions or comments"
+msgstr "Зв'яжіться зi мною, якщо у вас є запитання чи пропозиції"
+
+#: templates/index.html:45
+msgid "Easily check if a VK user is a bot or real human"
+msgstr "Перевірте, чи користувач ВК ботом"
+
+#: templates/index.html:50
+msgid ""
+"Our scientific method helps you understand when your opinion is being "
+"manipulated."
+msgstr "Наш науковий метод дозволить визначити коли Вашою думкою намагаються маніпулювати."
+
+#: templates/index.html:59
+msgid "Paste a user ID (numbers only)"
+msgstr "Вставте ID користувача (тільки цифри)"
+
+#: templates/index.html:64
+msgid "SEARCH"
+msgstr "ПОШУК"
+
+#: templates/index.html:70
+msgid "Here is what we found:"
+msgstr "Ось що ми знайшли:"
+
+#: templates/methods.html:45
+msgid "Our bot detection method is backed up by scientific research"
+msgstr "Наш метод виявлення ботів ґрунтується на наукових дослідженнях"
+

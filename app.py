@@ -6,7 +6,7 @@ from flask import Flask, render_template, request  # type: ignore
 from flask import session, redirect  # type: ignore
 from flask_babel import Babel  # type: ignore
 
-from database_adapter import get_user_data, get_comments_by_user
+from database_adapter import get_user_by_id, get_users_by_name
 from models import bot_check_results
 
 app = Flask(__name__)
@@ -23,6 +23,8 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tls=True,
                                 tlsAllowInvalidCertificates=True)
 
+USERS_LIMIT = 10
+
 
 @app.route("/")
 def index():
@@ -32,22 +34,29 @@ def index():
 @app.route("/search")
 def search():
     if request.args:
-        user_id = request.args.get('user')
-        users = get_user_data(db_client, user_id)
-        comments = get_comments_by_user(db_client, user_id)
-        return render_template('index.html', users=users, comments=comments)
+        query = request.args.get('user')
+        if query.isdigit():
+            users = get_user_by_id(db_client, query)
+        else:
+            users = get_users_by_name(
+                db_client,
+                query,
+                users_limit=USERS_LIMIT
+            )
+        # comments = get_comments_by_user(db_client, user_id)
+        return render_template('index.html', users=users, comments=[])
     return render_template('index.html')
 
 
 @app.route("/is_bot")
 def is_bot():
     if request.args:
-        user_id = request.args.get('user')
-        user = list(get_user_data(db_client, user_id))[0]
+        user_id = int(request.args.get('user'))
+        users = get_user_by_id(db_client, user_id)
         bot_check_result = bot_check_results(user_id)
         return render_template(
             'bot-check-results.html',
-            user=user,
+            user=users[0],
             is_bot=bot_check_result
         )
     return render_template('index.html')
@@ -79,6 +88,7 @@ def get_locale():
 app.config['LANGUAGES'] = {
     'en': '🇬🇧 English',
     'ru': '🇷🇺 Русский',
+    'uk': '🇺🇦 Ukrainian'
 }
 
 app.secret_key = config['WEB_SECRET']
