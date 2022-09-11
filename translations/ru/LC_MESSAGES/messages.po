@@ -72,4 +72,3 @@ msgstr "Скорее всего, этот пользователь - бот"
 #: templates/bot-check-results.html:58
 msgid "This user does not appear to be a bot"
 msgstr "Скорее всего, этот пользователь - не бот"
-

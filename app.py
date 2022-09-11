@@ -26,8 +26,13 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
 USERS_LIMIT = 10
 
 
-@app.route("/search")
+@app.route("/")
 def index():
+    return redirect('search')
+
+
+@app.route("/search")
+def search():
     if request.args:
         user_data = request.args.get('user')
         if user_data.isdigit():
