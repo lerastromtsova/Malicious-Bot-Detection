@@ -78,11 +78,21 @@
                           aria-label="Search"
                           id="searchBar"
                           name="user"
+                          required
                   >
                   <button class="btn btn-dark shadow">{{ gettext('SEARCH') }}</button>
                 </form>
             </div>
         </div>
+      {% endif %}
+      {% if error == 'Not Found' %}
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="alert alert-danger" role="alert">
+            {{ gettext('Could not find the user you specified. Try refining your search query.') }}
+          </div>
+        </div>
+      </div>
       {% endif %}
       {% if users %}
       <div class="row mt-3">
