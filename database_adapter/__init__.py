@@ -237,7 +237,7 @@ def get_writing_speed(db_client, time_to_sleep=10):
     return (end_count - start_count) / time_to_sleep
 
 
-def get_user_data(db_client, user_id):
+def get_user_by_id(db_client, user_id):
     users = db_client.dataVKnodup.users.find({'vk_id': int(user_id)})
     return list(users)
 
