@@ -41,39 +41,60 @@
       </div>
     </nav>
     <div class="container mt-5 w-50">
-      <div class="row mt-3">
+      <div class="row mt-5">
         <div class="col-12">
-            <h3>{{ gettext('Our results') }}</h3>
-            {% if is_bot %}
-              <h5>
-                <span class="badge bg-danger">
-                  <i class="bi bi-exclamation-triangle-fill"></i>
-                  This user is likely a bot
-                </span>
-              </h5>
-            {% else %}
-              <h5>
-                <span class="badge bg-success">
-                  <i class="bi bi-check-circle-fill"></i>
-                  This user does not appear to be a bot
-                </span>
-              </h5>
+            <h3>{{ gettext('Check if a VK user is a bot or real human in three simple steps') }}</h3>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-12">
+          <div class="progress">
+            {% if user %}
+              <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="3" aria-valuemin="0" aria-valuemax="3"></div>
             {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-12">
+          {% if user %}
+          <h4>{{ gettext('Step 3') }}</h4>
+          <p>{{ gettext('Get the result!') }}</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-12">
+          {% if is_bot %}
+            <h5>
+              <span class="badge bg-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                This user is likely a bot
+              </span>
+            </h5>
+          {% else %}
+            <h5>
+              <span class="badge bg-success">
+                <i class="bi bi-check-circle-fill"></i>
+                This user does not appear to be a bot
+              </span>
+            </h5>
+          {% endif %}
         </div>
       </div>
       {% if user %}
       <div class="row mt-3">
-        <div class="col-6">
+        <div class="col-12">
           <div class="card">
             <div class="card-body">
               <div class="row">
-                <div class="col-4">
+                <div class="col-2">
                   <img src="{{user.photo_100}}" style="border-radius: 8px"/>
                 </div>
                 <div class="col-8 align-items-center">
                   <h5 class="card-title">{{user.first_name}} {{user.last_name}}</h5>
-                  {% if user.deactivated %}
-                    <p class="card-text"><span class="badge bg-danger">{{user.deactivated}}</span></p>
+                  {% if user.deactivated != "active" %}
+                    <p class="card-text"><span class="badge bg-danger text-capitalize">{{user.deactivated}}</span></p>
                   {% else %}
                     <p class="card-text"><span class="badge bg-success">Active</span></p>
                   {% endif %}

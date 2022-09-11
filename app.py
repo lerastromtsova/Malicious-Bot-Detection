@@ -25,6 +25,7 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
 
 USERS_LIMIT = 10
 
+
 @app.route("/search")
 def index():
     if request.args:
@@ -42,11 +43,11 @@ def index():
 def is_bot():
     if request.args:
         user_id = request.args.get('user')
-        user = list(get_user_data(db_client, user_id))[0]
+        users = get_user_data(db_client, user_id)
         bot_check_result = bot_check_results(user_id)
         return render_template(
             'bot-check-results.html',
-            user=user,
+            user=users[0],
             is_bot=bot_check_result
         )
     return render_template('index.html')
