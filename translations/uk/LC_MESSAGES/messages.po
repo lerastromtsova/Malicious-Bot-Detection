@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-11 13:33+0200\n"
+"POT-Creation-Date: 2022-09-11 18:35+0200\n"
 "PO-Revision-Date: 2022-09-10 17:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk\n"
@@ -60,7 +60,9 @@ msgid ""
 "Choose a user from the list below.\n"
 "            If you have not found the person you are looking for, try "
 "refining your search."
-msgstr "Виберіть користувача зі списку нижче. Якщо ви не знайшли людину, яку шукаєте, спробуйте уточнити пошук."
+msgstr ""
+"Виберіть користувача зі списку нижче. Якщо ви не знайшли людину, яку "
+"шукаєте, спробуйте уточнити пошук."
 
 #: templates/index.html:66
 msgid "Step 1"
@@ -68,15 +70,21 @@ msgstr "Крок 1"
 
 #: templates/index.html:67
 msgid "Enter a user ID or user name in the search box below."
-msgstr "Введіть ідентифікатор користувача або ім’я користувача у вікні пошуку нижче."
+msgstr ""
+"Введіть ідентифікатор користувача або ім’я користувача у вікні пошуку "
+"нижче."
 
 #: templates/index.html:77
 msgid "Paste a user ID or name"
 msgstr "Вставте ідентифікатор користувача або ім’я"
 
-#: templates/index.html:82
+#: templates/index.html:83
 msgid "SEARCH"
 msgstr "ПОШУК"
+
+#: templates/index.html:92
+msgid "Could not find the user you specified. Try refining your search query."
+msgstr "Користувач не знайдений. Спробуйте вказати більш точний пошуковий запит."
 
 #: templates/methods.html:45
 #, fuzzy
