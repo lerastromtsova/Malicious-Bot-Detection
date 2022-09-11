@@ -34,13 +34,13 @@ def index():
 @app.route("/search")
 def search():
     if request.args:
-        user_data = request.args.get('user')
-        if user_data.isdigit():
-            users = get_user_by_id(db_client, user_data)
+        query = request.args.get('user')
+        if query.isdigit():
+            users = get_user_by_id(db_client, query)
         else:
             users = get_users_by_name(
                 db_client,
-                user_data,
+                query,
                 users_limit=USERS_LIMIT
             )
         # comments = get_comments_by_user(db_client, user_id)
@@ -51,7 +51,7 @@ def search():
 @app.route("/is_bot")
 def is_bot():
     if request.args:
-        user_id = request.args.get('user')
+        user_id = int(request.args.get('user'))
         users = get_user_by_id(db_client, user_id)
         bot_check_result = bot_check_results(user_id)
         return render_template(
