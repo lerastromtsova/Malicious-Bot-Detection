@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-12 15:53+0200\n"
+"POT-Creation-Date: 2022-09-12 16:30+0200\n"
 "PO-Revision-Date: 2022-08-29 23:41+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -60,11 +60,11 @@ msgstr "Скорее всего, этот пользователь - не бот
 msgid "Contact me if you have any questions or comments"
 msgstr "Свяжитесь со мной, если у вас есть вопросы или комментарии"
 
-#: templates/contact.html:56
+#: templates/contact.html:57
 msgid "Valeriia Stromtcova"
 msgstr "Валерия Стромцова"
 
-#: templates/contact.html:57
+#: templates/contact.html:58
 msgid "Master's student at the University of Passau and HSE University"
 msgstr "Студентка магистратуры в университете Пассау и НИУ ВШЭ"
 
@@ -101,7 +101,7 @@ msgstr "ПОИСК"
 msgid "Could not find the user you specified. Try refining your search query."
 msgstr "Пользователь не найден. Попробуйте задать более точный поисковый запрос."
 
-#: templates/index.html:119
+#: templates/index.html:124
 msgid "Check"
 msgstr "Проверить"
 
@@ -109,6 +109,78 @@ msgstr "Проверить"
 msgid "Our bot detection method is backed by scientific research"
 msgstr "Наш метод обнаружения ботов основан на научных исследованиях"
 
-#~ msgid "Contact me if you have any questions or comments"
-#~ msgstr "Свяжитесь со мной, если у вас есть вопросы или предложения"
+#: templates/methods.html:51
+msgid "Steps"
+msgstr "Шаги"
 
+#: templates/methods.html:52
+msgid "Our scientific method includes several steps:"
+msgstr "Наш метод включает в себя несколько шагов:"
+
+#: templates/methods.html:54
+msgid ""
+"Retrieve comments related to the Russian-Ukrainian armed conflict of 2022"
+" from VKontakte's most relevant media groups"
+msgstr ""
+"Парсинг комментариев, связанных с российско-украинским вооруженным "
+"конфликтом 2022 года из групп ВКонтакте"
+
+#: templates/methods.html:55
+msgid "Build a graph of users who have been leaving these comments"
+msgstr "Построение сети пользователей, оставивших комментарии"
+
+#: templates/methods.html:56
+msgid "Cluster the users using Louvain community detection algorithm"
+msgstr "Кластеризация сети при помощи алгоритма обнаружения сообществ Louvain"
+
+#: templates/methods.html:57
+msgid ""
+"Calculate characteristics of each cluster and probability of it being a "
+"bot cluster"
+msgstr ""
+"Вычисление характеристик каждого кластера и вероятности того, что в "
+"кластере находятся боты"
+
+#: templates/methods.html:58
+msgid ""
+"Calculate centrality metrics to identify most influential users in "
+"communities"
+msgstr ""
+"Подсчёт метрик центральности для определения наиболее влиятельных "
+"пользователей в кластерах"
+
+#: templates/methods.html:59
+msgid "Conduct sentiment analysis to understand the tone conveyed by a cluster"
+msgstr "Анализ настроений в комментариях"
+
+#: templates/methods.html:60
+msgid "Conduct content analysis to understand the users' ideas and opinions"
+msgstr "Анализ содержания комментариев"
+
+#: templates/methods.html:61
+msgid "Store this data and make it accessible to you"
+msgstr "Сохранение данных и предоставление доступа к ним широкой аудитории"
+
+#: templates/methods.html:67
+msgid "Dataset"
+msgstr "Данные"
+
+#: templates/methods.html:68
+msgid "Currently, we have data about 283 506 users from VKontakte."
+msgstr "Сейчас у нас в базе данных информация о 283 506 пользователях ВКонтакте"
+
+#: templates/methods.html:73
+msgid "Reference"
+msgstr "Литература"
+
+#: templates/methods.html:74
+msgid "The algorithm is based on this scientific paper:"
+msgstr "Наш алгоритм основан на научной статье:"
+
+#: templates/methods.html:78
+msgid "written by"
+msgstr ", которая написана авторами"
+
+#: templates/methods.html:78
+msgid ", and"
+msgstr " и"

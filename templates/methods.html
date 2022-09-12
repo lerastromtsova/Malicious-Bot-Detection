@@ -48,34 +48,34 @@
       </div>
       <div class="row mt-3">
         <div class="col-12">
-          <h5>Steps</h5>
-          Our scientific method includes several steps:
+          <h5>{{ gettext('Steps') }}</h5>
+          {{ gettext('Our scientific method includes several steps:') }}
           <ol>
-            <li>Retrieve comments related to the Russian-Ukrainian armed conflict of 2022 from VKontakte's most relevant media groups</li>
-            <li>Build a graph of users who have been leaving these comments</li>
-            <li>Cluster the users using Louvain community detection algorithm</li>
-            <li>Calculate characteristics of each cluster and probability of it being a bot cluster</li>
-            <li>Calculate centrality metrics to identify most influential users in communities</li>
-            <li>Conduct sentiment analysis to understand the tone conveyed by a cluster</li>
-            <li>Conduct content analysis to understand the users' ideas and opinions</li>
-            <li>Store this data and make it accessible to you</li>
+            <li>{{ gettext("Retrieve comments related to the Russian-Ukrainian armed conflict of 2022 from VKontakte's most relevant media groups") }}</li>
+            <li>{{ gettext('Build a graph of users who have been leaving these comments') }}</li>
+            <li>{{ gettext('Cluster the users using Louvain community detection algorithm') }}</li>
+            <li>{{ gettext('Calculate characteristics of each cluster and probability of it being a bot cluster') }}</li>
+            <li>{{ gettext('Calculate centrality metrics to identify most influential users in communities') }}</li>
+            <li>{{ gettext('Conduct sentiment analysis to understand the tone conveyed by a cluster') }}</li>
+            <li>{{ gettext("Conduct content analysis to understand the users' ideas and opinions") }}</li>
+            <li>{{ gettext('Store this data and make it accessible to you') }}</li>
           </ol>
         </div>
       </div>
       <div class="row mt-3">
         <div class="col-12">
-          <h5>Dataset</h5>
-          Currently, we have data about 283 506 users from VKontakte.
+          <h5>{{ gettext('Dataset') }}</h5>
+          {{ gettext('Currently, we have data about 283 506 users from VKontakte.') }}
         </div>
       </div>
       <div class="row mt-3">
         <div class="col-12">
-          <h5>Reference</h5>
-          The algorithm is based on this scientific paper:
+          <h5>{{ gettext('Reference') }}</h5>
+          {{ gettext('The algorithm is based on this scientific paper:') }}
           <a href="https://journals.sagepub.com/doi/pdf/10.1177/0894439320908190?casa_token=IHm_5E8yMMQAAAAA:uft_SdcLiVlnlphiQAaMbVM46h0ZqHRt3OXm3-jYDpi9ifXPVd3sbetHmSKTuDG_wotltG1y8w7K">
             Rise of the Machines? Examining the Influence of Social Bots on a Political Discussion Network
           </a>
-          written by Loni Hagen, Stephen Neely, Thomas E. Keller, Ryan Scharf, and Fatima Espinoza Vasquez.
+          {{ gettext('written by') }} Loni Hagen, Stephen Neely, Thomas E. Keller, Ryan Scharf{{ gettext(', and') }} Fatima Espinoza Vasquez.
         </div>
       </div>
     </div>
