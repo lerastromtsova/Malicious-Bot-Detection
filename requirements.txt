@@ -11,3 +11,4 @@ Flask==2.2.2
 Babel==2.10.3
 flask-babel==2.0.0
 gunicorn==20.1.0
+iuliia==0.11.5
