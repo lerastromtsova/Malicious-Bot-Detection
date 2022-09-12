@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-12 15:16+0200\n"
+"POT-Creation-Date: 2022-09-12 15:25+0200\n"
 "PO-Revision-Date: 2022-09-10 17:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk\n"
@@ -36,7 +36,9 @@ msgstr "Мова"
 
 #: templates/bot-check-results.html:46 templates/index.html:45
 msgid "Check if a VK user is a bot or real human in three simple steps"
-msgstr "Перевірте, чи є користувач ВК ботом чи справжньою людиною за три прості кроки"
+msgstr ""
+"Перевірте, чи є користувач ВК ботом чи справжньою людиною за три прості "
+"кроки"
 
 #: templates/bot-check-results.html:61
 msgid "Step 3"
@@ -57,6 +59,14 @@ msgstr "Швидше за все, цей користувач – не бот"
 #: templates/contact.html:45
 msgid "Contact me if you have any questions or comments"
 msgstr "Зв'яжіться зi мною, якщо у вас є запитання чи пропозиції"
+
+#: templates/contact.html:55
+msgid "Valeriia Stromtcova"
+msgstr "Валерія Стромцова"
+
+#: templates/contact.html:56
+msgid "Master's student at the University of Passau and HSE University"
+msgstr "Магістр Університету Пассау та Університету ВШЕ"
 
 #: templates/index.html:62
 msgid "Step 2"
@@ -96,3 +106,7 @@ msgstr "Користувач не знайдений. Спробуйте вка�
 #: templates/methods.html:45
 msgid "Our bot detection method is backed by scientific research"
 msgstr "Наш метод виявлення ботів ґрунтується на наукових дослідженнях"
+
+#~ msgid "Contact me if you have any questions or comments"
+#~ msgstr ""
+
