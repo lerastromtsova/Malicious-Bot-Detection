@@ -1,25 +1,3 @@
-"""
-Steps:
-1. Collect user features - DONE:
-    - FOAF XML ya:created
-    - FOAF XML ya:created timezone
-    - FOAF XML ya:subscribersCount
-    - FOAF XML ya:subscribedToCount
-    - comment rate: number of all comments by user in db
-    - deactivated - not used as a feature but used in
-      cluster analysis later on. Already present in the db.
-2. Write user similarity function - DONE
-   Different for:
-    - nominal data type
-    - real data type
-3. Construct multi-attributed graph Gm
-4. Convert to similarity graph Gs using (2)
-5. Construct similarity matrix from Gs - DONE
-6. Apply Markov clustering to the matrix - DONE:
-    - expansion
-    - inflation
-7. Analyse each cluster one by one
-"""
 import pymongo  # type: ignore
 from community import community_louvain
 
@@ -222,6 +200,10 @@ def get_clusters(db_client, api):
     return clusters
 
 
+"""Code for the 5-step approach"""
+
+
+# Step 1: Get graph and save it to a file
 def get_clustered_graph(db_client, api):
     users = list(db_client.dataVKnodup.users.find(
         {},
@@ -241,3 +223,55 @@ def get_clustered_graph(db_client, api):
     with open('outputs/graph_friends.json', 'w') as f:
         json.dump(data, f)
 
+
+# Step 2: See which users got into which graph
+def get_user_characteristics(
+        db_client,
+        path_to_graph: str = 'outputs/graph_friends.json'
+):
+    with open(path_to_graph, 'r') as f:
+        graph = json.load(f)
+    G = nx.node_link_graph(graph)
+    deactivated_values = dict.fromkeys(G.nodes)
+    verified_values = dict.fromkeys(G.nodes)
+    friends_values = dict.fromkeys(G.nodes)
+    all_friends = set()
+    with open('friends.json', 'r') as f:
+        friends = json.load(f)
+    for k, v in friends.items():
+        all_friends.add(int(k))
+        if v:
+            for i in v:
+                all_friends.add(i)
+    for i, user in enumerate(G.nodes):
+        record = db_client.dataVKnodup.users.find({'vk_id': user}, {
+            'deactivated': 1,
+            'verified': 1,
+            '_id': 0
+        })[0]
+        deactivated_values[user] = record['deactivated']
+        if 'verified' in record:
+            verified_values[user] = record['verified']
+        else:
+            verified_values[user] = 0
+        friends_values[user] = 1 if user in all_friends else 0
+        if i % 1000 == 0:
+            print(i)
+    nx.set_node_attributes(G, deactivated_values, 'deactivated')
+    nx.set_node_attributes(G, verified_values, 'verified')
+    nx.set_node_attributes(G, friends_values, 'is_friend')
+    data = nx.node_link_data(G)
+    with open('outputs/graph_friends_enriched.json', 'w') as f:
+        json.dump(data, f)
+
+
+def get_centrality_metrics(
+        path_to_graph: str = 'outputs/graph_friends_enriched.json'
+) -> Tuple:
+    with open(path_to_graph, 'r') as f:
+        graph = json.load(f)
+    G = nx.node_link_graph(graph)
+    degree_centrality = nx.degree_centrality(G)
+    eigenvector_centrality = nx.eigenvector_centrality(G)
+    clustering_coefficient = nx.clustering(G)
+    return degree_centrality, eigenvector_centrality, clustering_coefficient

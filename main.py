@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from datetime import datetime
 
-from models import get_clustered_graph
+from models import get_clustered_graph, get_user_characteristics, get_centrality_metrics
 
 config = dotenv_values(".env")
 if not config:
@@ -35,5 +35,10 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
 if __name__ == '__main__':
     start_time = datetime.now()
     print('Started at: ', start_time)
-    get_clustered_graph(db_client, api)
+    # Step 1: Cluster the users and write clusters to a file
+    # get_clustered_graph(db_client, api)
+    # Step 2: Get bots/real users/undefined users
+    # get_user_characteristics(db_client)
+    # Step 3: Calculate centrality metrics
+    cent_metrics = get_centrality_metrics()
     print('Finished in: ', datetime.now() - start_time)
