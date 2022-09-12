@@ -9,7 +9,7 @@ from flask_babel import Babel  # type: ignore
 from database_adapter import get_user_by_id, get_users_by_name
 from models import bot_check_results
 
-import iuliia
+import iuliia  # type: ignore
 
 app = Flask(__name__)
 babel = Babel(app)
