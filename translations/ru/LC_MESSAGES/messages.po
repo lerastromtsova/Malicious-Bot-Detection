@@ -7,68 +7,180 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-08-29 23:40+0200\n"
+"POT-Creation-Date: 2022-09-12 16:30+0200\n"
 "PO-Revision-Date: 2022-08-29 23:41+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
 "Language-Team: ru <LL@li.org>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.0\n"
+"Generated-By: Babel 2.10.3\n"
 
-#: templates/contact.html:45
-msgid "Contact me if you have any questions or comments"
-msgstr "Свяжитесь со мной, если у вас есть вопросы или предложения"
-
-#: templates/index.html:19
+#: templates/bot-check-results.html:21 templates/contact.html:20
+#: templates/index.html:20 templates/methods.html:20
 msgid "Methods"
 msgstr "Методы"
 
-#: templates/index.html:22
+#: templates/bot-check-results.html:24 templates/contact.html:23
+#: templates/index.html:23 templates/methods.html:23
 msgid "Contact"
 msgstr "Контакты"
 
-#: templates/index.html:26
+#: templates/bot-check-results.html:28 templates/contact.html:27
+#: templates/index.html:27 templates/methods.html:27
 msgid "Language"
 msgstr "Язык"
 
-#: templates/index.html:40
-msgid "Easily check if a VK user is a bot or real human"
-msgstr "Проверьте, является ли пользователь ВК ботом"
+#: templates/bot-check-results.html:47 templates/index.html:46
+msgid "Check if a VK user is a bot or real human in three simple steps"
+msgstr ""
+"Проверьте, является ли пользователь ВК ботом или настоящим человеком, за "
+"три простых шага"
 
-#: templates/index.html:45
-msgid ""
-"Our scientific method helps you understand when your opinion is being "
-"manipulated."
-msgstr "Наш научный метод позволит определить, когда Вашим мнением пытаются манипулировать."
+#: templates/bot-check-results.html:62
+msgid "Step 3"
+msgstr "Шаг 3"
 
-#: templates/index.html:54
-msgid "Paste a user ID (numbers only)"
-msgstr "Вставьте ID пользователя (только цифры)"
+#: templates/bot-check-results.html:63
+msgid "Get the result!"
+msgstr "Готово!"
 
-#: templates/index.html:59
-msgid "SEARCH"
-msgstr "ПОИСК"
-
-#: templates/index.html:65
-msgid "Here is what we found:"
-msgstr "Вот что мы нашли:"
-
-#: templates/methods.html:45
-msgid "Our bot detection method is backed up by scientific research"
-msgstr "Наш метод обнаружения ботов основан на научных исследованиях"
-
-#: templates/bot-check-results.html:46
-msgid "Our results"
-msgstr "Результаты"
-
-#: templates/bot-check-results.html:51
+#: templates/bot-check-results.html:73
 msgid "This user is likely a bot"
 msgstr "Скорее всего, этот пользователь - бот"
 
-#: templates/bot-check-results.html:58
+#: templates/bot-check-results.html:80
 msgid "This user does not appear to be a bot"
 msgstr "Скорее всего, этот пользователь - не бот"
+
+#: templates/contact.html:46
+msgid "Contact me if you have any questions or comments"
+msgstr "Свяжитесь со мной, если у вас есть вопросы или комментарии"
+
+#: templates/contact.html:57
+msgid "Valeriia Stromtcova"
+msgstr "Валерия Стромцова"
+
+#: templates/contact.html:58
+msgid "Master's student at the University of Passau and HSE University"
+msgstr "Студентка магистратуры в университете Пассау и НИУ ВШЭ"
+
+#: templates/index.html:63
+msgid "Step 2"
+msgstr "Шаг 2"
+
+#: templates/index.html:64
+msgid ""
+"Choose a user from the list below.\n"
+"            If you have not found the person you are looking for, try "
+"refining your search."
+msgstr ""
+"Выберите пользователя из списка ниже. Если вы не нашли того, кого искали,"
+" попробуйте уточнить поисковый запрос."
+
+#: templates/index.html:67
+msgid "Step 1"
+msgstr "Шаг 1"
+
+#: templates/index.html:68
+msgid "Enter a user ID or user name in the search box below."
+msgstr "Введите ID или имя пользователя в поисковой строке ниже."
+
+#: templates/index.html:78
+msgid "Paste a user ID or name"
+msgstr "Вставьте ID или имя пользователя"
+
+#: templates/index.html:84
+msgid "SEARCH"
+msgstr "ПОИСК"
+
+#: templates/index.html:93
+msgid "Could not find the user you specified. Try refining your search query."
+msgstr "Пользователь не найден. Попробуйте задать более точный поисковый запрос."
+
+#: templates/index.html:124
+msgid "Check"
+msgstr "Проверить"
+
+#: templates/methods.html:46
+msgid "Our bot detection method is backed by scientific research"
+msgstr "Наш метод обнаружения ботов основан на научных исследованиях"
+
+#: templates/methods.html:51
+msgid "Steps"
+msgstr "Шаги"
+
+#: templates/methods.html:52
+msgid "Our scientific method includes several steps:"
+msgstr "Наш метод включает в себя несколько шагов:"
+
+#: templates/methods.html:54
+msgid ""
+"Retrieve comments related to the Russian-Ukrainian armed conflict of 2022"
+" from VKontakte's most relevant media groups"
+msgstr ""
+"Парсинг комментариев, связанных с российско-украинским вооруженным "
+"конфликтом 2022 года из групп ВКонтакте"
+
+#: templates/methods.html:55
+msgid "Build a graph of users who have been leaving these comments"
+msgstr "Построение сети пользователей, оставивших комментарии"
+
+#: templates/methods.html:56
+msgid "Cluster the users using Louvain community detection algorithm"
+msgstr "Кластеризация сети при помощи алгоритма обнаружения сообществ Louvain"
+
+#: templates/methods.html:57
+msgid ""
+"Calculate characteristics of each cluster and probability of it being a "
+"bot cluster"
+msgstr ""
+"Вычисление характеристик каждого кластера и вероятности того, что в "
+"кластере находятся боты"
+
+#: templates/methods.html:58
+msgid ""
+"Calculate centrality metrics to identify most influential users in "
+"communities"
+msgstr ""
+"Подсчёт метрик центральности для определения наиболее влиятельных "
+"пользователей в кластерах"
+
+#: templates/methods.html:59
+msgid "Conduct sentiment analysis to understand the tone conveyed by a cluster"
+msgstr "Анализ настроений в комментариях"
+
+#: templates/methods.html:60
+msgid "Conduct content analysis to understand the users' ideas and opinions"
+msgstr "Анализ содержания комментариев"
+
+#: templates/methods.html:61
+msgid "Store this data and make it accessible to you"
+msgstr "Сохранение данных и предоставление доступа к ним широкой аудитории"
+
+#: templates/methods.html:67
+msgid "Dataset"
+msgstr "Данные"
+
+#: templates/methods.html:68
+msgid "Currently, we have data about 283 506 users from VKontakte."
+msgstr "Сейчас у нас в базе данных информация о 283 506 пользователях ВКонтакте"
+
+#: templates/methods.html:73
+msgid "Reference"
+msgstr "Литература"
+
+#: templates/methods.html:74
+msgid "The algorithm is based on this scientific paper:"
+msgstr "Наш алгоритм основан на научной статье:"
+
+#: templates/methods.html:78
+msgid "written by"
+msgstr ", которая написана авторами"
+
+#: templates/methods.html:78
+msgid ", and"
+msgstr " и"

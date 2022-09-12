@@ -9,6 +9,8 @@ from flask_babel import Babel  # type: ignore
 from database_adapter import get_user_by_id, get_users_by_name
 from models import bot_check_results
 
+import iuliia  # type: ignore
+
 app = Flask(__name__)
 babel = Babel(app)
 
@@ -38,13 +40,16 @@ def search():
         if query.isdigit():
             users = get_user_by_id(db_client, query)
         else:
+            query = iuliia.translate(query, schema=iuliia.WIKIPEDIA)
             users = get_users_by_name(
                 db_client,
                 query,
                 users_limit=USERS_LIMIT
             )
-        # comments = get_comments_by_user(db_client, user_id)
-        return render_template('index.html', users=users, comments=[])
+        if users:
+            # comments = get_comments_by_user(db_client, user_id)
+            return render_template('index.html', users=users, comments=[])
+        return render_template('index.html', error='Not Found')
     return render_template('index.html')
 
 

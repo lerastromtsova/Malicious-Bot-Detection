@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-08-30 15:23+0200\n"
+"POT-Creation-Date: 2022-09-12 16:30+0200\n"
 "PO-Revision-Date: 2022-09-10 17:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk\n"
@@ -19,60 +19,164 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: templates/bot-check-results.html:20 templates/contact.html:19
-#: templates/index.html:19 templates/methods.html:19
+#: templates/bot-check-results.html:21 templates/contact.html:20
+#: templates/index.html:20 templates/methods.html:20
 msgid "Methods"
 msgstr "Методи"
 
-#: templates/bot-check-results.html:23 templates/contact.html:22
-#: templates/index.html:22 templates/methods.html:22
+#: templates/bot-check-results.html:24 templates/contact.html:23
+#: templates/index.html:23 templates/methods.html:23
 msgid "Contact"
 msgstr "Контакти"
 
-#: templates/bot-check-results.html:27 templates/contact.html:26
-#: templates/index.html:26 templates/methods.html:26
+#: templates/bot-check-results.html:28 templates/contact.html:27
+#: templates/index.html:27 templates/methods.html:27
 msgid "Language"
 msgstr "Мова"
 
-#: templates/bot-check-results.html:46
-msgid "Our results"
-msgstr "Результати"
+#: templates/bot-check-results.html:47 templates/index.html:46
+msgid "Check if a VK user is a bot or real human in three simple steps"
+msgstr ""
+"Перевірте, чи є користувач ВК ботом чи справжньою людиною за три прості "
+"кроки"
 
-#: templates/bot-check-results.html:51
+#: templates/bot-check-results.html:62
+msgid "Step 3"
+msgstr "Крок 3"
+
+#: templates/bot-check-results.html:63
+msgid "Get the result!"
+msgstr "Отримайте результат!"
+
+#: templates/bot-check-results.html:73
 msgid "This user is likely a bot"
 msgstr "Швидше за все, цей користувач - бот"
 
-#: templates/bot-check-results.html:58
+#: templates/bot-check-results.html:80
 msgid "This user does not appear to be a bot"
 msgstr "Швидше за все, цей користувач – не бот"
 
-#: templates/contact.html:45
+#: templates/contact.html:46
 msgid "Contact me if you have any questions or comments"
 msgstr "Зв'яжіться зi мною, якщо у вас є запитання чи пропозиції"
 
-#: templates/index.html:45
-msgid "Easily check if a VK user is a bot or real human"
-msgstr "Перевірте, чи користувач ВК ботом"
+#: templates/contact.html:57
+msgid "Valeriia Stromtcova"
+msgstr "Валерія Стромцова"
 
-#: templates/index.html:50
-msgid ""
-"Our scientific method helps you understand when your opinion is being "
-"manipulated."
-msgstr "Наш науковий метод дозволить визначити коли Вашою думкою намагаються маніпулювати."
+#: templates/contact.html:58
+msgid "Master's student at the University of Passau and HSE University"
+msgstr "Магістр Університету Пассау та Університету ВШЕ"
 
-#: templates/index.html:59
-msgid "Paste a user ID (numbers only)"
-msgstr "Вставте ID користувача (тільки цифри)"
+#: templates/index.html:63
+msgid "Step 2"
+msgstr "Крок 2"
 
 #: templates/index.html:64
+msgid ""
+"Choose a user from the list below.\n"
+"            If you have not found the person you are looking for, try "
+"refining your search."
+msgstr ""
+"Виберіть користувача зі списку нижче. Якщо ви не знайшли людину, яку "
+"шукаєте, спробуйте уточнити пошук."
+
+#: templates/index.html:67
+msgid "Step 1"
+msgstr "Крок 1"
+
+#: templates/index.html:68
+msgid "Enter a user ID or user name in the search box below."
+msgstr ""
+"Введіть ідентифікатор користувача або ім’я користувача у вікні пошуку "
+"нижче."
+
+#: templates/index.html:78
+msgid "Paste a user ID or name"
+msgstr "Вставте ідентифікатор користувача або ім’я"
+
+#: templates/index.html:84
 msgid "SEARCH"
 msgstr "ПОШУК"
 
-#: templates/index.html:70
-msgid "Here is what we found:"
-msgstr "Ось що ми знайшли:"
+#: templates/index.html:93
+msgid "Could not find the user you specified. Try refining your search query."
+msgstr "Користувач не знайдений. Спробуйте вказати більш точний пошуковий запит."
 
-#: templates/methods.html:45
-msgid "Our bot detection method is backed up by scientific research"
+#: templates/index.html:124
+msgid "Check"
+msgstr "Перевірити"
+
+#: templates/methods.html:46
+msgid "Our bot detection method is backed by scientific research"
 msgstr "Наш метод виявлення ботів ґрунтується на наукових дослідженнях"
 
+#: templates/methods.html:51
+msgid "Steps"
+msgstr "Кроки"
+
+#: templates/methods.html:52
+msgid "Our scientific method includes several steps:"
+msgstr "Наш метод включає кілька кроків:"
+
+#: templates/methods.html:54
+msgid ""
+"Retrieve comments related to the Russian-Ukrainian armed conflict of 2022"
+" from VKontakte's most relevant media groups"
+msgstr "Парсинг коментарів, пов'язаних із російсько-українським збройним конфліктом 2022 року з груп ВКонтакте"
+
+#: templates/methods.html:55
+msgid "Build a graph of users who have been leaving these comments"
+msgstr "Побудова мережі користувачів, котрі залишили коментарі"
+
+#: templates/methods.html:56
+msgid "Cluster the users using Louvain community detection algorithm"
+msgstr "Кластеризація мережі за допомогою алгоритму виявлення спільнот Louvain"
+
+#: templates/methods.html:57
+msgid ""
+"Calculate characteristics of each cluster and probability of it being a "
+"bot cluster"
+msgstr "Обчислення характеристик кожного кластера та ймовірності того, що в кластері знаходяться боти"
+
+#: templates/methods.html:58
+msgid ""
+"Calculate centrality metrics to identify most influential users in "
+"communities"
+msgstr "Підрахунок метрик центральності для визначення найвпливовіших користувачів у кластерах"
+
+#: templates/methods.html:59
+msgid "Conduct sentiment analysis to understand the tone conveyed by a cluster"
+msgstr "Аналіз настроїв у коментарях"
+
+#: templates/methods.html:60
+msgid "Conduct content analysis to understand the users' ideas and opinions"
+msgstr "Аналіз змісту коментарів"
+
+#: templates/methods.html:61
+msgid "Store this data and make it accessible to you"
+msgstr "Збереження даних та надання доступу до них широкій аудиторії"
+
+#: templates/methods.html:67
+msgid "Dataset"
+msgstr "Дані"
+
+#: templates/methods.html:68
+msgid "Currently, we have data about 283 506 users from VKontakte."
+msgstr "Зараз у нас в базі даних інформація про 283 506 користувачів ВКонтакте"
+
+#: templates/methods.html:73
+msgid "Reference"
+msgstr "Література"
+
+#: templates/methods.html:74
+msgid "The algorithm is based on this scientific paper:"
+msgstr "Наш алгоритм ґрунтується на науковій статті:"
+
+#: templates/methods.html:78
+msgid "written by"
+msgstr ", яка написана авторами"
+
+#: templates/methods.html:78
+msgid ", and"
+msgstr " i"

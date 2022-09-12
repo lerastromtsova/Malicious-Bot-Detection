@@ -84,8 +84,8 @@ docker run bot-detection
 
 ### Babel
 ```commandline
-pybabel extract -F babel.cfg -o messages.pot templates/index.html
-pybabel init -i messages.pot -d translations -l ru 
+pybabel extract -F babel.cfg -o messages.pot templates/*
+pybabel update -i messages.pot -d translations
 pybabel compile -d translations
 ```
 
