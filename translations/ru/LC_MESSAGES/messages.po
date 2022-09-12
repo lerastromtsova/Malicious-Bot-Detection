@@ -36,7 +36,7 @@ msgstr "Язык"
 
 #: templates/bot-check-results.html:46 templates/index.html:45
 msgid "Check if a VK user is a bot or real human in three simple steps"
-msgstr "Проверьте, является ли пользователь ВК ботом"
+msgstr "Проверьте, является ли пользователь ВК ботом или настоящим человеком, за три простых шага"
 
 #: templates/bot-check-results.html:61
 msgid "Step 3"
