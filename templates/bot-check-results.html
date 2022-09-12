@@ -69,14 +69,14 @@
             <h5>
               <span class="badge bg-danger">
                 <i class="bi bi-exclamation-triangle-fill"></i>
-                This user is likely a bot
+                {{ gettext('This user is likely a bot') }}
               </span>
             </h5>
           {% else %}
             <h5>
               <span class="badge bg-success">
                 <i class="bi bi-check-circle-fill"></i>
-                This user does not appear to be a bot
+                {{ gettext('This user does not appear to be a bot') }}
               </span>
             </h5>
           {% endif %}

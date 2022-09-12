@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-11 18:35+0200\n"
+"POT-Creation-Date: 2022-09-12 15:16+0200\n"
 "PO-Revision-Date: 2022-09-10 17:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk\n"
@@ -35,7 +35,6 @@ msgid "Language"
 msgstr "Мова"
 
 #: templates/bot-check-results.html:46 templates/index.html:45
-#, fuzzy
 msgid "Check if a VK user is a bot or real human in three simple steps"
 msgstr "Перевірте, чи користувач ВК ботом"
 
@@ -46,6 +45,14 @@ msgstr "Крок 3"
 #: templates/bot-check-results.html:62
 msgid "Get the result!"
 msgstr "Отримайте результат!"
+
+#: templates/bot-check-results.html:72
+msgid "This user is likely a bot"
+msgstr "Швидше за все, цей користувач - бот"
+
+#: templates/bot-check-results.html:79
+msgid "This user does not appear to be a bot"
+msgstr "Швидше за все, цей користувач – не бот"
 
 #: templates/contact.html:45
 msgid "Contact me if you have any questions or comments"
@@ -87,30 +94,5 @@ msgid "Could not find the user you specified. Try refining your search query."
 msgstr "Користувач не знайдений. Спробуйте вказати більш точний пошуковий запит."
 
 #: templates/methods.html:45
-#, fuzzy
 msgid "Our bot detection method is backed by scientific research"
 msgstr "Наш метод виявлення ботів ґрунтується на наукових дослідженнях"
-
-#~ msgid "Our results"
-#~ msgstr "Результати"
-
-#~ msgid "This user is likely a bot"
-#~ msgstr "Швидше за все, цей користувач - бот"
-
-#~ msgid "This user does not appear to be a bot"
-#~ msgstr "Швидше за все, цей користувач – не бот"
-
-#~ msgid ""
-#~ "Our scientific method helps you "
-#~ "understand when your opinion is being"
-#~ " manipulated."
-#~ msgstr ""
-#~ "Наш науковий метод дозволить визначити "
-#~ "коли Вашою думкою намагаються маніпулювати."
-
-#~ msgid "Paste a user ID (numbers only)"
-#~ msgstr "Вставте ID користувача (тільки цифри)"
-
-#~ msgid "Here is what we found:"
-#~ msgstr "Ось що ми знайшли:"
-
