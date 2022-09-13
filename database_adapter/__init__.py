@@ -324,3 +324,18 @@ def detect_languages(db_client):
                             {'$set': {'language': 'unknown'}}
                         )
                         pass
+                else:
+                    db_client.dataVKnodup.comments.update_one(
+                        {"_id": comment['_id']},
+                        {'$set': {'language': 'unknown'}}
+                    )
+            else:
+                db_client.dataVKnodup.comments.update_one(
+                    {"_id": comment['_id']},
+                    {'$set': {'language': 'unknown'}}
+                )
+        else:
+            db_client.dataVKnodup.comments.update_one(
+                {"_id": comment['_id']},
+                {'$set': {'language': 'unknown'}}
+            )
