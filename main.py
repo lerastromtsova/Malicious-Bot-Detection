@@ -34,8 +34,8 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tlsAllowInvalidCertificates=True)
 
 if __name__ == '__main__':
-    start_time = datetime.now()
-    print('Started at: ', start_time)
+    # start_time = datetime.now()
+    # print('Started at: ', start_time)
     # Step 1: Cluster the users and write clusters to a file
     # get_clustered_graph(db_client, api)
     # Step 2: Get bots/real users/undefined users
@@ -46,3 +46,7 @@ if __name__ == '__main__':
     while True:
         detect_languages(db_client)
     # print('Finished in: ', datetime.now() - start_time)
+    # with open('outputs/graph_friends_enriched.json', 'r') as f:
+    #     graph = json.load(f)
+    # G = nx.node_link_graph(graph)
+    # nx.write_gexf(G, 'outputs/graph.gexf')
