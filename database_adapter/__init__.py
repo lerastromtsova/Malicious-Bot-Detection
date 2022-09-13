@@ -304,7 +304,7 @@ def remove_emojis(data):
 def detect_languages(db_client):
     comments = db_client.dataVKnodup.comments.aggregate([
         {'$match': {'language': {'$exists': 0}, 'text': {'$exists': 1}}},
-        {'$sample': {'size': 1000}}
+        {'$sample': {'size': 10000}}
     ])
     for comment in comments:
         if comment['text']:
