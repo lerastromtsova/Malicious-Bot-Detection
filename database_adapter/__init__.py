@@ -6,6 +6,7 @@ import pymongo  # type: ignore
 from datetime import datetime
 import os
 from vk import API, exceptions  # type: ignore
+from langdetect import detect, lang_detect_exception  # type: ignore
 
 
 def write_comment_to_db(
@@ -274,3 +275,52 @@ def add_verified_users(db_client, api):
         except exceptions.VkAPIError:
             pass
     db_client.close()
+
+
+def remove_emojis(data):
+    emoj = re.compile("["
+                      u"\U0001F600-\U0001F64F"  # emoticons
+                      u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+                      u"\U0001F680-\U0001F6FF"  # transport & map symbols
+                      u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+                      u"\U00002500-\U00002BEF"  # chinese char
+                      u"\U00002702-\U000027B0"
+                      u"\U00002702-\U000027B0"
+                      u"\U000024C2-\U0001F251"
+                      u"\U0001f926-\U0001f937"
+                      u"\U00010000-\U0010ffff"
+                      u"\u2640-\u2642"
+                      u"\u2600-\u2B55"
+                      u"\u200d"
+                      u"\u23cf"
+                      u"\u23e9"
+                      u"\u231a"
+                      u"\ufe0f"  # dingbats
+                      u"\u3030"
+                      "]+", re.UNICODE)
+    return re.sub(emoj, '', data)
+
+
+def detect_languages(db_client):
+    comments = db_client.dataVKnodup.comments.aggregate([
+        {'$match': {'language': {'$exists': 0}, 'text': {'$exists': 1}}},
+        {'$sample': {'size': 1000}}
+    ])
+    for comment in comments:
+        if comment['text']:
+            text = remove_emojis(comment['text'])
+            if text:
+                text = re.sub('\[.*[a-zA-Z]+.*\], ', '', comment['text'])
+                if text:
+                    try:
+                        language = detect(text)
+                        db_client.dataVKnodup.comments.update_one(
+                            {"_id": comment['_id']},
+                            {'$set': {'language': language}}
+                        )
+                    except lang_detect_exception.LangDetectException:
+                        db_client.dataVKnodup.comments.update_one(
+                            {"_id": comment['_id']},
+                            {'$set': {'language': 'unknown'}}
+                        )
+                        pass

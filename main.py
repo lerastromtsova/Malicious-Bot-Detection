@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from datetime import datetime
 
+from database_adapter import detect_languages
 from models import get_clustered_graph, get_user_characteristics, get_centrality_metrics
 
 config = dotenv_values(".env")
@@ -40,5 +41,8 @@ if __name__ == '__main__':
     # Step 2: Get bots/real users/undefined users
     # get_user_characteristics(db_client)
     # Step 3: Calculate centrality metrics
-    cent_metrics = get_centrality_metrics()
-    print('Finished in: ', datetime.now() - start_time)
+    # cent_metrics = get_centrality_metrics()
+    # Step 4: Translate the comment texts
+    while True:
+        detect_languages(db_client)
+    # print('Finished in: ', datetime.now() - start_time)
