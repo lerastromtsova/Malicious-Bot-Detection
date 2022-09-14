@@ -13,6 +13,7 @@ import pymongo  # type: ignore
 import requests
 import vk.exceptions  # type: ignore
 from vk import API  # type: ignore
+from tqdm import tqdm
 
 
 def parse_comment_ids(
@@ -274,16 +275,22 @@ def get_friends_graph(
         db_client
 ):
     error_count = 0
+    quantity_limit_errors = 0
+    quantity_limit_error_code = 29
     vk_ids = set([user['vk_id'] for user in users])
     graph = set()
-    for user in users:
+    for user in tqdm(users):
         try:
-            if 'friends' not in user:
+            if 'friends' not in user or user['friends'] == quantity_limit_error_code:
                 time.sleep(0.3)
                 friends = api.friends.get(
                     user_id=user['vk_id'],
                     v='5.131'
                 )['items']
+                db_client.dataVKnodup.users.update_one(
+                    {'vk_id': user['vk_id']},
+                    {'$set': {'friends': friends}}
+                )
             # If there is a number stored in the friends field,
             # this number indicates an error:
             elif isinstance(user['friends'], int):
@@ -292,20 +299,19 @@ def get_friends_graph(
                 friends = user['friends']
             inters = set(friends).intersection(vk_ids)
             if inters:
-                db_client.dataVKnodup.users.update_one(
-                    {'vk_id': user['vk_id']},
-                    {'$set': {'friends': friends}}
-                )
                 for i in inters:
                     graph.add((user['vk_id'], i))
         except vk.exceptions.VkAPIError as e:
+            if e.code == quantity_limit_error_code:
+                quantity_limit_errors += 1
             db_client.dataVKnodup.users.update_one(
                 {'vk_id': user['vk_id']},
                 {'$set': {'friends': e.code}}
             )
             error_count += 1
+            if quantity_limit_errors % 100 == 0 and quantity_limit_errors != 0:
+                print(f"Quantity limit reached {quantity_limit_errors} times")
             pass
     print('Total users: ', len(users))
     print('Total errors: ', error_count)
     return graph
-

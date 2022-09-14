@@ -132,5 +132,4 @@ dmypy.json
 .idea/
 
 # Output files
-outputs/graph_friends_enriched.json
-outputs/graph_friends.json
+outputs/*

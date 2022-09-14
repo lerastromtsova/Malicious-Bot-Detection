@@ -1,5 +1,6 @@
 import pymongo  # type: ignore
 from community import community_louvain
+from tqdm import tqdm
 
 from data_parser import get_foaf_multithread, get_friends_graph
 from typing import Tuple
@@ -182,10 +183,14 @@ def get_adj_matrix(similarities, with_weights=False):
 
 def get_clusters(db_client, api):
     start = datetime.now()
-    users = db_client.dataVKnodup.users.find({})
-    edges = get_friends_graph(users, api)
+    users = list(db_client.dataVKnodup.users.find({'friends': 29}))
+    edges = get_friends_graph(users, api, db_client)
     G = nx.Graph()
     G.add_edges_from(edges)
+    print(f"Initial graph size: {len(G.nodes)}")
+    # To remove unconnected users
+    G = G.edge_subgraph(G.edges())
+    print(f"After removal graph size: {len(G.nodes)}")
     partition = community_louvain.best_partition(G)
     clusters = {}
     for k, v in partition.items():
@@ -193,8 +198,8 @@ def get_clusters(db_client, api):
             clusters[v].append(k)
         else:
             clusters[v] = [k]
-    for k, v in clusters.items():
-        db_client.dataVKnodup.clusters.insert_one({str(k): v})
+    # for k, v in clusters.items():
+    #     db_client.dataVKnodup.clusters.insert_one({str(k): v})
     print('Number of clusters: ', len(clusters))
     print('Time elapsed: ', datetime.now() - start)
     return clusters
@@ -206,7 +211,7 @@ def get_clusters(db_client, api):
 # Step 1: Get graph and save it to a file
 def get_clustered_graph(db_client, api):
     users = list(db_client.dataVKnodup.users.find(
-        {},
+        {"friends": {'$type': 'array'}},
         {'vk_id': 1, 'friends': 1, '_id': 0}
     ))
     vk_ids = set([u['vk_id'] for u in users])
@@ -219,7 +224,10 @@ def get_clustered_graph(db_client, api):
                     G.add_node(user, cluster=key)
     edges = get_friends_graph(users, api, db_client)
     G.add_edges_from(edges)
+    # To remove unconnected users
+    G = G.edge_subgraph(G.edges())
     data = nx.node_link_data(G)
+    print(f'Graph size: {len(G.nodes)}')
     with open('outputs/graph_friends.json', 'w') as f:
         json.dump(data, f)
 
@@ -243,7 +251,7 @@ def get_user_characteristics(
         if v:
             for i in v:
                 all_friends.add(i)
-    for i, user in enumerate(G.nodes):
+    for i, user in tqdm(enumerate(G.nodes)):
         record = db_client.dataVKnodup.users.find({'vk_id': user}, {
             'deactivated': 1,
             'verified': 1,
@@ -255,8 +263,6 @@ def get_user_characteristics(
         else:
             verified_values[user] = 0
         friends_values[user] = 1 if user in all_friends else 0
-        if i % 1000 == 0:
-            print(i)
     nx.set_node_attributes(G, deactivated_values, 'deactivated')
     nx.set_node_attributes(G, verified_values, 'verified')
     nx.set_node_attributes(G, friends_values, 'is_friend')

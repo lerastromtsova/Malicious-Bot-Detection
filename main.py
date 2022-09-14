@@ -14,7 +14,7 @@ import networkx as nx
 from datetime import datetime
 
 from database_adapter import detect_languages
-from models import get_clustered_graph, get_user_characteristics, get_centrality_metrics
+from models import get_clustered_graph, get_user_characteristics, get_centrality_metrics, get_clusters
 
 config = dotenv_values(".env")
 if not config:
@@ -33,7 +33,14 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tls=True,
                                 tlsAllowInvalidCertificates=True)
 
+
+def filter_node(n):
+    g = G.nodes[n]
+    return "cluster" in g
+
+
 if __name__ == '__main__':
+    get_clusters(db_client, api)
     # start_time = datetime.now()
     # print('Started at: ', start_time)
     # Step 1: Cluster the users and write clusters to a file
@@ -43,10 +50,15 @@ if __name__ == '__main__':
     # Step 3: Calculate centrality metrics
     # cent_metrics = get_centrality_metrics()
     # Step 4: Translate the comment texts
-    while True:
-        detect_languages(db_client)
+    # while True:
+    #     detect_languages(db_client)
     # print('Finished in: ', datetime.now() - start_time)
     # with open('outputs/graph_friends_enriched.json', 'r') as f:
     #     graph = json.load(f)
     # G = nx.node_link_graph(graph)
-    # nx.write_gexf(G, 'outputs/graph.gexf')
+    # print(len(G.nodes))
+    # subgraph = nx.subgraph_view(G, filter_node=filter_node)
+    # print(len(subgraph.nodes))
+    # final_view = subgraph.edge_subgraph(subgraph.edges())
+    # print(len(final_view.nodes))
+    # nx.write_gexf(final_view, 'outputs/subgraph.gexf')
