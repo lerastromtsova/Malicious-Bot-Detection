@@ -310,6 +310,7 @@ def detect_languages(db_client):
         if comment['text']:
             text = remove_emojis(comment['text'])
             if text:
+                # To remove "Replies"
                 text = re.sub('\[.*[a-zA-Z]+.*\], ', '', comment['text'])
                 if text:
                     try:

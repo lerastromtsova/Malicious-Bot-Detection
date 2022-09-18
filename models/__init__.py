@@ -10,6 +10,7 @@ import networkx as nx
 import markov_clustering as mc  # type: ignore
 import json
 import logging
+from sentistrength import PySentiStr
 
 
 def bot_check_results(user_id):
@@ -271,6 +272,7 @@ def get_user_characteristics(
         json.dump(data, f)
 
 
+# Step 3: Calculate centrality metrics
 def get_centrality_metrics(
         path_to_graph: str = 'outputs/graph_friends_enriched.json'
 ) -> Tuple:
@@ -281,3 +283,12 @@ def get_centrality_metrics(
     eigenvector_centrality = nx.eigenvector_centrality(G)
     clustering_coefficient = nx.clustering(G)
     return degree_centrality, eigenvector_centrality, clustering_coefficient
+
+
+# Step 4: Sentiment analysis
+def analyse_sentiment(text):
+    senti = PySentiStr()
+    senti.setSentiStrengthPath('/Users/gingy/SentiStrength.jar')
+    senti.setSentiStrengthLanguageFolderPath('/Users/gingy/SentiStrength_Data_RU')
+    result = senti.getSentiment(text, score='dual')
+    return result
