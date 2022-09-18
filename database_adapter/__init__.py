@@ -227,7 +227,10 @@ def insert_comment_ids(
                             logging.warning("Trying to insert duplicate key")
 
 
-def get_writing_speed(db_client, time_to_sleep=10):
+def get_writing_speed(
+        db_client: pymongo.MongoClient,
+        time_to_sleep: int = 10
+) -> float:
     start_count = db_client.dataVKnodup.comments.count_documents(
         {'processed': True}
     )
@@ -238,12 +241,18 @@ def get_writing_speed(db_client, time_to_sleep=10):
     return (end_count - start_count) / time_to_sleep
 
 
-def get_user_data(db_client, user_id):
+def get_user_by_id(
+        db_client: pymongo.MongoClient,
+        user_id: int
+) -> list:
     users = db_client.dataVKnodup.users.find({'vk_id': int(user_id)})
     return list(users)
 
 
-def get_comments_by_user(db_client, user_id):
+def get_comments_by_user(
+        db_client: pymongo.MongoClient,
+        user_id: int
+) -> list:
     comments = list(db_client.dataVKnodup.comments.find(
         {'from_id': int(user_id)}
     ))
@@ -254,7 +263,32 @@ def get_comments_by_user(db_client, user_id):
     return comments
 
 
-def add_verified_users(db_client, api):
+def get_users_by_name(
+        db_client: pymongo.MongoClient,
+        query: str,
+        users_limit: int = 10
+):
+    to_search = query.split()
+    if len(to_search) == 2:
+        users = list(db_client.dataVKnodup.users.find(
+            {'first_name': {'$regex': to_search[0], '$options': 'i'},
+             'last_name': {'$regex': to_search[1], '$options': 'i'}}
+        ).limit(users_limit))
+    else:
+        users_by_lname = db_client.dataVKnodup.users.find(
+            {'last_name': {'$regex': to_search[0], '$options': 'i'}}
+        ).limit(users_limit)
+        users_by_fname = db_client.dataVKnodup.users.find(
+            {'first_name': {'$regex': to_search[0], '$options': 'i'}}
+        ).limit(users_limit)
+        users = list(users_by_lname) + list(users_by_fname)
+    return users
+
+
+def add_verified_users(
+        db_client: pymongo.MongoClient,
+        api: API
+):
     users = db_client.dataVKnodup.users.find({
         'verified': {'$exists': 0}},
         {'vk_id': 1, '_id': 0}

@@ -20,3 +20,4 @@ markov_clustering==0.0.6.dev0
 tqdm==4.64.1
 sentistrength==0.0.9
 pandas==1.4.3
+iuliia==0.11.5
