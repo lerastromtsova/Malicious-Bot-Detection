@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     # Step 5: Analyse sentiments of comments
     comment_count = 0
-    sample_size = 1000
+    sample_size = 10000
     comment_max = db_client.dataVKnodup.comments.count_documents({'language': 'ru', 'sentiment': {'$exists': 0}})
     num_samples = int(comment_max / sample_size)
     for j in tqdm(range(num_samples)):
