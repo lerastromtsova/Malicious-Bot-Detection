@@ -73,18 +73,20 @@ if __name__ == '__main__':
 
     # Step 5: Analyse sentiments of comments
     comment_count = 0
-    sample_size = 10000
+    sample_size = 1000
     comment_max = db_client.dataVKnodup.comments.count_documents({'language': 'ru', 'sentiment': {'$exists': 0}})
-    while comment_count < comment_max:
+    num_samples = int(comment_max / sample_size)
+    for j in tqdm(range(num_samples)):
         comments = list(db_client.dataVKnodup.comments.aggregate([
             {'$match': {'language': 'ru', 'sentiment': {'$exists': 0}}},
             {'$sample': {'size': sample_size}}
         ]))
-        for c in tqdm(comments):
-            sentiment = analyse_sentiment(senti, c['text'])
+        texts = [c['text'] for c in comments]
+        sentiments = senti.getSentiment(texts, score='dual')
+        for i, c in enumerate(comments):
             db_client.dataVKnodup.comments.update_one(
                 {'vk_id': c['vk_id']},
-                {'$set': {'sentiment': sentiment}}
+                {'$set': {'sentiment': sentiments[i]}}
             )
         comment_count += sample_size
 
