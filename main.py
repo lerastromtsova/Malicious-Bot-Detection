@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from datetime import datetime
 
+from sentistrength import PySentiStr
 from database_adapter import detect_languages
 from models import get_clustered_graph, get_user_characteristics, get_centrality_metrics, get_clusters, \
     analyse_sentiment
@@ -35,6 +36,10 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 f"?retryWrites=true&w=majority",
                                 tls=True,
                                 tlsAllowInvalidCertificates=True)
+
+senti = PySentiStr()
+senti.setSentiStrengthPath('sentistrength/SentiStrength.jar')
+senti.setSentiStrengthLanguageFolderPath('sentistrength/SentiStrength_Data_RU')
 
 
 def filter_node(n):
@@ -76,7 +81,7 @@ if __name__ == '__main__':
             {'$sample': {'size': sample_size}}
         ]))
         for c in tqdm(comments):
-            sentiment = analyse_sentiment(c['text'])
+            sentiment = analyse_sentiment(senti, c['text'])
             db_client.dataVKnodup.comments.update_one(
                 {'vk_id': c['vk_id']},
                 {'$set': {'sentiment': sentiment}}

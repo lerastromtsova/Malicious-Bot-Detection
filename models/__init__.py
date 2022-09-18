@@ -10,7 +10,7 @@ import networkx as nx
 import markov_clustering as mc  # type: ignore
 import json
 import logging
-from sentistrength import PySentiStr
+
 
 
 def bot_check_results(user_id):
@@ -286,9 +286,6 @@ def get_centrality_metrics(
 
 
 # Step 4: Sentiment analysis
-def analyse_sentiment(text):
-    senti = PySentiStr()
-    senti.setSentiStrengthPath('/Users/gingy/SentiStrength.jar')
-    senti.setSentiStrengthLanguageFolderPath('/Users/gingy/SentiStrength_Data_RU')
-    result = senti.getSentiment(text, score='dual')
+def analyse_sentiment(sentiment_analyser, text):
+    result = sentiment_analyser.getSentiment(text, score='dual')
     return result
