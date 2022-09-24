@@ -313,7 +313,7 @@ def get_friends_graph(
                     {'$set': {'friends': 30}}
                 )
                 error_count += 1
-        print(f"Percentage of errors {(error_count / 25) * 100}%")
+        # print(f"Percentage of errors {(error_count / 25) * 100}%")
         # try:
         #     if 'friends' not in user or user['friends'] == quantity_limit_error_code:
         #         time.sleep(0.3)

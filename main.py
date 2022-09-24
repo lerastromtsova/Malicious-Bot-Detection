@@ -19,6 +19,7 @@ from sentistrength import PySentiStr
 from database_adapter import detect_languages
 from models import get_clustered_graph, get_user_characteristics, get_centrality_metrics, get_clusters, \
     analyse_sentiment
+from translate import Translator
 
 config = dotenv_values(".env")
 if not config:
@@ -48,7 +49,7 @@ def filter_node(n):
 
 
 if __name__ == '__main__':
-    # get_clusters(db_client, api)
+    get_clusters(db_client, api)
     # start_time = datetime.now()
     # print('Started at: ', start_time)
     # Step 1: Cluster the users and write clusters to a file
@@ -72,21 +73,39 @@ if __name__ == '__main__':
     # nx.write_gexf(final_view, 'outputs/subgraph.gexf')
 
     # Step 5: Analyse sentiments of comments
-    comment_count = 0
-    sample_size = 10000
-    comment_max = db_client.dataVKnodup.comments.count_documents({'language': 'ru', 'sentiment': {'$exists': 0}})
-    num_samples = int(comment_max / sample_size)
-    for j in tqdm(range(num_samples)):
-        comments = list(db_client.dataVKnodup.comments.aggregate([
-            {'$match': {'language': 'ru', 'sentiment': {'$exists': 0}}},
-            {'$sample': {'size': sample_size}}
-        ]))
-        texts = [c['text'] for c in comments]
-        sentiments = senti.getSentiment(texts, score='dual')
-        for i, c in enumerate(comments):
-            db_client.dataVKnodup.comments.update_one(
-                {'vk_id': c['vk_id']},
-                {'$set': {'sentiment': sentiments[i]}}
-            )
-        comment_count += sample_size
+    # comment_count = 0
+    # sample_size = 10000
+    # comment_max = db_client.dataVKnodup.comments.count_documents({'language': 'ru', 'sentiment': {'$exists': 0}})
+    # num_samples = int(comment_max / sample_size)
+    # for j in tqdm(range(num_samples)):
+    #     comments = list(db_client.dataVKnodup.comments.aggregate([
+    #         {'$match': {'language': 'ru', 'sentiment': {'$exists': 0}}},
+    #         {'$sample': {'size': sample_size}}
+    #     ]))
+    #     texts = [c['text'] for c in comments]
+    #     sentiments = senti.getSentiment(texts, score='dual')
+    #     for i, c in enumerate(comments):
+    #         db_client.dataVKnodup.comments.update_one(
+    #             {'vk_id': c['vk_id']},
+    #             {'$set': {'sentiment': sentiments[i]}}
+    #         )
+    #     comment_count += sample_size
 
+    # comments_ua = list(db_client.dataVKnodup.comments.find(
+    #     {'language': 'uk'},
+    # ))
+    # translator = Translator(from_lang="uk", to_lang="ru")
+    # for c in tqdm(comments_ua):
+    #     translation = translator.translate(c['text'])
+    #     db_client.dataVKnodup.comments.update_one(
+    #         {'vk_id': c['vk_id']},
+    #         {'$set': {'text_ru': translation}}
+    #     )
+
+    # texts = [c['text_ru'] for c in comments_ua]
+    # sentiments = senti.getSentiment(texts, score='dual')
+    # for i, c in tqdm(enumerate(comments_ua)):
+    #     db_client.dataVKnodup.comments.update_one(
+    #         {'vk_id': c['vk_id']},
+    #         {'$set': {'sentiment': sentiments[i]}}
+    #     )
