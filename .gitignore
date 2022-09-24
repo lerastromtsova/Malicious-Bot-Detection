@@ -133,3 +133,6 @@ dmypy.json
 
 # Output files
 outputs/*
+
+# SentiStrength - for access read http://sentistrength.wlv.ac.uk/
+sentistrength/*
