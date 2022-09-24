@@ -59,6 +59,9 @@ MONGO_DB_PASSWORD=...
 WEB_SECRET=...
 ```
 
+### SentiStrength
+The `sentistrength` folder should contain the `SentiStrength.jar` file and `SentiStrength_Data_RU` folder. How to get both? See the (SentiStrength website)[http://sentistrength.wlv.ac.uk/] and contact Prof. Michael Thelwall at M.Thelwall@wlv.ac.uk. 
+
 ### Docker
 ```commandline
 docker build -t bot-detection .
