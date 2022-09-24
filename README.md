@@ -5,7 +5,7 @@
 
 Detection of malicious bots spreading propaganda on Russian social media during the Russian-Ukrainian armed conflict 2022.
 
-This project is part of the Computer Science Master's thesis at the University of Passau.
+This project is part of the Computer Science Master's thesis at the University of Passau and HSE University.
 
 ## Coding principles
 Based on [Transforming Code into Scientific Contributions](https://www.frontiersin.org/articles/10.3389/fninf.2017.00069/full#:~:text=Scientific%20code%20is%20different%20from,are%20often%20overlooked%20in%20practice.). 
