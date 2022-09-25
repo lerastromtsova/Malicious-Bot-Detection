@@ -25,4 +25,4 @@ jobs:
       run: docker build . --file Dockerfile --tag bot-detection:$(date +%s)
       
     - name: linting
-      run: flake8 *
+      uses: py-actions/flake8@v2
