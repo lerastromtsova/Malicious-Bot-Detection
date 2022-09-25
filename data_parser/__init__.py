@@ -281,7 +281,7 @@ def get_friends_graph(
     :param api:
     :param db_client:
     :param retrieve_friends_from_api:
-    :return:
+    :return: A set of edges between users.
     """
     vk_ids = set([user['vk_id'] for user in users])
     graph = set()
@@ -290,7 +290,10 @@ def get_friends_graph(
             time.sleep(0.3)
             error_count = 0
             # 29 is the error code for quantity limit
-            user_ids = [str(u['vk_id']) for u in users[i:i+25] if 'friends' not in u or u['friends'] == 29]
+            user_ids = [
+                str(u['vk_id']) for u in users[i:i+25]
+                if 'friends' not in u or u['friends'] == 29
+            ]
             response = api.execute(
                 code=f'var i = 0;'
                      f'var user;'

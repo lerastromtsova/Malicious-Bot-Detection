@@ -231,6 +231,13 @@ def get_writing_speed(
         db_client: pymongo.MongoClient,
         time_to_sleep: int = 10
 ) -> float:
+    """
+    A utility function to estimate the speed with
+    which the comments colection is populated.
+    :param db_client:
+    :param time_to_sleep:
+    :return: Number of comments processed per second.
+    """
     start_count = db_client.dataVKnodup.comments.count_documents(
         {'processed': True}
     )
@@ -245,6 +252,12 @@ def get_user_by_id(
         db_client: pymongo.MongoClient,
         user_id: int
 ) -> list:
+    """
+    Retrieve a user by their VK ID.
+    :param db_client:
+    :param user_id:
+    :return:
+    """
     users = db_client.dataVKnodup.users.find({'vk_id': int(user_id)})
     return list(users)
 
@@ -253,6 +266,12 @@ def get_comments_by_user(
         db_client: pymongo.MongoClient,
         user_id: int
 ) -> list:
+    """
+    Get all the comments that a particular user left in the database.
+    :param db_client:
+    :param user_id:
+    :return:
+    """
     comments = list(db_client.dataVKnodup.comments.find(
         {'from_id': int(user_id)}
     ))
@@ -267,7 +286,14 @@ def get_users_by_name(
         db_client: pymongo.MongoClient,
         query: str,
         users_limit: int = 10
-):
+) -> list:
+    """
+    Search for users using their first or last name.
+    :param db_client:
+    :param query:
+    :param users_limit:
+    :return:
+    """
     to_search = query.split()
     if len(to_search) == 2:
         users = list(db_client.dataVKnodup.users.find(
@@ -288,7 +314,13 @@ def get_users_by_name(
 def add_verified_users(
         db_client: pymongo.MongoClient,
         api: API
-):
+) -> None:
+    """
+    Add the 'verified' fiels to each user in the database.
+    :param db_client:
+    :param api:
+    :return:
+    """
     users = db_client.dataVKnodup.users.find({
         'verified': {'$exists': 0}},
         {'vk_id': 1, '_id': 0}
@@ -311,7 +343,14 @@ def add_verified_users(
     db_client.close()
 
 
-def remove_emojis(data):
+def remove_emojis(
+        data: str
+) -> str:
+    """
+    Remove all emojis from a given string.
+    :param data:
+    :return:
+    """
     emoj = re.compile("["
                       u"\U0001F600-\U0001F64F"  # emoticons
                       u"\U0001F300-\U0001F5FF"  # symbols & pictographs
@@ -335,7 +374,14 @@ def remove_emojis(data):
     return re.sub(emoj, '', data)
 
 
-def detect_languages(db_client):
+def detect_languages(
+        db_client: pymongo.MongoClient
+) -> None:
+    """
+    Mark all comments in the database with the language they are written in.
+    :param db_client:
+    :return:
+    """
     comments = db_client.dataVKnodup.comments.aggregate([
         {'$match': {'language': {'$exists': 0}, 'text': {'$exists': 1}}},
         {'$sample': {'size': 10000}}
@@ -345,7 +391,7 @@ def detect_languages(db_client):
             text = remove_emojis(comment['text'])
             if text:
                 # To remove "Replies"
-                text = re.sub('\[.*[a-zA-Z]+.*\], ', '', comment['text'])
+                text = re.sub(r'\[.*[a-zA-Z]+.*\], ', '', comment['text'])
                 if text:
                     try:
                         language = detect(text)
