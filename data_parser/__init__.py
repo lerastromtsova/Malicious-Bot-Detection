@@ -10,10 +10,10 @@ from typing import Generator
 
 import github  # type: ignore
 import pymongo  # type: ignore
-import requests
+import requests  # type: ignore
 import vk.exceptions  # type: ignore
 from vk import API  # type: ignore
-from tqdm import tqdm
+from tqdm import tqdm  # type: ignore
 
 
 def parse_comment_ids(
@@ -209,12 +209,12 @@ def get_foaf_data(
         f'{created_at_start_str}(.*){created_at_end_str}', xml
     )
     if created_at_str:
-        created_at = created_at_str.group().split(
+        created_at_str = created_at_str.group().split(
             created_at_start_str
         )[1].split(
             created_at_end_str
         )[0]
-        created_at_tuple = created_at.split('+')
+        created_at_tuple = created_at_str.split('+')
         created_at = datetime.strptime(
             created_at_tuple[0],
             '%Y-%m-%dT%H:%M:%S'

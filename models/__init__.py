@@ -1,16 +1,16 @@
 import pymongo  # type: ignore
-from community import community_louvain
-from tqdm import tqdm
+from community import community_louvain  # type: ignore
+from tqdm import tqdm  # type: ignore
 
 from data_parser import get_foaf_multithread, get_friends_graph
 from typing import Tuple
 from datetime import datetime
 import itertools
-import networkx as nx
+import networkx as nx  # type: ignore
 import markov_clustering as mc  # type: ignore
 import json
 import logging
-from vk import API
+from vk import API  # type: ignore
 
 
 def bot_check_results(
@@ -227,13 +227,14 @@ def get_adj_matrix(
     :return: The adjacency matrix.
              Example: [(1,2),...] or [(1,2,0.5),...] if with_weights==True
     """
-    adj_matrix = []
     if with_weights:
+        adj_matrix = []
         for sim in similarities:
             adj_matrix.append((sim['user1'], sim['user2'], sim['similarity']))
-    else:
-        for sim in similarities:
-            adj_matrix.append((sim['user1'], sim['user2']))
+        return adj_matrix
+    adj_matrix = []
+    for sim in similarities:
+        adj_matrix.append((sim['user1'], sim['user2']))
     return adj_matrix
 
 
@@ -257,7 +258,7 @@ def get_clusters(
     G = G.edge_subgraph(G.edges())
     print(f"After removal graph size: {len(G.nodes)}")
     partition = community_louvain.best_partition(G)
-    clusters = {}
+    clusters: dict[str, list] = {}
     for k, v in partition.items():
         if v in clusters.keys():
             clusters[v].append(k)

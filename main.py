@@ -4,14 +4,14 @@ import os
 import sys
 from datetime import datetime
 
-import networkx as nx
+import networkx as nx  # type: ignore
 import pymongo  # type: ignore
 import vk  # type: ignore
 from dotenv import dotenv_values  # type: ignore
 
 from models import get_clustered_graph, get_user_characteristics
 from models import get_centrality_metrics, get_clusters
-from sentistrength import PySentiStr
+from sentistrength import PySentiStr  # type: ignore
 
 config = dotenv_values(".env")
 if not config:
