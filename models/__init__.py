@@ -10,16 +10,28 @@ import networkx as nx
 import markov_clustering as mc  # type: ignore
 import json
 import logging
+from vk import API
 
 
-
-def bot_check_results(user_id):
+def bot_check_results(
+        user_id: int
+) -> bool:
+    """
+    Checks whether a given user is a bot,
+    :param user_id: VK ID of a user to check.
+    :return: True if the user is predicted to be a bot, otherwise False
+    """
     return True
 
 
 def enrich_users_data(
         db_client: pymongo.MongoClient,
 ) -> None:
+    """
+    Adds FOAF attributes to the users in the database.
+    :param db_client: The Mongo client to connect to.
+    :return:
+    """
     users = db_client.dataVKnodup.users.find({'enriched': {'$ne': True}}).limit(20)
     foaf = get_foaf_multithread([u['vk_id'] for u in users])
     for user in foaf:
@@ -45,6 +57,11 @@ def enrich_users_data(
 def get_similarity(
         users: Tuple
 ) -> float:
+    """
+    Get similarity of two VK users based on FOAF features.
+    :param users: A Tuple of users to calculate similarity for.
+    :return: Similarity score.
+    """
     features = {
         'vk_age': 'real',
         'timezone': 'nominal',
@@ -67,12 +84,22 @@ def get_similarity(
 def get_nominal_similarity(
         values: Tuple
 ) -> bool:
+    """
+    Get the similarity of two nominal features.
+    :param values: Values of two nominal features.
+    :return: True if values are equal, otherwise False.
+    """
     return values[0] == values[1]
 
 
 def get_real_similarity(
         values: Tuple
 ) -> float:
+    """
+    Get the similarity of two real-number features.
+    :param values: Values of two real-number features.
+    :return: Similarity score for the values
+    """
     return 1 / (1 + abs(values[0] - values[1]))
 
 
@@ -171,7 +198,18 @@ class MarkovClusteringModel:
         self._get_clusters()
 
 
-def get_adj_matrix(similarities, with_weights=False):
+def get_adj_matrix(
+        similarities,
+        with_weights=False
+) -> list:
+    """
+    Get an adjacency matrix from user similarities.
+    :param similarities: Array of dicts with similarities
+                         Example: [{'user1': 1, 'user2': 2, 'similarity': 0.5},...]
+    :param with_weights: If the resulting graph should be weighted or not.
+    :return: The adjacency matrix.
+             Example: [(1,2),...] or [(1,2,0.5),...] if with_weights==True
+    """
     adj_matrix = []
     if with_weights:
         for sim in similarities:
@@ -182,7 +220,16 @@ def get_adj_matrix(similarities, with_weights=False):
     return adj_matrix
 
 
-def get_clusters(db_client, api):
+def get_clusters(
+        db_client: pymongo.MongoClient,
+        api: API
+) -> dict:
+    """
+    Cluster the users using Louvain algorithm.
+    :param db_client: Client to the MongoDB database where the users are stored.
+    :param api: VK API to fetch the data from.
+    :return: A dictionary representing clusters and corresponding users.
+    """
     start = datetime.now()
     users = list(db_client.dataVKnodup.users.find({'friends': 29}))
     edges = get_friends_graph(users, api, db_client)
@@ -199,18 +246,25 @@ def get_clusters(db_client, api):
             clusters[v].append(k)
         else:
             clusters[v] = [k]
-    # for k, v in clusters.items():
-    #     db_client.dataVKnodup.clusters.insert_one({str(k): v})
+    for k, v in clusters.items():
+        db_client.dataVKnodup.clusters.insert_one({str(k): v})
     print('Number of clusters: ', len(clusters))
     print('Time elapsed: ', datetime.now() - start)
     return clusters
 
 
-"""Code for the 5-step approach"""
-
-
-# Step 1: Get graph and save it to a file
-def get_clustered_graph(db_client, api):
+def get_clustered_graph(
+        db_client: pymongo.MongoClient,
+        api: API,
+        output_path: str = 'outputs/graph_friends.json'
+) -> None:
+    """
+    Step 1: Get the clustered graph from the database and save it to a file
+    :param output_path: Where to store the graph locally.
+    :param db_client: Client to the MongoDB database where the users are stored.
+    :param api: VK API to fetch the data from.
+    :return:
+    """
     users = list(db_client.dataVKnodup.users.find(
         {"friends": {'$type': 'array'}},
         {'vk_id': 1, 'friends': 1, '_id': 0}
@@ -229,15 +283,22 @@ def get_clustered_graph(db_client, api):
     G = G.edge_subgraph(G.edges())
     data = nx.node_link_data(G)
     print(f'Graph size: {len(G.nodes)}')
-    with open('outputs/graph_friends.json', 'w') as f:
+    with open(output_path, 'w') as f:
         json.dump(data, f)
 
 
-# Step 2: See which users got into which graph
 def get_user_characteristics(
         db_client,
-        path_to_graph: str = 'outputs/graph_friends.json'
+        path_to_graph: str = 'outputs/graph_friends.json',
+        output_path: str = 'outputs/graph_friends_enriched.json'
 ):
+    """
+    Step 2: See which users got into which graph
+    :param db_client: Client to the MongoDB database where the users are stored.
+    :param path_to_graph: Path to the file with the graph of users.
+    :param output_path: Where to store the outputs.
+    :return:
+    """
     with open(path_to_graph, 'r') as f:
         graph = json.load(f)
     G = nx.node_link_graph(graph)
@@ -268,14 +329,21 @@ def get_user_characteristics(
     nx.set_node_attributes(G, verified_values, 'verified')
     nx.set_node_attributes(G, friends_values, 'is_friend')
     data = nx.node_link_data(G)
-    with open('outputs/graph_friends_enriched.json', 'w') as f:
+    with open(output_path, 'w') as f:
         json.dump(data, f)
 
 
-# Step 3: Calculate centrality metrics
 def get_centrality_metrics(
         path_to_graph: str = 'outputs/graph_friends_enriched.json'
 ) -> Tuple:
+    """
+    Step 3: Calculate centrality metrics:
+            - degree centrality
+            - eigenvector centrality
+            - clustering coefficient
+    :param path_to_graph: Path to the file with the graph of users.
+    :return: Three centrality metrics
+    """
     with open(path_to_graph, 'r') as f:
         graph = json.load(f)
     G = nx.node_link_graph(graph)
@@ -285,7 +353,15 @@ def get_centrality_metrics(
     return degree_centrality, eigenvector_centrality, clustering_coefficient
 
 
-# Step 4: Sentiment analysis
-def analyse_sentiment(sentiment_analyser, text):
+def analyse_sentiment(
+        sentiment_analyser,
+        text: str
+) -> list:
+    """
+    Get a sentiment for a text.
+    :param sentiment_analyser: Object that can analyse sentiments.
+    :param text: Text to analyse.
+    :return: List with positive and negative sentiments.
+    """
     result = sentiment_analyser.getSentiment(text, score='dual')
     return result

@@ -1,25 +1,17 @@
 import json
 import logging
 import os
-import re
 import sys
-
-import pymongo  # type: ignore
-import vk  # type: ignore
-from community import community_louvain
-from dotenv import dotenv_values  # type: ignore
-from tqdm import tqdm
-
-from data_parser import get_friends_graph
-import matplotlib.pyplot as plt
-import networkx as nx
 from datetime import datetime
 
+import networkx as nx
+import pymongo  # type: ignore
+import vk  # type: ignore
+from dotenv import dotenv_values  # type: ignore
+
+from models import get_clustered_graph, get_user_characteristics
+from models import get_centrality_metrics, get_clusters
 from sentistrength import PySentiStr
-from database_adapter import detect_languages
-from models import get_clustered_graph, get_user_characteristics, get_centrality_metrics, get_clusters, \
-    analyse_sentiment
-from translate import Translator
 
 config = dotenv_values(".env")
 if not config:
@@ -49,63 +41,24 @@ def filter_node(n):
 
 
 if __name__ == '__main__':
-    get_clusters(db_client, api)
-    # start_time = datetime.now()
-    # print('Started at: ', start_time)
+    start_time = datetime.now()
+    print('Started at: ', start_time)
     # Step 1: Cluster the users and write clusters to a file
-    # get_clustered_graph(db_client, api)
+    print('Step 1')
+    get_clusters(db_client, api)
+    get_clustered_graph(db_client, api)
     # Step 2: Get bots/real users/undefined users
-    # get_user_characteristics(db_client)
+    # print('Step 2')
+    get_user_characteristics(db_client)
     # Step 3: Calculate centrality metrics
-    # cent_metrics = get_centrality_metrics()
-    # Step 4: Translate the comment texts
-    # while True:
-    #     detect_languages(db_client)
-    # print('Finished in: ', datetime.now() - start_time)
-    # with open('outputs/graph_friends_enriched.json', 'r') as f:
-    #     graph = json.load(f)
-    # G = nx.node_link_graph(graph)
-    # print(len(G.nodes))
-    # subgraph = nx.subgraph_view(G, filter_node=filter_node)
-    # print(len(subgraph.nodes))
-    # final_view = subgraph.edge_subgraph(subgraph.edges())
-    # print(len(final_view.nodes))
-    # nx.write_gexf(final_view, 'outputs/subgraph.gexf')
-
-    # Step 5: Analyse sentiments of comments
-    # comment_count = 0
-    # sample_size = 10000
-    # comment_max = db_client.dataVKnodup.comments.count_documents({'language': 'ru', 'sentiment': {'$exists': 0}})
-    # num_samples = int(comment_max / sample_size)
-    # for j in tqdm(range(num_samples)):
-    #     comments = list(db_client.dataVKnodup.comments.aggregate([
-    #         {'$match': {'language': 'ru', 'sentiment': {'$exists': 0}}},
-    #         {'$sample': {'size': sample_size}}
-    #     ]))
-    #     texts = [c['text'] for c in comments]
-    #     sentiments = senti.getSentiment(texts, score='dual')
-    #     for i, c in enumerate(comments):
-    #         db_client.dataVKnodup.comments.update_one(
-    #             {'vk_id': c['vk_id']},
-    #             {'$set': {'sentiment': sentiments[i]}}
-    #         )
-    #     comment_count += sample_size
-
-    # comments_ua = list(db_client.dataVKnodup.comments.find(
-    #     {'language': 'uk'},
-    # ))
-    # translator = Translator(from_lang="uk", to_lang="ru")
-    # for c in tqdm(comments_ua):
-    #     translation = translator.translate(c['text'])
-    #     db_client.dataVKnodup.comments.update_one(
-    #         {'vk_id': c['vk_id']},
-    #         {'$set': {'text_ru': translation}}
-    #     )
-
-    # texts = [c['text_ru'] for c in comments_ua]
-    # sentiments = senti.getSentiment(texts, score='dual')
-    # for i, c in tqdm(enumerate(comments_ua)):
-    #     db_client.dataVKnodup.comments.update_one(
-    #         {'vk_id': c['vk_id']},
-    #         {'$set': {'sentiment': sentiments[i]}}
-    #     )
+    print('Step 3')
+    cent_metrics = get_centrality_metrics()
+    with open('outputs/graph_friends_enriched.json', 'r') as f:
+        graph = json.load(f)
+    G = nx.node_link_graph(graph)
+    print(len(G.nodes))
+    subgraph = nx.subgraph_view(G, filter_node=filter_node)
+    print(len(subgraph.nodes))
+    final_view = subgraph.edge_subgraph(subgraph.edges())
+    print(len(final_view.nodes))
+    nx.write_gexf(final_view, 'outputs/subgraph.gexf')

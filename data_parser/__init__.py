@@ -270,82 +270,67 @@ def get_activity_count(
 
 
 def get_friends_graph(
-        users,
-        api,
-        db_client
-):
-    quantity_limit_errors = 0
-    quantity_limit_error_code = 29
+        users: list,
+        api: API,
+        db_client: pymongo.MongoClient,
+        retrieve_friends_from_api: bool = True
+) -> set:
+    """
+    Builds a graph of users based on their friendship relationship.
+    :param users:
+    :param api:
+    :param db_client:
+    :param retrieve_friends_from_api:
+    :return:
+    """
     vk_ids = set([user['vk_id'] for user in users])
     graph = set()
-    for i in tqdm(range(0, len(users), 25)):
-        time.sleep(0.3)
-        error_count = 0
-        user_ids = [str(u['vk_id']) for u in users[i:i+25] if 'friends' not in u or u['friends'] == quantity_limit_error_code]
-        response = api.execute(
-            code=f'var i = 0;'
-                 f'var user;'
-                 f'var users = [];'
-                 f'var user_ids = {"[" + ",".join(user_ids) + "]"};'
-                 f'while (i != 25) {{'
-                 f'user = API.friends.get('
-                 f'{{'
-                 f'"user_id": (user_ids[i]), '
-                 f'"v": "5.131", '
-                 f'}}'
-                 f'); '
-                 f'i = i + 1;'
-                 f'users.push(user);'
-                 f'}};'
-                 f'return users;',
-            v="5.131"
-        )
-        response = list(response)
-        for j in range(len(response)):
-            if response[j]:
-                db_client.dataVKnodup.users.update_one(
-                    {'vk_id': int(user_ids[j])},
-                    {'$set': {'friends': response[j]['items']}}
-                )
+    if retrieve_friends_from_api:
+        for i in tqdm(range(0, len(users), 25)):
+            time.sleep(0.3)
+            error_count = 0
+            # 29 is the error code for quantity limit
+            user_ids = [str(u['vk_id']) for u in users[i:i+25] if 'friends' not in u or u['friends'] == 29]
+            response = api.execute(
+                code=f'var i = 0;'
+                     f'var user;'
+                     f'var users = [];'
+                     f'var user_ids = {"[" + ",".join(user_ids) + "]"};'
+                     f'while (i != 25) {{'
+                     f'user = API.friends.get('
+                     f'{{'
+                     f'"user_id": (user_ids[i]), '
+                     f'"v": "5.131", '
+                     f'}}'
+                     f'); '
+                     f'i = i + 1;'
+                     f'users.push(user);'
+                     f'}};'
+                     f'return users;',
+                v="5.131"
+            )
+            response = list(response)
+            for j in range(len(response)):
+                if response[j]:
+                    db_client.dataVKnodup.users.update_one(
+                        {'vk_id': int(user_ids[j])},
+                        {'$set': {'friends': response[j]['items']}}
+                    )
+                else:
+                    db_client.dataVKnodup.users.update_one(
+                        {'vk_id': int(user_ids[j])},
+                        {'$set': {'friends': 30}}
+                    )
+                    error_count += 1
+    else:
+        for user in users:
+            # If an integer is stored in "friends", it means the error code
+            if isinstance(user['friends'], int):
+                friends = set()
             else:
-                db_client.dataVKnodup.users.update_one(
-                    {'vk_id': int(user_ids[j])},
-                    {'$set': {'friends': 30}}
-                )
-                error_count += 1
-        # print(f"Percentage of errors {(error_count / 25) * 100}%")
-        # try:
-        #     if 'friends' not in user or user['friends'] == quantity_limit_error_code:
-        #         time.sleep(0.3)
-        #         friends = api.friends.get(
-        #             user_id=user['vk_id'],
-        #             v='5.131'
-        #         )['items']
-        #         db_client.dataVKnodup.users.update_one(
-        #             {'vk_id': user['vk_id']},
-        #             {'$set': {'friends': friends}}
-        #         )
-        #     # If there is a number stored in the friends field,
-        #     # this number indicates an error:
-        #     elif isinstance(user['friends'], int):
-        #         friends = set()
-        #     else:
-        #         friends = user['friends']
-        #     inters = set(friends).intersection(vk_ids)
-        #     if inters:
-        #         for i in inters:
-        #             graph.add((user['vk_id'], i))
-        # except vk.exceptions.VkAPIError as e:
-        #     if e.code == quantity_limit_error_code:
-        #         quantity_limit_errors += 1
-        #     db_client.dataVKnodup.users.update_one(
-        #         {'vk_id': user['vk_id']},
-        #         {'$set': {'friends': e.code}}
-        #     )
-        #     error_count += 1
-        #     if quantity_limit_errors % 100 == 0 and quantity_limit_errors != 0:
-        #         print(f"Quantity limit reached {quantity_limit_errors} times")
-        #     pass
-    print('Total users: ', len(users))
-    print('Total errors: ', error_count)
+                friends = user['friends']
+            inters = set(friends).intersection(vk_ids)
+            if inters:
+                for i in inters:
+                    graph.add((user['vk_id'], i))
     return graph
