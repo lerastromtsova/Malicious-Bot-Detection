@@ -209,13 +209,13 @@ def get_foaf_data(
         f'{created_at_start_str}(.*){created_at_end_str}', xml
     )
     if created_at_str:
-        created_at_str = created_at_str.group().split(
+        created_at = created_at.group().split(
             created_at_start_str
         )[1].split(
             created_at_end_str
         )[0]
-        created_at_tuple = created_at_str.split('+')
-        created_at = datetime.strptime(
+        created_at_tuple = created_at.split('+')
+        created_at_date = datetime.strptime(
             created_at_tuple[0],
             '%Y-%m-%dT%H:%M:%S'
         )
@@ -252,7 +252,7 @@ def get_foaf_data(
 
     return {
         "vk_id": vk_user_id,
-        "created_at": created_at,
+        "created_at": created_at_date,
         "timezone": timezone,
         "followee_rate": followee_rate,
         "follower_rate": follower_rate,

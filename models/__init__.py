@@ -3,7 +3,7 @@ from community import community_louvain  # type: ignore
 from tqdm import tqdm  # type: ignore
 
 from data_parser import get_foaf_multithread, get_friends_graph
-from typing import Tuple
+from typing import Tuple, Any
 from datetime import datetime
 import itertools
 import networkx as nx  # type: ignore
@@ -228,11 +228,11 @@ def get_adj_matrix(
              Example: [(1,2),...] or [(1,2,0.5),...] if with_weights==True
     """
     if with_weights:
-        adj_matrix = []
+        adj_matrix: [Tuple[Any, Any, Any]] = []
         for sim in similarities:
             adj_matrix.append((sim['user1'], sim['user2'], sim['similarity']))
         return adj_matrix
-    adj_matrix = []
+    adj_matrix: [Tuple[Any, Any]] = []
     for sim in similarities:
         adj_matrix.append((sim['user1'], sim['user2']))
     return adj_matrix
