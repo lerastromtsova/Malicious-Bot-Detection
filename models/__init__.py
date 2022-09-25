@@ -32,7 +32,9 @@ def enrich_users_data(
     :param db_client: The Mongo client to connect to.
     :return:
     """
-    users = db_client.dataVKnodup.users.find({'enriched': {'$ne': True}}).limit(20)
+    users = db_client.dataVKnodup.users.find(
+        {'enriched': {'$ne': True}}
+    ).limit(20)
     foaf = get_foaf_multithread([u['vk_id'] for u in users])
     for user in foaf:
         # activity = get_activity_count(user['vk_id'], db_client)
@@ -74,9 +76,17 @@ def get_similarity(
     for feature, typ in features.items():
         if users[0][feature] and users[1][feature]:
             if typ == 'real':
-                similarities.append(get_real_similarity((users[0][feature], users[1][feature])))
+                similarities.append(
+                    get_real_similarity(
+                        (users[0][feature], users[1][feature])
+                    )
+                )
             elif typ == 'nominal':
-                similarities.append(get_nominal_similarity((users[0][feature], users[1][feature])))
+                similarities.append(
+                    get_nominal_similarity(
+                        (users[0][feature], users[1][feature])
+                    )
+                )
     avg_similarity = sum(similarities) / len(similarities)
     return avg_similarity
 
@@ -140,7 +150,9 @@ class MarkovClusteringModel:
         result = mc.run_mcl(self.matrix, inflation=self.inflation_rate)
         self.raw_clusters = mc.get_clusters(result)
         for cluster in self.raw_clusters:
-            self.clusters.append(tuple(self.users[i]['vk_id'] for i in cluster))
+            self.clusters.append(
+                tuple(self.users[i]['vk_id'] for i in cluster)
+            )
         return result, self.raw_clusters
 
     def train(self, sim_thresholds, inflation_rates):
@@ -152,14 +164,19 @@ class MarkovClusteringModel:
             self._get_adjacency_matrix()
             result, clusters = self._get_clusters()
             modularity = mc.modularity(matrix=result, clusters=clusters)
-            modularities[(self.sim_threshold, self.inflation_rate)] = modularity
-        best_sim_threshold, best_infl_rate = max(modularities, key=modularities.get)
+            modularities[
+                (self.sim_threshold, self.inflation_rate)
+            ] = modularity
+        best_sim_threshold, best_infl_rate = max(
+            modularities, key=modularities.get
+        )
         best_modularity = max(modularities.values())
         logging.info(f"Found best params: "
                      f"{best_sim_threshold}, "
                      f"{best_infl_rate}, "
                      f"{best_modularity}")
-        self.sim_threshold, self.inflation_rate = best_sim_threshold, best_infl_rate
+        self.sim_threshold = best_sim_threshold
+        self.inflation_rate = best_infl_rate
         self.modularity = best_modularity
         self._get_adjacency_matrix()
         self._get_clusters()
@@ -205,7 +222,7 @@ def get_adj_matrix(
     """
     Get an adjacency matrix from user similarities.
     :param similarities: Array of dicts with similarities
-                         Example: [{'user1': 1, 'user2': 2, 'similarity': 0.5},...]
+            Example: [{'user1': 1, 'user2': 2, 'similarity': 0.5},...]
     :param with_weights: If the resulting graph should be weighted or not.
     :return: The adjacency matrix.
              Example: [(1,2),...] or [(1,2,0.5),...] if with_weights==True
@@ -226,7 +243,7 @@ def get_clusters(
 ) -> dict:
     """
     Cluster the users using Louvain algorithm.
-    :param db_client: Client to the MongoDB database where the users are stored.
+    :param db_client: Client to the database where the users are stored.
     :param api: VK API to fetch the data from.
     :return: A dictionary representing clusters and corresponding users.
     """
@@ -260,8 +277,8 @@ def get_clustered_graph(
 ) -> None:
     """
     Step 1: Get the clustered graph from the database and save it to a file
-    :param output_path: Where to store the graph locally.
-    :param db_client: Client to the MongoDB database where the users are stored.
+    :param output_path: Where to store the graph.
+    :param db_client: Client to the database where the users are stored.
     :param api: VK API to fetch the data from.
     :return:
     """
@@ -294,7 +311,7 @@ def get_user_characteristics(
 ):
     """
     Step 2: See which users got into which graph
-    :param db_client: Client to the MongoDB database where the users are stored.
+    :param db_client: Client to the database where the users are stored.
     :param path_to_graph: Path to the file with the graph of users.
     :param output_path: Where to store the outputs.
     :return:
