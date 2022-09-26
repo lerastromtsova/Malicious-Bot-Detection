@@ -8,8 +8,9 @@ import pymongo
 import vk
 from dotenv import dotenv_values
 
-from models import get_clustered_graph, get_user_characteristics
-from models import get_centrality_metrics, get_clusters
+# from models import get_clustered_graph, get_user_characteristics
+# from models import get_clusters
+from models import get_centrality_metrics
 from sentistrength import PySentiStr
 
 config = dotenv_values(".env")

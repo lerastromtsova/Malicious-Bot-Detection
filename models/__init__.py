@@ -253,7 +253,12 @@ def get_clusters(
         {'friends': {'$type': 'array'}},
         {'friends': 1, 'vk_id': 1, '_id': 0}
     ))
-    edges = get_friends_graph(users, api, db_client, retrieve_friends_from_api=False)
+    edges = get_friends_graph(
+        users,
+        api,
+        db_client,
+        retrieve_friends_from_api=False
+    )
     G = nx.Graph()
     G.add_edges_from(edges)
     print(f"Initial graph size: {len(G.nodes)}")
@@ -298,7 +303,12 @@ def get_clustered_graph(
             for user in usrs:
                 if user in vk_ids:
                     G.add_node(user, cluster=key)
-    edges = get_friends_graph(users, api, db_client, retrieve_friends_from_api=False)
+    edges = get_friends_graph(
+        users,
+        api,
+        db_client,
+        retrieve_friends_from_api=False
+    )
     G.add_edges_from(edges)
     # To remove unconnected users
     G = G.edge_subgraph(G.edges())
