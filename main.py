@@ -2,7 +2,6 @@ import json
 import logging
 import os
 import sys
-from datetime import datetime
 
 import networkx as nx  # type: ignore
 import pymongo  # type: ignore
@@ -41,8 +40,6 @@ def filter_node(n):
 
 
 if __name__ == '__main__':
-    start_time = datetime.now()
-    logging.info('Started at: ', start_time)
 
     logging.info('Step 1: Cluster the users and write clusters to a file')
     get_clusters(db_client, api)
