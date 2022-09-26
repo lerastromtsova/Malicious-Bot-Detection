@@ -8,12 +8,12 @@ import time
 from datetime import datetime
 from typing import Generator
 
-import github  # type: ignore
-import pymongo  # type: ignore
-import requests  # type: ignore
-import vk.exceptions  # type: ignore
-from vk import API  # type: ignore
-from tqdm import tqdm  # type: ignore
+import github
+import pymongo
+import requests
+import vk.exceptions
+from vk import API
+from tqdm import tqdm
 
 
 def parse_comment_ids(

@@ -3,14 +3,14 @@ import logging
 import os
 import sys
 
-import networkx as nx  # type: ignore
-import pymongo  # type: ignore
-import vk  # type: ignore
-from dotenv import dotenv_values  # type: ignore
+import networkx as nx
+import pymongo
+import vk
+from dotenv import dotenv_values
 
 from models import get_clustered_graph, get_user_characteristics
 from models import get_centrality_metrics, get_clusters
-from sentistrength import PySentiStr  # type: ignore
+from sentistrength import PySentiStr
 
 config = dotenv_values(".env")
 if not config:

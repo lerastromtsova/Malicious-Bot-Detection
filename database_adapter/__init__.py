@@ -2,11 +2,11 @@ import logging
 import re
 import time
 
-import pymongo  # type: ignore
+import pymongo
 from datetime import datetime
 import os
-from vk import API, exceptions  # type: ignore
-from langdetect import detect, lang_detect_exception  # type: ignore
+from vk import API, exceptions
+from langdetect import detect, lang_detect_exception
 
 
 def write_comment_to_db(

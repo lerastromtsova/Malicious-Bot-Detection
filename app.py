@@ -1,15 +1,15 @@
 import os
 
-import pymongo  # type: ignore
-from dotenv import dotenv_values  # type: ignore
-from flask import Flask, render_template, request  # type: ignore
-from flask import session, redirect  # type: ignore
-from flask_babel import Babel  # type: ignore
+import pymongo
+from dotenv import dotenv_values
+from flask import Flask, render_template, request
+from flask import session, redirect
+from flask_babel import Babel
 
 from database_adapter import get_user_by_id, get_users_by_name
 from models import bot_check_results
 
-import iuliia  # type: ignore
+import iuliia
 
 app = Flask(__name__)
 babel = Babel(app)

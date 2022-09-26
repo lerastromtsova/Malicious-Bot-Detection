@@ -1,16 +1,16 @@
-import pymongo  # type: ignore
-from community import community_louvain  # type: ignore
-from tqdm import tqdm  # type: ignore
+import pymongo
+from community import community_louvain
+from tqdm import tqdm
 
 from data_parser import get_foaf_multithread, get_friends_graph
 from typing import Tuple, Any
 from datetime import datetime
 import itertools
-import networkx as nx  # type: ignore
-import markov_clustering as mc  # type: ignore
+import networkx as nx
+import markov_clustering as mc
 import json
 import logging
-from vk import API  # type: ignore
+from vk import API
 
 
 def bot_check_results(
