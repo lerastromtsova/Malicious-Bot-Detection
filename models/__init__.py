@@ -355,7 +355,8 @@ def get_user_characteristics(
 
 
 def get_centrality_metrics(
-        path_to_graph: str = 'outputs/graph_friends_enriched.json'
+        path_to_graph: str = 'outputs/graph_friends_enriched.json',
+        output_path: str = 'outputs/graph_with_centrality.json',
 ) -> Tuple:
     """
     Step 3: Calculate centrality metrics:
@@ -371,6 +372,12 @@ def get_centrality_metrics(
     degree_centrality = nx.degree_centrality(G)
     eigenvector_centrality = nx.eigenvector_centrality(G)
     clustering_coefficient = nx.clustering(G)
+    nx.set_node_attributes(G, degree_centrality, 'degree_centrality')
+    nx.set_node_attributes(G, eigenvector_centrality, 'eigenvector_centrality')
+    nx.set_node_attributes(G, clustering_coefficient, 'clustering_coefficient')
+    data = nx.node_link_data(G)
+    with open(output_path, 'w') as f:
+        json.dump(data, f)
     return degree_centrality, eigenvector_centrality, clustering_coefficient
 
 

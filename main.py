@@ -41,24 +41,19 @@ def filter_node(n):
 
 if __name__ == '__main__':
 
-    logging.info('Step 1: Cluster the users and write clusters to a file')
-    get_clusters(db_client, api)
-    get_clustered_graph(db_client, api)
+    # logging.info('Step 1: Cluster the users and write clusters to a file')
+    # get_clusters(db_client, api)
+    # get_clustered_graph(db_client, api)
 
-    logging.info('Step 2: Get bots/real users/undefined users')
-    get_user_characteristics(db_client)
+    # logging.info('Step 2: Get bots/real users/undefined users')
+    # get_user_characteristics(db_client)
 
     logging.info('Step 3: Calculate centrality metrics')
     cent_metrics = get_centrality_metrics()
 
-    with open('outputs/graph_friends_enriched.json', 'r') as f:
+    with open('outputs/graph_with_centrality.json', 'r') as f:
         graph = json.load(f)
     G = nx.node_link_graph(graph)
-    logging.info("Number of nodes", len(G.nodes))
-    subgraph = nx.subgraph_view(G, filter_node=filter_node)
-    logging.info("Number of nodes", len(subgraph.nodes))
-    final_view = subgraph.edge_subgraph(subgraph.edges())
-    logging.info("Number of nodes", final_view.nodes)
 
     logging.info("Write to a Gephi file")
-    nx.write_gexf(final_view, 'outputs/subgraph.gexf')
+    nx.write_gexf(G, 'outputs/graph.gexf')
