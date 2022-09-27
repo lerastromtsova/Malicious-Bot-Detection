@@ -239,156 +239,66 @@ def get_adj_matrix(
 
 
 def get_clusters(
-        db_client: pymongo.MongoClient,
-        api: API
-) -> dict:
+        graph: nx.Graph,
+) -> nx.Graph:
     """
     Cluster the users using Louvain algorithm.
-    :param db_client: Client to the database where the users are stored.
-    :param api: VK API to fetch the data from.
-    :return: A dictionary representing clusters and corresponding users.
+    :param graph:
+    :return: An updated graph
     """
-    start = datetime.now()
-    users = list(db_client.dataVKnodup.users.find(
-        {'friends': {'$type': 'array'}},
-        {'friends': 1, 'vk_id': 1, '_id': 0}
-    ))
-    edges = get_friends_graph(
-        users,
-        api,
-        db_client,
-        retrieve_friends_from_api=False
-    )
-    G = nx.Graph()
-    G.add_edges_from(edges)
-    print(f"Initial graph size: {len(G.nodes)}")
-    # To remove unconnected users
-    G = G.edge_subgraph(G.edges())
-    print(f"After removal graph size: {len(G.nodes)}")
-    partition = community_louvain.best_partition(G)
-    clusters: dict[str, list] = {}
-    for k, v in partition.items():
-        if v in clusters.keys():
-            clusters[v].append(k)
-        else:
-            clusters[v] = [k]
-    for k, v in clusters.items():
-        db_client.dataVKnodup.clusters.insert_one({str(k): v})
-    print('Number of clusters: ', len(clusters))
-    print('Time elapsed: ', datetime.now() - start)
-    return clusters
+    partition = community_louvain.best_partition(graph)
+    nx.set_node_attributes(graph, partition, 'cluster')
+    return graph
 
 
-def get_clustered_graph(
-        db_client: pymongo.MongoClient,
-        api: API,
-        output_path: str = 'outputs/graph_friends.json'
-) -> None:
+def get_is_friend(
+        graph: nx.Graph,
+) -> nx.Graph:
     """
-    Step 1: Get the clustered graph from the database and save it to a file
-    :param output_path: Where to store the graph.
-    :param db_client: Client to the database where the users are stored.
-    :param api: VK API to fetch the data from.
+    Step 2: Match the user ids with friends file (real users).
+    :param graph:
     :return:
     """
-    users = list(db_client.dataVKnodup.users.find(
-        {"friends": {'$type': 'array'}},
-        {'vk_id': 1, 'friends': 1, '_id': 0}
-    ))
-    vk_ids = set([u['vk_id'] for u in users])
-    G = nx.Graph()
-    clusters = list(db_client.dataVKnodup.clusters.find({}, {'_id': 0}))
-    for cluster in clusters:
-        for key, usrs in cluster.items():
-            for user in usrs:
-                if user in vk_ids:
-                    G.add_node(user, cluster=key)
-    edges = get_friends_graph(
-        users,
-        api,
-        db_client,
-        retrieve_friends_from_api=False
-    )
-    G.add_edges_from(edges)
-    # To remove unconnected users
-    G = G.edge_subgraph(G.edges())
-    data = nx.node_link_data(G)
-    print(f'Graph size: {len(G.nodes)}')
-    with open(output_path, 'w') as f:
-        json.dump(data, f)
-
-
-def get_user_characteristics(
-        db_client,
-        path_to_graph: str = 'outputs/graph_friends.json',
-        output_path: str = 'outputs/graph_friends_enriched.json'
-):
-    """
-    Step 2: See which users got into which graph
-    :param db_client: Client to the database where the users are stored.
-    :param path_to_graph: Path to the file with the graph of users.
-    :param output_path: Where to store the outputs.
-    :return:
-    """
-    with open(path_to_graph, 'r') as f:
-        graph = json.load(f)
-    G = nx.node_link_graph(graph)
-    deactivated_values = dict.fromkeys(G.nodes)
-    verified_values = dict.fromkeys(G.nodes)
-    friends_values = dict.fromkeys(G.nodes)
-    all_friends = set()
     with open('friends.json', 'r') as f:
         friends = json.load(f)
+    is_friend = dict.fromkeys(graph.nodes, 0)
     for k, v in friends.items():
-        all_friends.add(int(k))
+        if int(k) in is_friend:
+            is_friend[int(k)] = 1
         if v:
-            for i in v:
-                all_friends.add(i)
-    for i, user in tqdm(enumerate(G.nodes)):
-        record = db_client.dataVKnodup.users.find({'vk_id': user}, {
-            'deactivated': 1,
-            'verified': 1,
-            '_id': 0
-        })[0]
-        deactivated_values[user] = record['deactivated']
-        if 'verified' in record:
-            verified_values[user] = record['verified']
-        else:
-            verified_values[user] = 0
-        friends_values[user] = 1 if user in all_friends else 0
-    nx.set_node_attributes(G, deactivated_values, 'deactivated')
-    nx.set_node_attributes(G, verified_values, 'verified')
-    nx.set_node_attributes(G, friends_values, 'is_friend')
-    data = nx.node_link_data(G)
-    with open(output_path, 'w') as f:
-        json.dump(data, f)
+            for _ in v:
+                if _ in is_friend:
+                    is_friend[_] = 1
+    nx.set_node_attributes(graph, is_friend, 'is_friend')
+    return graph
 
 
 def get_centrality_metrics(
-        path_to_graph: str = 'outputs/graph_friends_enriched.json',
-        output_path: str = 'outputs/graph_with_centrality.json',
-) -> Tuple:
+        graph: nx.Graph
+) -> nx.Graph:
     """
     Step 3: Calculate centrality metrics:
             - degree centrality
             - eigenvector centrality
             - clustering coefficient
-    :param path_to_graph: Path to the file with the graph of users.
+    :param graph:
     :return: Three centrality metrics
     """
-    with open(path_to_graph, 'r') as f:
-        graph = json.load(f)
-    G = nx.node_link_graph(graph)
-    degree_centrality = nx.degree_centrality(G)
-    eigenvector_centrality = nx.eigenvector_centrality(G)
-    clustering_coefficient = nx.clustering(G)
-    nx.set_node_attributes(G, degree_centrality, 'degree_centrality')
-    nx.set_node_attributes(G, eigenvector_centrality, 'eigenvector_centrality')
-    nx.set_node_attributes(G, clustering_coefficient, 'clustering_coefficient')
-    data = nx.node_link_data(G)
-    with open(output_path, 'w') as f:
-        json.dump(data, f)
-    return degree_centrality, eigenvector_centrality, clustering_coefficient
+    degree_centrality = nx.degree_centrality(graph)
+    eigenvector_centrality = nx.eigenvector_centrality(graph)
+    clustering_coefficient = nx.clustering(graph)
+    for k, v in clustering_coefficient.items():
+        clustering_coefficient[k] = float(round(v, 6))
+    print(clustering_coefficient[273678342], type(clustering_coefficient[273678342]))
+    print(clustering_coefficient[329777165], type(clustering_coefficient[329777165]))
+    print(clustering_coefficient[680263701], type(clustering_coefficient[680263701]))
+    print(clustering_coefficient[302514197], type(clustering_coefficient[302514197]))
+    print(clustering_coefficient[89391156], type(clustering_coefficient[89391156]))
+    print(clustering_coefficient[9175092], type(clustering_coefficient[9175092]))
+    nx.set_node_attributes(graph, degree_centrality, 'degree_centrality')
+    nx.set_node_attributes(graph, eigenvector_centrality, 'eigenvector_centrality')
+    nx.set_node_attributes(graph, clustering_coefficient, 'clustering_coefficient')
+    return graph
 
 
 def analyse_sentiment(
@@ -403,3 +313,40 @@ def analyse_sentiment(
     """
     result = sentiment_analyser.getSentiment(text, score='dual')
     return result
+
+
+def get_average_sentiment(
+        graph: nx.Graph,
+        db_client: pymongo.MongoClient
+) -> nx.Graph:
+    positive_sentiments = {}
+    negative_sentiments = {}
+    overall_sentiments = {}
+    for u in graph.nodes:
+        if 'avg_pos_sent' not in graph.nodes[u].keys():
+            comments = db_client.dataVKnodup.comments.find({'from_id': u, 'sentiment': {'$exists': 1}})
+            sentiments = [c['sentiment'] for c in comments]
+            correct_sentiments = []
+            for s in sentiments:
+                if isinstance(s[0], list):
+                    correct_sentiments.append(s[0])
+                else:
+                    correct_sentiments.append(s)
+            sentiments = correct_sentiments
+            pos_sent = [s[0] for s in sentiments]
+            neg_sent = [s[1] for s in sentiments]
+            sent = [(s[0] + s[1]) / 2 for s in sentiments]
+            avg_pos_sent = sum(pos_sent) / len(pos_sent) if pos_sent else 0
+            avg_neg_sent = sum(neg_sent) / len(neg_sent) if neg_sent else 0
+            avg_sent = sum(sent) / len(sent) if sent else 0
+            positive_sentiments[u] = avg_pos_sent
+            negative_sentiments[u] = avg_neg_sent
+            overall_sentiments[u] = avg_sent
+        else:
+            positive_sentiments[u] = graph.nodes[u]['avg_pos_sent']
+            negative_sentiments[u] = graph.nodes[u]['avg_neg_sent']
+            overall_sentiments[u] = graph.nodes[u]['avg_sent']
+    nx.set_node_attributes(graph, positive_sentiments, 'avg_pos_sent')
+    nx.set_node_attributes(graph, negative_sentiments, 'avg_neg_sent')
+    nx.set_node_attributes(graph, overall_sentiments, 'avg_sent')
+    return graph
