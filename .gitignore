@@ -131,5 +131,5 @@ dmypy.json
 # PyCharm IDE
 .idea/
 
-# Output files
-data/output
+# SentiStrength - for access read http://sentistrength.wlv.ac.uk/
+sentistrength/*

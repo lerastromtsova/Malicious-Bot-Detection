@@ -1,15 +1,19 @@
 import base64
+import concurrent
 import json
 import logging
 import os
+import re
 import time
 from datetime import datetime
 from typing import Generator
 
-import github  # type: ignore
-import pymongo  # type: ignore
-import vk.exceptions  # type: ignore
-from vk import API  # type: ignore
+import github
+import pymongo
+import requests
+import vk.exceptions
+from vk import API
+from tqdm import tqdm
 
 
 def parse_comment_ids(
@@ -173,3 +177,163 @@ def get_friends_of_friends(
             pass
         print(i)
     return friends_of_friends
+
+
+def get_foaf_multithread(vk_user_ids):
+    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+        futures = []
+        results = []
+        for vk_user_id in vk_user_ids:
+            futures.append(executor.submit(get_foaf_data, vk_user_id))
+        for future in concurrent.futures.as_completed(futures):
+            results.append(future.result())
+    return results
+
+
+def get_foaf_data(
+        vk_user_id: str
+) -> dict:
+
+    url = f"https://vk.com/foaf.php?id={vk_user_id}"
+    response = requests.get(url)
+    xml = response.text
+    created_at = None
+    timezone = None
+    followee_rate = None
+    follower_rate = None
+    follower_to_followee = None
+
+    created_at_start_str = '<ya:created dc:date="'
+    created_at_end_str = '"/>'
+    created_at_str = re.search(
+        f'{created_at_start_str}(.*){created_at_end_str}', xml
+    )
+    if created_at_str:
+        created_at = created_at.group().split(
+            created_at_start_str
+        )[1].split(
+            created_at_end_str
+        )[0]
+        created_at_tuple = created_at.split('+')
+        created_at_date = datetime.strptime(
+            created_at_tuple[0],
+            '%Y-%m-%dT%H:%M:%S'
+        )
+        timezone = created_at_tuple[1]
+
+    followee_rate_start_str = '<ya:subscribedToCount>'
+    followee_rate_end_str = '</ya:subscribedToCount>'
+    followee_rate_str = re.search(
+        f'{followee_rate_start_str}(.*){followee_rate_end_str}',
+        xml
+    )
+    if followee_rate_str:
+        followee_rate = int(followee_rate_str.group().split(
+            followee_rate_start_str
+        )[1].split(
+            followee_rate_end_str
+        )[0])
+
+    follower_rate_start_str = '<ya:subscribersCount>'
+    follower_rate_end_str = '</ya:subscribersCount>'
+    follower_rate_str = re.search(
+        f'{follower_rate_start_str}(.*){follower_rate_end_str}',
+        xml
+    )
+    if follower_rate_str:
+        follower_rate = int(follower_rate_str.group().split(
+            follower_rate_start_str
+        )[1].split(
+            follower_rate_end_str
+        )[0])
+
+    if follower_rate and followee_rate:
+        follower_to_followee = round(follower_rate / followee_rate, 4)
+
+    return {
+        "vk_id": vk_user_id,
+        "created_at": created_at_date,
+        "timezone": timezone,
+        "followee_rate": followee_rate,
+        "follower_rate": follower_rate,
+        "follower_to_followee": follower_to_followee
+    }
+
+
+def get_activity_count(
+        vk_user_id: int,
+        db_client: pymongo.MongoClient
+) -> int:
+    return db_client.dataVKnodup.comments.count_documents({
+        'from_id': vk_user_id
+    })
+
+
+def get_friends_graph(
+        users: list,
+        api: API,
+        db_client: pymongo.MongoClient,
+        retrieve_friends_from_api: bool = True
+) -> set:
+    """
+    Builds a graph of users based on their friendship relationship.
+    :param users:
+    :param api:
+    :param db_client:
+    :param retrieve_friends_from_api:
+    :return: A set of edges between users.
+    """
+    vk_ids = set([user['vk_id'] for user in users])
+    graph = set()
+    if retrieve_friends_from_api:
+        for i in tqdm(range(0, len(users), 25)):
+            time.sleep(0.3)
+            error_count = 0
+            # 29 is the error code for quantity limit
+            user_ids = [
+                str(u['vk_id']) for u in users[i:i+25]
+                if 'friends' not in u or u['friends'] == 29
+            ]
+            response = api.execute(
+                code=f'var i = 0;'
+                     f'var user;'
+                     f'var users = [];'
+                     f'var user_ids = {"[" + ",".join(user_ids) + "]"};'
+                     f'while (i != 25) {{'
+                     f'user = API.friends.get('
+                     f'{{'
+                     f'"user_id": (user_ids[i]), '
+                     f'"v": "5.131", '
+                     f'}}'
+                     f'); '
+                     f'i = i + 1;'
+                     f'users.push(user);'
+                     f'}};'
+                     f'return users;',
+                v="5.131"
+            )
+            response = list(response)
+            for j in range(len(response)):
+                if response[j]:
+                    db_client.dataVKnodup.users.update_one(
+                        {'vk_id': int(user_ids[j])},
+                        {'$set': {'friends': response[j]['items']}}
+                    )
+                else:
+                    db_client.dataVKnodup.users.update_one(
+                        {'vk_id': int(user_ids[j])},
+                        {'$set': {'friends': 30}}
+                    )
+                    error_count += 1
+    else:
+        for user in users:
+            # If an integer is stored in "friends", it means the error code
+            if isinstance(user['friends'], int):
+                friends = set()
+            else:
+                friends = user['friends']
+            inters = set(friends).intersection(vk_ids)
+            if inters:
+                for i in inters:
+                    graph.add((user['vk_id'], i))
+    return graph

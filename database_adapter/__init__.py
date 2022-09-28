@@ -2,10 +2,11 @@ import logging
 import re
 import time
 
-import pymongo  # type: ignore
+import pymongo
 from datetime import datetime
 import os
-from vk import API, exceptions  # type: ignore
+from vk import API, exceptions
+from langdetect import detect, lang_detect_exception
 
 
 def write_comment_to_db(
@@ -230,6 +231,13 @@ def get_writing_speed(
         db_client: pymongo.MongoClient,
         time_to_sleep: int = 10
 ) -> float:
+    """
+    A utility function to estimate the speed with
+    which the comments colection is populated.
+    :param db_client:
+    :param time_to_sleep:
+    :return: Number of comments processed per second.
+    """
     start_count = db_client.dataVKnodup.comments.count_documents(
         {'processed': True}
     )
@@ -244,6 +252,12 @@ def get_user_by_id(
         db_client: pymongo.MongoClient,
         user_id: int
 ) -> list:
+    """
+    Retrieve a user by their VK ID.
+    :param db_client:
+    :param user_id:
+    :return:
+    """
     users = db_client.dataVKnodup.users.find({'vk_id': int(user_id)})
     return list(users)
 
@@ -252,6 +266,12 @@ def get_comments_by_user(
         db_client: pymongo.MongoClient,
         user_id: int
 ) -> list:
+    """
+    Get all the comments that a particular user left in the database.
+    :param db_client:
+    :param user_id:
+    :return:
+    """
     comments = list(db_client.dataVKnodup.comments.find(
         {'from_id': int(user_id)}
     ))
@@ -266,7 +286,14 @@ def get_users_by_name(
         db_client: pymongo.MongoClient,
         query: str,
         users_limit: int = 10
-):
+) -> list:
+    """
+    Search for users using their first or last name.
+    :param db_client:
+    :param query:
+    :param users_limit:
+    :return:
+    """
     to_search = query.split()
     if len(to_search) == 2:
         users = list(db_client.dataVKnodup.users.find(
@@ -287,7 +314,13 @@ def get_users_by_name(
 def add_verified_users(
         db_client: pymongo.MongoClient,
         api: API
-):
+) -> None:
+    """
+    Add the 'verified' fiels to each user in the database.
+    :param db_client:
+    :param api:
+    :return:
+    """
     users = db_client.dataVKnodup.users.find({
         'verified': {'$exists': 0}},
         {'vk_id': 1, '_id': 0}
@@ -308,3 +341,82 @@ def add_verified_users(
         except exceptions.VkAPIError:
             pass
     db_client.close()
+
+
+def remove_emojis(
+        data: str
+) -> str:
+    """
+    Remove all emojis from a given string.
+    :param data:
+    :return:
+    """
+    emoj = re.compile("["
+                      u"\U0001F600-\U0001F64F"  # emoticons
+                      u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+                      u"\U0001F680-\U0001F6FF"  # transport & map symbols
+                      u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+                      u"\U00002500-\U00002BEF"  # chinese char
+                      u"\U00002702-\U000027B0"
+                      u"\U00002702-\U000027B0"
+                      u"\U000024C2-\U0001F251"
+                      u"\U0001f926-\U0001f937"
+                      u"\U00010000-\U0010ffff"
+                      u"\u2640-\u2642"
+                      u"\u2600-\u2B55"
+                      u"\u200d"
+                      u"\u23cf"
+                      u"\u23e9"
+                      u"\u231a"
+                      u"\ufe0f"  # dingbats
+                      u"\u3030"
+                      "]+", re.UNICODE)
+    return re.sub(emoj, '', data)
+
+
+def detect_languages(
+        db_client: pymongo.MongoClient
+) -> None:
+    """
+    Mark all comments in the database with the language they are written in.
+    :param db_client:
+    :return:
+    """
+    comments = db_client.dataVKnodup.comments.aggregate([
+        {'$match': {'language': {'$exists': 0}, 'text': {'$exists': 1}}},
+        {'$sample': {'size': 10000}}
+    ])
+    for comment in comments:
+        if comment['text']:
+            text = remove_emojis(comment['text'])
+            if text:
+                # To remove "Replies"
+                text = re.sub(r'\[.*[a-zA-Z]+.*\], ', '', comment['text'])
+                if text:
+                    try:
+                        language = detect(text)
+                        db_client.dataVKnodup.comments.update_one(
+                            {"_id": comment['_id']},
+                            {'$set': {'language': language}}
+                        )
+                    except lang_detect_exception.LangDetectException:
+                        db_client.dataVKnodup.comments.update_one(
+                            {"_id": comment['_id']},
+                            {'$set': {'language': 'unknown'}}
+                        )
+                        pass
+                else:
+                    db_client.dataVKnodup.comments.update_one(
+                        {"_id": comment['_id']},
+                        {'$set': {'language': 'unknown'}}
+                    )
+            else:
+                db_client.dataVKnodup.comments.update_one(
+                    {"_id": comment['_id']},
+                    {'$set': {'language': 'unknown'}}
+                )
+        else:
+            db_client.dataVKnodup.comments.update_one(
+                {"_id": comment['_id']},
+                {'$set': {'language': 'unknown'}}
+            )

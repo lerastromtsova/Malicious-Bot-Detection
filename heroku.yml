@@ -10,3 +10,6 @@ run:
   orange:
     command:
       - python main.py VK_API_TOKEN_ORANGE
+  web:
+    command:
+      - gunicorn app:app
