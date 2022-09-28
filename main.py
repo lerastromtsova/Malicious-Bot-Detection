@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import sys
@@ -36,11 +35,6 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
 senti = PySentiStr()
 senti.setSentiStrengthPath('sentistrength/SentiStrength.jar')
 senti.setSentiStrengthLanguageFolderPath('sentistrength/SentiStrength_Data_RU')
-
-
-def filter_node(n):
-    g = G.nodes[n]
-    return "cluster" in g
 
 
 if __name__ == '__main__':
@@ -129,9 +123,12 @@ if __name__ == '__main__':
             {'$set': {
                 'cluster': user_graph.nodes[node]['cluster'],
                 'is_friend': user_graph.nodes[node]['is_friend'],
-                'degree_centrality': user_graph.nodes[node]['degree_centrality'],
-                'eigenvector_centrality': user_graph.nodes[node]['eigenvector_centrality'],
-                'clustering_coefficient': user_graph.nodes[node]['clustering_coefficient'],
+                'degree_centrality':
+                    user_graph.nodes[node]['degree_centrality'],
+                'eigenvector_centrality':
+                    user_graph.nodes[node]['eigenvector_centrality'],
+                'clustering_coefficient':
+                    user_graph.nodes[node]['clustering_coefficient'],
                 'avg_pos_sent': user_graph.nodes[node]['avg_pos_sent'],
                 'avg_neg_sent': user_graph.nodes[node]['avg_neg_sent'],
                 'avg_sent': user_graph.nodes[node]['avg_sent'],

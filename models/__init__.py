@@ -1,16 +1,15 @@
-import pymongo
-from community import community_louvain
-from tqdm import tqdm
-
-from data_parser import get_foaf_multithread, get_friends_graph
-from typing import Tuple, Any
-from datetime import datetime
 import itertools
-import networkx as nx
-import markov_clustering as mc
 import json
 import logging
-from vk import API
+from datetime import datetime
+from typing import Tuple, Any
+
+import markov_clustering as mc
+import networkx as nx
+import pymongo
+from community import community_louvain
+
+from data_parser import get_foaf_multithread
 
 
 def bot_check_results(
@@ -289,15 +288,21 @@ def get_centrality_metrics(
     clustering_coefficient = nx.clustering(graph)
     for k, v in clustering_coefficient.items():
         clustering_coefficient[k] = float(round(v, 6))
-    print(clustering_coefficient[273678342], type(clustering_coefficient[273678342]))
-    print(clustering_coefficient[329777165], type(clustering_coefficient[329777165]))
-    print(clustering_coefficient[680263701], type(clustering_coefficient[680263701]))
-    print(clustering_coefficient[302514197], type(clustering_coefficient[302514197]))
-    print(clustering_coefficient[89391156], type(clustering_coefficient[89391156]))
-    print(clustering_coefficient[9175092], type(clustering_coefficient[9175092]))
-    nx.set_node_attributes(graph, degree_centrality, 'degree_centrality')
-    nx.set_node_attributes(graph, eigenvector_centrality, 'eigenvector_centrality')
-    nx.set_node_attributes(graph, clustering_coefficient, 'clustering_coefficient')
+    nx.set_node_attributes(
+        graph,
+        degree_centrality,
+        'degree_centrality'
+    )
+    nx.set_node_attributes(
+        graph,
+        eigenvector_centrality,
+        'eigenvector_centrality'
+    )
+    nx.set_node_attributes(
+        graph,
+        clustering_coefficient,
+        'clustering_coefficient'
+    )
     return graph
 
 
@@ -324,7 +329,9 @@ def get_average_sentiment(
     overall_sentiments = {}
     for u in graph.nodes:
         if 'avg_pos_sent' not in graph.nodes[u].keys():
-            comments = db_client.dataVKnodup.comments.find({'from_id': u, 'sentiment': {'$exists': 1}})
+            comments = db_client.dataVKnodup.comments.find(
+                {'from_id': u, 'sentiment': {'$exists': 1}}
+            )
             sentiments = [c['sentiment'] for c in comments]
             correct_sentiments = []
             for s in sentiments:
