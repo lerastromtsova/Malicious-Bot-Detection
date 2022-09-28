@@ -1,6 +1,5 @@
 import networkx as nx
 import pandas as pd
-import matplotlib.pyplot as plt
 import json
 
 # num_clusters = 5487
@@ -17,7 +16,9 @@ except FileNotFoundError:
 
     for cluster in clusters:
         characteristics[cluster] = {}
-        nodes = [n for n in graph.nodes if graph.nodes[n]['cluster'] == cluster]
+        nodes = [
+            n for n in graph.nodes if graph.nodes[n]['cluster'] == cluster
+        ]
         len_nodes = len(nodes)
         characteristics[cluster]['num_users'] = len_nodes
         verified = [
@@ -29,7 +30,8 @@ except FileNotFoundError:
             graph.nodes[node]['is_friend']
             for node in nodes
         ]
-        characteristics[cluster]['is_friend_ratio'] = sum(is_friend) / len_nodes
+        characteristics[cluster]['is_friend_ratio'] = \
+            sum(is_friend) / len_nodes
         banned = [
             1 if graph.nodes[node]['cluster'] == cluster
             and graph.nodes[node]['deactivated'] == 'banned'
@@ -41,9 +43,21 @@ except FileNotFoundError:
         json.dump(characteristics, f)
 
 x = list(clusters)
-y1 = [i['verified_ratio'] for i in list(characteristics.values())[:num_clusters+1]]
-y2 = [i['is_friend_ratio'] for i in list(characteristics.values())[:num_clusters+1]]
-y3 = [i['banned_ratio'] for i in list(characteristics.values())[:num_clusters+1]]
+y1 = [
+    i['verified_ratio'] for i in list(
+        characteristics.values()
+    )[:num_clusters + 1]
+]
+y2 = [
+    i['is_friend_ratio'] for i in list(
+        characteristics.values()
+    )[:num_clusters + 1]
+]
+y3 = [
+    i['banned_ratio'] for i in list(
+        characteristics.values()
+    )[:num_clusters + 1]
+]
 df = pd.DataFrame({
     'cluster': x,
     'verified_ratio': y1,
@@ -86,8 +100,10 @@ for cluster, chars in characteristics.items():
     else:
         possible_human_clusters.append(cluster)
 
-possible_human_users = sum(characteristics[c]['num_users'] for c in possible_human_clusters)
-possible_bot_users = sum(characteristics[c]['num_users'] for c in possible_bot_clusters)
+possible_human_users = sum(characteristics[c]['num_users']
+                           for c in possible_human_clusters)
+possible_bot_users = sum(characteristics[c]['num_users']
+                         for c in possible_bot_clusters)
 
 print(
     "Human: ",
