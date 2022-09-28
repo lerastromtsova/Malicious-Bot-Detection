@@ -58,7 +58,7 @@ def is_bot():
     if request.args:
         user_id = int(request.args.get('user'))
         users = get_user_by_id(db_client, user_id)
-        bot_check_result = bot_check_results(user_id)
+        bot_check_result = bot_check_results(users[0])
         return render_template(
             'bot-check-results.html',
             user=users[0],

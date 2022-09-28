@@ -13,14 +13,17 @@ from data_parser import get_foaf_multithread
 
 
 def bot_check_results(
-        user_id: int
+        user: dict
 ) -> bool:
     """
     Checks whether a given user is a bot,
-    :param user_id: VK ID of a user to check.
+    :param user: a user to check.
     :return: True if the user is predicted to be a bot, otherwise False
     """
-    return True
+    bot_clusters = [1, 3, 7, 24, 35, 158]
+    if user['cluster'] in bot_clusters:
+        return True
+    return False
 
 
 def enrich_users_data(
