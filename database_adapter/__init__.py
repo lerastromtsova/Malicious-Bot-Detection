@@ -258,7 +258,7 @@ def get_user_by_id(
     :param user_id:
     :return:
     """
-    users = db_client.dataVKnodup.users.find({'vk_id': int(user_id)})
+    users = db_client.dataVKnodup.users.find({'vk_id': int(user_id), 'cluster': {'$exists': 1}})
     return list(users)
 
 
@@ -298,14 +298,15 @@ def get_users_by_name(
     if len(to_search) == 2:
         users = list(db_client.dataVKnodup.users.find(
             {'first_name': {'$regex': to_search[0], '$options': 'i'},
-             'last_name': {'$regex': to_search[1], '$options': 'i'}}
+             'last_name': {'$regex': to_search[1], '$options': 'i'},
+             'cluster': {'$exists': 1}}
         ).limit(users_limit))
     else:
         users_by_lname = db_client.dataVKnodup.users.find(
-            {'last_name': {'$regex': to_search[0], '$options': 'i'}}
+            {'last_name': {'$regex': to_search[0], '$options': 'i'}, 'cluster': {'$exists': 1}}
         ).limit(users_limit)
         users_by_fname = db_client.dataVKnodup.users.find(
-            {'first_name': {'$regex': to_search[0], '$options': 'i'}}
+            {'first_name': {'$regex': to_search[0], '$options': 'i'}, 'cluster': {'$exists': 1}}
         ).limit(users_limit)
         users = list(users_by_lname) + list(users_by_fname)
     return users
