@@ -26,6 +26,7 @@ df_filtered.boxplot(column=[
 plt.title('Filtered centrality metrics distribution')
 plt.show()
 
+
 df.boxplot(column=[
     'avg_neg_sent',
     'avg_pos_sent',
@@ -41,3 +42,6 @@ df_filtered.boxplot(column=[
 ])
 plt.title('Filtered sentiments distribution')
 plt.show()
+
+df.describe().to_csv('../outputs/full_characteristics.csv')
+df_filtered.describe().to_csv('../outputs/filtered_characteristics.csv')
