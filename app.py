@@ -7,6 +7,7 @@ from flask import session, redirect
 from flask_babel import Babel
 
 from database_adapter import get_user_by_id, get_users_by_name
+from database_adapter import get_comments_by_user
 from models import bot_check_results
 
 import iuliia
@@ -59,10 +60,12 @@ def is_bot():
         user_id = int(request.args.get('user'))
         users = get_user_by_id(db_client, user_id)
         bot_check_result = bot_check_results(users[0])
+        comments = get_comments_by_user(db_client, user_id)
         return render_template(
             'bot-check-results.html',
             user=users[0],
-            is_bot=bot_check_result
+            is_bot=bot_check_result,
+            comments=comments
         )
     return render_template('index.html')
 
