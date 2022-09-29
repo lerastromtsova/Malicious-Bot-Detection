@@ -21,7 +21,7 @@ def bot_check_results(
     :return: True if the user is predicted to be a bot, otherwise False
     """
     bot_clusters = [1, 3, 7, 24, 35, 158]
-    if user['cluster'] in bot_clusters:
+    if user['cluster'] in bot_clusters or user['gosvon_bot']:
         return True
     return False
 
