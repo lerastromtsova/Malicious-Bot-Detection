@@ -6,7 +6,8 @@ from flask import Flask, render_template, request
 from flask import session, redirect
 from flask_babel import Babel
 
-from database_adapter import get_user_by_id, get_users_by_name, get_comments_by_user
+from database_adapter import get_user_by_id, get_users_by_name
+from database_adapter import get_comments_by_user
 from models import bot_check_results
 
 import iuliia
