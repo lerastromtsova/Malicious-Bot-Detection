@@ -1,12 +1,28 @@
 import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
+import pymongo
+from dotenv import dotenv_values
 
 graph = nx.read_gexf('../outputs/new_graph.gexf')
 nodes = graph.nodes(data=True)
 nodes_array = []
+config = dotenv_values("../.env")
+db_client = pymongo.MongoClient(f"mongodb+srv://"
+                                f"lerastromtsova:{config['MONGO_DB_PASSWORD']}"
+                                f"@cluster0.ubfnhtk.mongodb.net/"
+                                f"?retryWrites=true&w=majority",
+                                tls=True,
+                                tlsAllowInvalidCertificates=True)
+
+bot_users = list(db_client.dataVKnodup.users.find({'cluster': {'$exists': 1}, 'gosvon_bot': 1}, {'_id': 0, 'vk_id': 1}))
+vk_ids = [_['vk_id'] for _ in bot_users]
+
 for i, value in nodes:
-    nodes_array.append({'id': i, **value})
+    if i in vk_ids:
+        nodes_array.append({'id': i, 'gosvon_bot': 1, **value})
+    else:
+        nodes_array.append({'id': i, 'gosvon_bot': 0, **value})
 
 df = pd.DataFrame(nodes_array)
 df.boxplot(column=[
@@ -18,6 +34,7 @@ plt.title('Full centrality metrics distribution')
 plt.show()
 
 df_filtered = df[~df.cluster.isin([1, 3, 7, 24, 35, 158])]
+df_filtered = df_filtered[df_filtered.gosvon_bot != 1]
 df_filtered.boxplot(column=[
     'degree_centrality',
     'eigenvector_centrality',

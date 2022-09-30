@@ -1,4 +1,4 @@
-;vk_id;cluster;attitude;account;
+;vk_id;cluster;attitude;account;gosvon
 0;218931184;1799;Pro-Russian;Human;
 1;467707147;10;Pro-Ukrainian;Human;
 2;237609756;3277;Pro-Russian;Human;
@@ -73,7 +73,7 @@
 71;22183604;46;Neutral;Human;
 72;250257773;24;Neutral;Human;
 73;78718558;15;Neutral;Human;
-74;720477752;139;Pro-Russian;Bot;
+74;720477752;139;Pro-Russian;Bot;1
 75;616930908;10;Pro-Russian;Human;
 76;6721402;87;Neutral;Human;
 77;51819493;8;Pro-Russian;Bot;

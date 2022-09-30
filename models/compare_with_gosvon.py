@@ -52,12 +52,13 @@ users = db_client.dataVKnodup.users.find({'cluster': {'$exists': 1}})
 with open('../outputs/bots_in_clusters.json', 'r') as f:
     bots_in_clusters = json.load(f)
 
-clusters = [k for k in bots_in_clusters.keys() if bots_in_clusters[k]['ratio'] > 0]
+clusters = [k for k in bots_in_clusters.keys() if bots_in_clusters[k]['ratio'] >= 0.5]
+print(clusters)
 bot_ratio = [bots_in_clusters[k]['ratio'] for k in bots_in_clusters.keys() if bots_in_clusters[k]['ratio'] > 0]
 
-df = pd.DataFrame({'clusters': clusters, 'bot_ratio': bot_ratio})
-df.plot(column=bot_ratio, kind='line')
-plt.show()
+# df = pd.DataFrame({'clusters': clusters, 'bot_ratio': bot_ratio})
+# df.plot(column=bot_ratio, kind='line')
+# plt.show()
 
 our_clusters = {'1', '3', '7', '24', '35', '158'}
 print(our_clusters.intersection(set(clusters)))
