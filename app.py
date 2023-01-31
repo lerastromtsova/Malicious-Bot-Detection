@@ -23,11 +23,11 @@ if config['LOCAL_DB']:
     db_client = pymongo.MongoClient(host="localhost", port=27017)
 else:
     db_client = pymongo.MongoClient(f"mongodb+srv://"
-                                f"lerastromtsova:{config['MONGO_DB_PASSWORD']}"
-                                f"@cluster0.ubfnhtk.mongodb.net/"
-                                f"?retryWrites=true&w=majority",
-                                tls=True,
-                                tlsAllowInvalidCertificates=True)
+                                    f"lerastromtsova:{config['MONGO_DB_PASSWORD']}"
+                                    f"@cluster0.ubfnhtk.mongodb.net/"
+                                    f"?retryWrites=true&w=majority",
+                                    tls=True,
+                                    tlsAllowInvalidCertificates=True)
 
 USERS_LIMIT = 10
 
