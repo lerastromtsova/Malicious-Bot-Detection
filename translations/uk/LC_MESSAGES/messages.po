@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-12 16:30+0200\n"
+"POT-Creation-Date: 2023-02-01 22:21+0100\n"
 "PO-Revision-Date: 2022-09-10 17:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk\n"
@@ -30,7 +30,8 @@ msgid "Contact"
 msgstr "Контакти"
 
 #: templates/bot-check-results.html:28 templates/contact.html:27
-#: templates/index.html:27 templates/methods.html:27
+#: templates/index.html:27 templates/labelling.html:21
+#: templates/methods.html:27
 msgid "Language"
 msgstr "Мова"
 
@@ -103,9 +104,27 @@ msgstr "ПОШУК"
 msgid "Could not find the user you specified. Try refining your search query."
 msgstr "Користувач не знайдений. Спробуйте вказати більш точний пошуковий запит."
 
-#: templates/index.html:124
+#: templates/index.html:124 templates/labelling.html:85
 msgid "Check"
 msgstr "Перевірити"
+
+#: templates/labelling.html:40
+msgid "Enter your Prolific ID"
+msgstr "Введіть свій Prolific ID"
+
+#: templates/labelling.html:41
+msgid ""
+"Thank you for taking part in our data labelling. First, please enter your"
+" Prolific ID."
+msgstr "Дякуємо за участь у нашому маркуванні даних. Спочатку введіть свій ідентифікатор Prolific."
+
+#: templates/labelling.html:49
+msgid "Enter your Prolific user ID"
+msgstr "Введіть свій Prolific ID"
+
+#: templates/labelling.html:55
+msgid "PROCEED"
+msgstr "ПРОДОВЖИТИ"
 
 #: templates/methods.html:46
 msgid "Our bot detection method is backed by scientific research"
@@ -123,7 +142,9 @@ msgstr "Наш метод включає кілька кроків:"
 msgid ""
 "Retrieve comments related to the Russian-Ukrainian armed conflict of 2022"
 " from VKontakte's most relevant media groups"
-msgstr "Парсинг коментарів, пов'язаних із російсько-українським збройним конфліктом 2022 року з груп ВКонтакте"
+msgstr ""
+"Парсинг коментарів, пов'язаних із російсько-українським збройним "
+"конфліктом 2022 року з груп ВКонтакте"
 
 #: templates/methods.html:55
 msgid "Build a graph of users who have been leaving these comments"
@@ -137,13 +158,17 @@ msgstr "Кластеризація мережі за допомогою алго
 msgid ""
 "Calculate characteristics of each cluster and probability of it being a "
 "bot cluster"
-msgstr "Обчислення характеристик кожного кластера та ймовірності того, що в кластері знаходяться боти"
+msgstr ""
+"Обчислення характеристик кожного кластера та ймовірності того, що в "
+"кластері знаходяться боти"
 
 #: templates/methods.html:58
 msgid ""
 "Calculate centrality metrics to identify most influential users in "
 "communities"
-msgstr "Підрахунок метрик центральності для визначення найвпливовіших користувачів у кластерах"
+msgstr ""
+"Підрахунок метрик центральності для визначення найвпливовіших "
+"користувачів у кластерах"
 
 #: templates/methods.html:59
 msgid "Conduct sentiment analysis to understand the tone conveyed by a cluster"
@@ -180,3 +205,4 @@ msgstr ", яка написана авторами"
 #: templates/methods.html:78
 msgid ", and"
 msgstr " i"
+

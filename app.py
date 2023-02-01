@@ -116,5 +116,16 @@ def inject_conf_var():
                 ))
 
 
+@app.route("/labelling")
+def labelling():
+    if request.args:
+        prolific_id = request.args.get('prolific_id')
+        next_user_id = request.args.get('next_user')
+        user = get_user_by_id(db_client, int(next_user_id))[0]
+        comments = get_comments_by_user(db_client, int(next_user_id))
+        return render_template('labelling.html', prolific_id=prolific_id, current_user=user, comments=comments)
+    return render_template('labelling.html')
+
+
 if __name__ == "__main__":
     app.run()

@@ -258,7 +258,7 @@ def get_user_by_id(
     :param user_id:
     :return:
     """
-    users = db_client.dataVKnodup.users.find({'vk_id': int(user_id), 'cluster': {'$exists': 1}})
+    users = db_client.dataVKnodup.users.find({'vk_id': int(user_id)})
     return list(users)
 
 
@@ -421,3 +421,25 @@ def detect_languages(
                 {"_id": comment['_id']},
                 {'$set': {'language': 'unknown'}}
             )
+
+
+def generate_database_sample(
+        db_client: pymongo.MongoClient,
+        sample_size: int
+):
+    db_client.dataVKnodup.users.update_many(
+        {},
+        {"$set": {"user_to_label": False}}
+    )
+    users = db_client.dataVKnodup.users.aggregate([
+        {'$sample': {'size': sample_size}}
+    ])
+    for u in users:
+        db_client.dataVKnodup.users.update_one(
+            {"_id": u['_id']},
+            {"$set": {"user_to_label": True}}
+        )
+
+
+# db_client = pymongo.MongoClient(host="localhost", port=27017)
+# generate_database_sample(db_client, 100)

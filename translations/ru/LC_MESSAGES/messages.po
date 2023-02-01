@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-12 16:30+0200\n"
+"POT-Creation-Date: 2023-02-01 22:21+0100\n"
 "PO-Revision-Date: 2022-08-29 23:41+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -30,7 +30,8 @@ msgid "Contact"
 msgstr "Контакты"
 
 #: templates/bot-check-results.html:28 templates/contact.html:27
-#: templates/index.html:27 templates/methods.html:27
+#: templates/index.html:27 templates/labelling.html:21
+#: templates/methods.html:27
 msgid "Language"
 msgstr "Язык"
 
@@ -101,9 +102,27 @@ msgstr "ПОИСК"
 msgid "Could not find the user you specified. Try refining your search query."
 msgstr "Пользователь не найден. Попробуйте задать более точный поисковый запрос."
 
-#: templates/index.html:124
+#: templates/index.html:124 templates/labelling.html:85
 msgid "Check"
 msgstr "Проверить"
+
+#: templates/labelling.html:40
+msgid "Enter your Prolific ID"
+msgstr "Введите свой Prolific ID"
+
+#: templates/labelling.html:41
+msgid ""
+"Thank you for taking part in our data labelling. First, please enter your"
+" Prolific ID."
+msgstr "Спасибо, что принимаете участие в разметке данных для нашего исследования. Пожалуйста, введите свой Prolific ID в форме ниже."
+
+#: templates/labelling.html:49
+msgid "Enter your Prolific user ID"
+msgstr "Введите свой Prolific ID"
+
+#: templates/labelling.html:55
+msgid "PROCEED"
+msgstr "ДАЛЕЕ"
 
 #: templates/methods.html:46
 msgid "Our bot detection method is backed by scientific research"
@@ -184,3 +203,4 @@ msgstr ", которая написана авторами"
 #: templates/methods.html:78
 msgid ", and"
 msgstr " и"
+
