@@ -27,7 +27,7 @@ else:
                                     host=config['MONGO_DB_HOST'],
                                     authSource=config['MONGO_DB_NAME'],
                                     tls=True,
-                                    tlsAllowInvalidCertificates=True)
+                                    tlsInsecure=True)
 
 USERS_LIMIT = 10
 
