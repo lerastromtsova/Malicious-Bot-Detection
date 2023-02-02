@@ -25,7 +25,7 @@ else:
     db_client = pymongo.MongoClient(username=config['MONGO_DB_USERNAME'],
                                     password=config['MONGO_DB_PASSWORD'],
                                     host=config['MONGO_DB_HOST'],
-                                    database=config['MONGO_DB_NAME'],
+                                    authSource=config['MONGO_DB_NAME'],
                                     tls=True,
                                     tlsAllowInvalidCertificates=True)
 
