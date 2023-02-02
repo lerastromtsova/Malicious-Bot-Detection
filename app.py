@@ -24,7 +24,7 @@ if config['LOCAL_DB']:
 else:
     db_client = pymongo.MongoClient(f"mongodb+srv://"
                                     f"lerastromtsova:{config['MONGO_DB_PASSWORD']}"
-                                    f"@cluster0.ubfnhtk.mongodb.net/"
+                                    f"@{config['MONGO_DB_HOST']}"
                                     f"?retryWrites=true&w=majority",
                                     tls=True,
                                     tlsAllowInvalidCertificates=True)
