@@ -130,7 +130,7 @@ def labelling():
         next_user_id = list(db_client.dataVKnodup.users.aggregate([
             {'$match': {"$and": [
                 {
-                    "labels": {"$not": {"$elemMatch": {"by": '12345'}}}
+                    "labels": {"$not": {"$elemMatch": {"by": prolific_id}}}
                 },
                 {
                     "user_to_label": True
