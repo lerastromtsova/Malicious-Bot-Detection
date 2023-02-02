@@ -19,7 +19,7 @@ config = dotenv_values(".env")
 if not config:
     config = os.environ
 
-if bool(config['LOCAL_DB']):
+if config['LOCAL_DB'] != '0':
     db_client = pymongo.MongoClient(host="localhost", port=27017)
 else:
     db_client = pymongo.MongoClient(f"mongodb+srv://"
