@@ -441,5 +441,8 @@ def generate_database_sample(
         )
 
 
+# To generate a new random sample
+
 # db_client = pymongo.MongoClient(host="localhost", port=27017)
+# db_client.dataVKnodup.users.update_many({"user_to_label": True}, {"$set": {"labels": []}})
 # generate_database_sample(db_client, 100)

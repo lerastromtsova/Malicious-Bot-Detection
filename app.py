@@ -120,7 +120,24 @@ def inject_conf_var():
 def labelling():
     if request.args:
         prolific_id = request.args.get('prolific_id')
-        next_user_id = request.args.get('next_user')
+        prev_user_id = request.args.get('prev_user_id')
+        prev_user_result = request.args.get('prev_user_result')
+        if prev_user_id and prev_user_result:
+            db_client.dataVKnodup.users.update_one(
+                {'vk_id': int(prev_user_id)},
+                {'$push': {'labels': {'by': prolific_id, 'result': prev_user_result}}}
+            )
+        next_user_id = list(db_client.dataVKnodup.users.aggregate([
+            {'$match': {"$and": [
+                {
+                    "labels": {"$not": {"$elemMatch": {"by": '12345'}}}
+                },
+                {
+                    "user_to_label": True
+                }
+            ]}},
+            {'$sample': {'size': 1}}
+        ]))[0]['vk_id']
         user = get_user_by_id(db_client, int(next_user_id))[0]
         comments = get_comments_by_user(db_client, int(next_user_id))
         return render_template('labelling.html', prolific_id=prolific_id, current_user=user, comments=comments)
