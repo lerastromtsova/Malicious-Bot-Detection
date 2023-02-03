@@ -22,12 +22,11 @@ if not config:
 if config['LOCAL_DB'] != '0':
     db_client = pymongo.MongoClient(host="localhost", port=27017)
 else:
-    db_client = pymongo.MongoClient(username=config['MONGO_DB_USERNAME'],
-                                    password=config['MONGO_DB_PASSWORD'],
-                                    host=config['MONGO_DB_HOST'],
-                                    authSource=config['MONGO_DB_NAME'],
-                                    tls=True,
-                                    tlsInsecure=True)
+    db_client = pymongo.MongoClient('mongodb+srv://' +
+                                    f'{config["MONGO_DB_USERNAME"]}:' +
+                                    f'{config["MONGO_DB_PASSWORD"]}' +
+                                    f'@{config["MONGO_DB_HOST"]}' +
+                                    f'?tls=true&authSource=admin&replicaSet={config["MONGO_REPLICA_SET"]}&tlsInsecure=true')
 
 USERS_LIMIT = 10
 
