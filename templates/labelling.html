@@ -70,7 +70,8 @@
               <button class="btn btn-dark shadow">{{ gettext('PROCEED') }}</button>
             </form>
           {% else %}
-            <p>Your Prolific ID: {{prolific_id}}</p>
+            <p>Your Prolific ID: {{session['prolific_id']}}</p>
+            <p>Left to label: {{session['total_to_label']}}</p>
           {% endif %}
         </div>
       </div>

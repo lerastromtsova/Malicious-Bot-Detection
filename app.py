@@ -119,8 +119,10 @@ def inject_conf_var():
 
 @app.route("/labelling")
 def labelling():
-    if request.args:
-        prolific_id = request.args.get('prolific_id')
+    if request.args or 'prolific_id' in session:
+        if request.args.get('prolific_id'):
+            session['prolific_id'] = request.args.get('prolific_id')
+        prolific_id = session['prolific_id']
         prev_user_id = request.args.get('prev_user_id')
         prev_user_result = request.args.get('prev_user_result')
         if prev_user_id and prev_user_result:
@@ -128,6 +130,17 @@ def labelling():
                 {'vk_id': int(prev_user_id)},
                 {'$push': {'labels': {'by': prolific_id, 'result': prev_user_result}}}
             )
+        session['total_to_label'] = list(db_client.dataVKnodup.users.aggregate([
+            {'$match': {"$and": [
+                {
+                    "labels": {"$not": {"$elemMatch": {"by": prolific_id}}}
+                },
+                {
+                    "user_to_label": True
+                }
+            ]}},
+            {'$count': 'vk_id'}
+        ]))[0]['vk_id']
         next_user_id = list(db_client.dataVKnodup.users.aggregate([
             {'$match': {"$and": [
                 {
