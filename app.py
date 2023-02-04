@@ -28,7 +28,6 @@ else:
                f'@{config["MONGO_DB_HOST"]}' \
                f'?tls=true&authSource=admin&' \
                f'replicaSet={config["MONGO_REPLICA_SET"]}&tlsInsecure=true'
-    print(conn_uri)
     db_client = pymongo.MongoClient(conn_uri)
 
 USERS_LIMIT = 10

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-01 22:21+0100\n"
+"POT-Creation-Date: 2023-02-04 21:58+0100\n"
 "PO-Revision-Date: 2022-08-29 23:41+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -102,27 +102,69 @@ msgstr "ПОИСК"
 msgid "Could not find the user you specified. Try refining your search query."
 msgstr "Пользователь не найден. Попробуйте задать более точный поисковый запрос."
 
-#: templates/index.html:124 templates/labelling.html:85
+#: templates/index.html:124
 msgid "Check"
 msgstr "Проверить"
 
-#: templates/labelling.html:40
+#: templates/labelling.html:41
 msgid "Enter your Prolific ID"
 msgstr "Введите свой Prolific ID"
 
-#: templates/labelling.html:41
+#: templates/labelling.html:42
 msgid ""
 "Thank you for taking part in our data labelling. First, please enter your"
 " Prolific ID."
-msgstr "Спасибо, что принимаете участие в разметке данных для нашего исследования. Пожалуйста, введите свой Prolific ID в форме ниже."
+msgstr ""
+"Спасибо, что принимаете участие в разметке данных для нашего "
+"исследования. Пожалуйста, введите свой Prolific ID в форме ниже."
+
+#: templates/labelling.html:44
+msgid "Label this user"
+msgstr "Классифицируйте этого пользователя"
+
+#: templates/labelling.html:45
+msgid "Please inspect this user and their comments on VKontakte."
+msgstr "Пожалуйста, просмотрите информацию о пользователе и его/её комментарии ВКонтакте."
+
+#: templates/labelling.html:47
+msgid "If you think this user is a bot, press the \"BOT\" button."
+msgstr "Если вы думаете, что этот пользователь бот, нажмите кнопку \"БОТ\" внизу."
+
+#: templates/labelling.html:48
+msgid "If you think this user is a real human, press the \"HUMAN\" button."
+msgstr "Если вы думаете, что этот пользователь настоящий человек, нажмите кнопку \"ЧЕЛОВЕК\" внизу."
 
 #: templates/labelling.html:49
+msgid "If you are not sure, press the \"UNKNOWN\" button."
+msgstr "Если вы не уверены, нажмите кнопку \"НЕ ЗНАЮ\"."
+
+#: templates/labelling.html:60
 msgid "Enter your Prolific user ID"
 msgstr "Введите свой Prolific ID"
 
-#: templates/labelling.html:55
+#: templates/labelling.html:66
 msgid "PROCEED"
 msgstr "ДАЛЕЕ"
+
+#: templates/labelling.html:99
+msgid "Open VK page"
+msgstr "Открыть страницу ВК"
+
+#: templates/labelling.html:117
+msgid "See original post and comment"
+msgstr "К исходному посту и комментарию"
+
+#: templates/labelling.html:136
+msgid "BOT"
+msgstr "БОТ"
+
+#: templates/labelling.html:148
+msgid "HUMAN"
+msgstr "ЧЕЛОВЕК"
+
+#: templates/labelling.html:161
+msgid "UNKNOWN"
+msgstr "НЕ ЗНАЮ"
 
 #: templates/methods.html:46
 msgid "Our bot detection method is backed by scientific research"
