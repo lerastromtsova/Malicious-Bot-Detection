@@ -1,6 +1,8 @@
 import os
 
 import pymongo
+from bson.json_util import dumps
+from bson.json_util import loads
 from dotenv import dotenv_values
 from flask import Flask, render_template, request
 from flask import session, redirect
@@ -31,6 +33,7 @@ else:
     db_client = pymongo.MongoClient(conn_uri)
 
 USERS_LIMIT = 10
+USERS_TO_LABEL_LIMIT = 10
 
 
 @app.route("/")
@@ -119,43 +122,63 @@ def inject_conf_var():
 
 @app.route("/labelling")
 def labelling():
-    if request.args or 'prolific_id' in session:
-        if request.args.get('prolific_id'):
-            session['prolific_id'] = request.args.get('prolific_id')
+    if request.args.get('prolific_id') and 'users_to_label' not in session:
+        session['prolific_id'] = request.args.get('prolific_id')
+        aggregation = db_client.dataVKnodup.users.aggregate([
+            {'$match': {"$and": [
+                {
+                    "labels": {"$not": {"$elemMatch": {"by": session['prolific_id']}}}
+                },
+                {
+                    "user_to_label": True
+                }
+            ]}},
+            {'$project': {'vk_id': 1, 'photo_100': 1, 'screen_name': 1, 'first_name': 1, 'last_name': 1,
+                          'deactivated': 1}},
+            {'$sample': {'size': USERS_TO_LABEL_LIMIT}}
+        ])
+        users_to_label = dumps(list(aggregation), separators=(',', ':'))
+        session['users_to_label'] = users_to_label
+        session['total_to_label'] = USERS_TO_LABEL_LIMIT + 1
+    if 'prolific_id' in session and 'users_to_label' in session:
         prolific_id = session['prolific_id']
-        prev_user_id = request.args.get('prev_user_id')
-        prev_user_result = request.args.get('prev_user_result')
-        if prev_user_id and prev_user_result:
+        users_to_label = loads(session['users_to_label'])
+
+        prev_user_id = int(request.args.get('prev_user_id'))
+        if request.args.get('prev_user_result'):
+            prev_user_result = request.args.get('prev_user_result')
             db_client.dataVKnodup.users.update_one(
-                {'vk_id': int(prev_user_id)},
+                {'vk_id': int(users_to_label[prev_user_id]['vk_id'])},
                 {'$push': {'labels': {'by': prolific_id, 'result': prev_user_result}}}
             )
-        session['total_to_label'] = list(db_client.dataVKnodup.users.aggregate([
-            {'$match': {"$and": [
-                {
-                    "labels": {"$not": {"$elemMatch": {"by": prolific_id}}}
-                },
-                {
-                    "user_to_label": True
-                }
-            ]}},
-            {'$count': 'vk_id'}
-        ]))[0]['vk_id']
-        next_user_id = list(db_client.dataVKnodup.users.aggregate([
-            {'$match': {"$and": [
-                {
-                    "labels": {"$not": {"$elemMatch": {"by": prolific_id}}}
-                },
-                {
-                    "user_to_label": True
-                }
-            ]}},
-            {'$sample': {'size': 1}}
-        ]))[0]['vk_id']
-        user = get_user_by_id(db_client, int(next_user_id))[0]
-        comments = get_comments_by_user(db_client, int(next_user_id))
-        return render_template('labelling.html', prolific_id=prolific_id, current_user=user, comments=comments)
+        session['total_to_label'] = int(session['total_to_label']) - 1
+        if session['total_to_label'] == 0:
+            #     no more users to label
+            return redirect('labelling-end')
+        next_user_id = prev_user_id + 1
+        user = users_to_label[next_user_id]
+        comments = get_comments_by_user(db_client, user['vk_id'])
+        return render_template(
+            'labelling.html',
+            prolific_id=prolific_id,
+            current_user=user,
+            comments=comments,
+            count=next_user_id
+        )
     return render_template('labelling.html')
+
+
+@app.route("/labelling-end")
+def labelling_end():
+    if request.args.get('explain_decisions'):
+        db_client.dataVKnodup.free_responses.insert_one({
+            'prolific_id': session['prolific_id'],
+            'free_text': request.args.get('explain_decisions')
+        })
+        session.pop('prolific_id', None)
+        session.pop('users_to_label', None)
+        return render_template('labelling-end.html', completion_code=config['COMPLETION_CODE'])
+    return render_template('labelling-end.html')
 
 
 if __name__ == "__main__":

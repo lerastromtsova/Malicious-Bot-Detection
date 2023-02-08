@@ -427,13 +427,15 @@ def detect_languages(
 
 def generate_database_sample(
         db_client: pymongo.MongoClient,
-        sample_size: int
+        sample_size: int,
+        comment_limit: int
 ):
     db_client.dataVKnodup.users.update_many(
         {},
         {"$set": {"user_to_label": False}}
     )
     users = db_client.dataVKnodup.users.aggregate([
+        {'$match': {'comment_rate': {'$lte': comment_limit}}},
         {'$sample': {'size': sample_size}}
     ])
     for u in users:
@@ -443,7 +445,7 @@ def generate_database_sample(
         )
 
 
-# To generate a new random sample
+# # To generate a new random sample
 # config = dotenv_values("../.env")
 # db_client = pymongo.MongoClient('mongodb+srv://' +
 #                                 f'{config["MONGO_DB_USERNAME"]}:' +
@@ -451,4 +453,4 @@ def generate_database_sample(
 #                                 f'@{config["MONGO_DB_HOST"]}' +
 #                                 f'?tls=true&authSource=admin&replicaSet={config["MONGO_REPLICA_SET"]}&tlsInsecure=true')
 # db_client.dataVKnodup.users.update_many({"user_to_label": True}, {"$set": {"labels": []}})
-# generate_database_sample(db_client, 100)
+# generate_database_sample(db_client, 100, 8)
