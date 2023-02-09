@@ -151,7 +151,7 @@ def labelling():
                 {'vk_id': int(users_to_label[prev_user_id]['vk_id'])},
                 {'$push': {'labels': {'by': prolific_id, 'result': prev_user_result}}}
             )
-        session['total_to_label'] = int(session['total_to_label']) - 1
+        session['total_to_label'] = USERS_TO_LABEL_LIMIT - prev_user_id - 1
         if session['total_to_label'] == 0:
             #     no more users to label
             return redirect('labelling-end')
