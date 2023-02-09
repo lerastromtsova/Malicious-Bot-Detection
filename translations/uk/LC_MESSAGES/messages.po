@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-04 21:58+0100\n"
+"POT-Creation-Date: 2023-02-09 16:17+0100\n"
 "PO-Revision-Date: 2022-09-10 17:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk\n"
@@ -29,51 +29,51 @@ msgstr "Методи"
 msgid "Contact"
 msgstr "Контакти"
 
-#: templates/bot-check-results.html:28 templates/contact.html:27
-#: templates/index.html:27 templates/labelling.html:21
-#: templates/methods.html:27
+#: templates/bot-check-results.html:32 templates/contact.html:31
+#: templates/index.html:31 templates/labelling-end.html:25
+#: templates/labelling.html:25 templates/methods.html:31
 msgid "Language"
 msgstr "Мова"
 
-#: templates/bot-check-results.html:47 templates/index.html:46
+#: templates/bot-check-results.html:51 templates/index.html:50
 msgid "Check if a VK user is a bot or real human in three simple steps"
 msgstr ""
 "Перевірте, чи є користувач ВК ботом чи справжньою людиною за три прості "
 "кроки"
 
-#: templates/bot-check-results.html:62
+#: templates/bot-check-results.html:66
 msgid "Step 3"
 msgstr "Крок 3"
 
-#: templates/bot-check-results.html:63
+#: templates/bot-check-results.html:67
 msgid "Get the result!"
 msgstr "Отримайте результат!"
 
-#: templates/bot-check-results.html:73
+#: templates/bot-check-results.html:77
 msgid "This user is likely a bot"
 msgstr "Швидше за все, цей користувач - бот"
 
-#: templates/bot-check-results.html:80
+#: templates/bot-check-results.html:84
 msgid "This user does not appear to be a bot"
 msgstr "Швидше за все, цей користувач – не бот"
 
-#: templates/contact.html:46
+#: templates/contact.html:50
 msgid "Contact me if you have any questions or comments"
 msgstr "Зв'яжіться зi мною, якщо у вас є запитання чи пропозиції"
 
-#: templates/contact.html:57
+#: templates/contact.html:61
 msgid "Valeriia Stromtcova"
 msgstr "Валерія Стромцова"
 
-#: templates/contact.html:58
+#: templates/contact.html:62
 msgid "Master's student at the University of Passau and HSE University"
 msgstr "Магістр Університету Пассау та Університету ВШЕ"
 
-#: templates/index.html:63
+#: templates/index.html:67
 msgid "Step 2"
 msgstr "Крок 2"
 
-#: templates/index.html:64
+#: templates/index.html:68
 msgid ""
 "Choose a user from the list below.\n"
 "            If you have not found the person you are looking for, try "
@@ -82,37 +82,65 @@ msgstr ""
 "Виберіть користувача зі списку нижче. Якщо ви не знайшли людину, яку "
 "шукаєте, спробуйте уточнити пошук."
 
-#: templates/index.html:67
+#: templates/index.html:71
 msgid "Step 1"
 msgstr "Крок 1"
 
-#: templates/index.html:68
+#: templates/index.html:72
 msgid "Enter a user ID or user name in the search box below."
 msgstr ""
 "Введіть ідентифікатор користувача або ім’я користувача у вікні пошуку "
 "нижче."
 
-#: templates/index.html:78
+#: templates/index.html:82
 msgid "Paste a user ID or name"
 msgstr "Вставте ідентифікатор користувача або ім’я"
 
-#: templates/index.html:84
+#: templates/index.html:88
 msgid "SEARCH"
 msgstr "ПОШУК"
 
-#: templates/index.html:93
+#: templates/index.html:97
 msgid "Could not find the user you specified. Try refining your search query."
 msgstr "Користувач не знайдений. Спробуйте вказати більш точний пошуковий запит."
 
-#: templates/index.html:124
+#: templates/index.html:128
 msgid "Check"
 msgstr "Перевірити"
 
-#: templates/labelling.html:41
+#: templates/labelling-end.html:45
+msgid "Thank you!"
+msgstr "Спасибі вам!"
+
+#: templates/labelling-end.html:46
+msgid "Here is your completion code: "
+msgstr "Ось ваш код завершення для Prolific: "
+
+#: templates/labelling-end.html:52
+msgid "Justify your decisions"
+msgstr "Обґрунтуйте свої рішення"
+
+#: templates/labelling-end.html:53
+msgid ""
+"In the form below, please shortly describe which criteria you used to "
+"label users."
+msgstr ""
+"У формі нижче коротко опишіть, які критерії ви використовували для "
+"користувачі міток."
+
+#: templates/labelling-end.html:61
+msgid "Enter an explanation"
+msgstr "Введіть пояснення"
+
+#: templates/labelling-end.html:68
+msgid "SUBMIT AND GET COMPLETION CODE"
+msgstr "НАДІСЛАТИ І ОТРИМАТИ КОД ЗАВЕРШЕННЯ"
+
+#: templates/labelling.html:45
 msgid "Enter your Prolific ID"
 msgstr "Введіть свій Prolific ID"
 
-#: templates/labelling.html:42
+#: templates/labelling.html:46
 msgid ""
 "Thank you for taking part in our data labelling. First, please enter your"
 " Prolific ID."
@@ -120,67 +148,128 @@ msgstr ""
 "Дякуємо за участь у нашому маркуванні даних. Спочатку введіть свій "
 "ідентифікатор Prolific."
 
-#: templates/labelling.html:44
+#: templates/labelling.html:48
 msgid "Label this user"
 msgstr "Класифікуйте цього користувача"
 
-#: templates/labelling.html:45
+#: templates/labelling.html:51
+msgid ""
+"Your task is to understand whether this VKontakte user is a social bot or"
+" a real human."
+msgstr ""
+"Ваше завдання зрозуміти, чи є цей користувач ВКонтакте соцботом "
+"абосправжня людина."
+
+#: templates/labelling.html:52
+msgid "Definitions:"
+msgstr "Визначення:"
+
+#: templates/labelling.html:54
+msgid ""
+"<b>Social bot</b> - a software agent that communicates autonomously on "
+"social media.\n"
+"                  Bots are typically fake accounts with fake "
+"personalities."
+msgstr ""
+"<b>Соціальний бот</b> – програмний агент, який автономно спілкується на "
+"соціальні мережі.\n"
+"Боти - це зазвичай фейкові облікові записи з фейкомособистості."
+
+#: templates/labelling.html:56
+msgid ""
+"<b>Real human</b> - an account that belongs to a real person and is not "
+"managed automatically."
+msgstr ""
+"<b>Справжня людина</b> – обліковий запис, який належить реальній особі, а"
+" не є керується автоматично."
+
+#: templates/labelling.html:58
 msgid "Please inspect this user and their comments on VKontakte."
-msgstr "Будь ласка, перегляньте інформацію про користувача та його/її коментарі ВКонтакте."
+msgstr ""
+"Будь ласка, перегляньте інформацію про користувача та його/її коментарі "
+"ВКонтакте."
 
-#: templates/labelling.html:47
-msgid "If you think this user is a bot, press the \"BOT\" button."
-msgstr "Якщо ви думаєте, що цей користувач бот, натисніть кнопку \"БОТ\" внизу."
+#: templates/labelling.html:59
+msgid "For each user, you can see their VKontakte page by clicking "
+msgstr ""
+"Для кожного користувача ви можете побачити його сторінку ВКонтакте, "
+"натиснувши"
 
-#: templates/labelling.html:48
-msgid "If you think this user is a real human, press the \"HUMAN\" button."
-msgstr "Якщо ви думаєте, що цей користувач справжня людина, натисніть кнопку \"ЛЮДИНА\" внизу."
-
-#: templates/labelling.html:49
-msgid "If you are not sure, press the \"UNKNOWN\" button."
-msgstr "Якщо ви не впевнені, натисніть кнопку \"НЕ ЗНАЮ\"."
-
-#: templates/labelling.html:60
-msgid "Enter your Prolific user ID"
-msgstr "Введіть свій Prolific ID"
-
-#: templates/labelling.html:66
-msgid "PROCEED"
-msgstr "ПРОДОВЖИТИ"
-
-#: templates/labelling.html:99
+#: templates/labelling.html:59 templates/labelling.html:121
 msgid "Open VK page"
 msgstr "Відкрити сторінку ВК"
 
-#: templates/labelling.html:117
+#: templates/labelling.html:60
+msgid "For each comment, you can see the source comment and post by clicking "
+msgstr ""
+"Для кожного коментаря ви можете переглянути вихідний коментар і "
+"опублікувати, натиснувши"
+
+#: templates/labelling.html:60 templates/labelling.html:139
 msgid "See original post and comment"
 msgstr "До вихідного посту та коментарю"
 
-#: templates/labelling.html:136
+#: templates/labelling.html:61
+msgid "After you make a decision:"
+msgstr "Після прийняття рішення:"
+
+#: templates/labelling.html:63
+msgid "If you think this user is a bot, press the <b>\"BOT\" button</b>."
+msgstr "Якщо ви думаєте, що цей користувач бот, натисніть кнопку <b>\"БОТ\"</b> внизу."
+
+#: templates/labelling.html:64
+msgid "If you think this user is a real human, press the <b>\"HUMAN\" button</b>."
+msgstr ""
+"Якщо ви думаєте, що цей користувач справжня людина, натисніть кнопку "
+"<b>\"ЛЮДИНА\"</b> внизу."
+
+#: templates/labelling.html:66
+msgid "Normally, labelling each user should not take more than 5 minutes."
+msgstr "Зазвичай позначення кожного користувача не займає більше 5 хвилин."
+
+#: templates/labelling.html:67
+msgid "<b>Scroll down</b> to see user info, comments and buttons."
+msgstr ""
+"<b>Прокрутіть униз</b>, щоб переглянути інформацію про користувача, "
+"коментарі та кнопки."
+
+#: templates/labelling.html:79
+msgid "Enter your Prolific user ID"
+msgstr "Введіть свій Prolific ID"
+
+#: templates/labelling.html:86
+msgid "PROCEED"
+msgstr "ПРОДОВЖИТИ"
+
+#: templates/labelling.html:90
+msgid "Your Prolific ID"
+msgstr "Ваш Prolific ID"
+
+#: templates/labelling.html:90
+msgid "Left to label"
+msgstr "Залишилося позначити"
+
+#: templates/labelling.html:158
 msgid "BOT"
 msgstr "БОТ"
 
-#: templates/labelling.html:148
+#: templates/labelling.html:170
 msgid "HUMAN"
 msgstr "ЛЮДИНА"
 
-#: templates/labelling.html:161
-msgid "UNKNOWN"
-msgstr "НЕ ЗНАЮ"
-
-#: templates/methods.html:46
+#: templates/methods.html:50
 msgid "Our bot detection method is backed by scientific research"
 msgstr "Наш метод виявлення ботів ґрунтується на наукових дослідженнях"
 
-#: templates/methods.html:51
+#: templates/methods.html:55
 msgid "Steps"
 msgstr "Кроки"
 
-#: templates/methods.html:52
+#: templates/methods.html:56
 msgid "Our scientific method includes several steps:"
 msgstr "Наш метод включає кілька кроків:"
 
-#: templates/methods.html:54
+#: templates/methods.html:58
 msgid ""
 "Retrieve comments related to the Russian-Ukrainian armed conflict of 2022"
 " from VKontakte's most relevant media groups"
@@ -188,15 +277,15 @@ msgstr ""
 "Парсинг коментарів, пов'язаних із російсько-українським збройним "
 "конфліктом 2022 року з груп ВКонтакте"
 
-#: templates/methods.html:55
+#: templates/methods.html:59
 msgid "Build a graph of users who have been leaving these comments"
 msgstr "Побудова мережі користувачів, котрі залишили коментарі"
 
-#: templates/methods.html:56
+#: templates/methods.html:60
 msgid "Cluster the users using Louvain community detection algorithm"
 msgstr "Кластеризація мережі за допомогою алгоритму виявлення спільнот Louvain"
 
-#: templates/methods.html:57
+#: templates/methods.html:61
 msgid ""
 "Calculate characteristics of each cluster and probability of it being a "
 "bot cluster"
@@ -204,7 +293,7 @@ msgstr ""
 "Обчислення характеристик кожного кластера та ймовірності того, що в "
 "кластері знаходяться боти"
 
-#: templates/methods.html:58
+#: templates/methods.html:62
 msgid ""
 "Calculate centrality metrics to identify most influential users in "
 "communities"
@@ -212,39 +301,45 @@ msgstr ""
 "Підрахунок метрик центральності для визначення найвпливовіших "
 "користувачів у кластерах"
 
-#: templates/methods.html:59
+#: templates/methods.html:63
 msgid "Conduct sentiment analysis to understand the tone conveyed by a cluster"
 msgstr "Аналіз настроїв у коментарях"
 
-#: templates/methods.html:60
+#: templates/methods.html:64
 msgid "Conduct content analysis to understand the users' ideas and opinions"
 msgstr "Аналіз змісту коментарів"
 
-#: templates/methods.html:61
+#: templates/methods.html:65
 msgid "Store this data and make it accessible to you"
 msgstr "Збереження даних та надання доступу до них широкій аудиторії"
 
-#: templates/methods.html:67
+#: templates/methods.html:71
 msgid "Dataset"
 msgstr "Дані"
 
-#: templates/methods.html:68
+#: templates/methods.html:72
 msgid "Currently, we have data about 283 506 users from VKontakte."
 msgstr "Зараз у нас в базі даних інформація про 283 506 користувачів ВКонтакте"
 
-#: templates/methods.html:73
+#: templates/methods.html:77
 msgid "Reference"
 msgstr "Література"
 
-#: templates/methods.html:74
+#: templates/methods.html:78
 msgid "The algorithm is based on this scientific paper:"
 msgstr "Наш алгоритм ґрунтується на науковій статті:"
 
-#: templates/methods.html:78
+#: templates/methods.html:82
 msgid "written by"
 msgstr ", яка написана авторами"
 
-#: templates/methods.html:78
+#: templates/methods.html:82
 msgid ", and"
 msgstr " i"
+
+#~ msgid "If you are not sure, press the \"UNKNOWN\" button."
+#~ msgstr "Якщо ви не впевнені, натисніть кнопку \"НЕ ЗНАЮ\"."
+
+#~ msgid "UNKNOWN"
+#~ msgstr "НЕ ЗНАЮ"
 

@@ -103,7 +103,7 @@ def get_locale():
 app.config['LANGUAGES'] = {
     'en': '🇬🇧 English',
     'ru': '🇷🇺 Русский',
-    'uk': '🇺🇦 Ukrainian'
+    'uk': '🇺🇦 Українська'
 }
 
 app.secret_key = config['WEB_SECRET']
@@ -182,10 +182,11 @@ def labelling():
 @app.route("/labelling-end")
 def labelling_end():
     if request.args.get('explain_decisions'):
-        db_client.dataVKnodup.free_responses.insert_one({
-            'prolific_id': session['prolific_id'],
-            'free_text': request.args.get('explain_decisions')
-        })
+        if 'prolific_id' in session:
+            db_client.dataVKnodup.free_responses.insert_one({
+                'prolific_id': session['prolific_id'],
+                'free_text': request.args.get('explain_decisions')
+            })
         session.pop('prolific_id', None)
         session.pop('users_to_label', None)
         return render_template(

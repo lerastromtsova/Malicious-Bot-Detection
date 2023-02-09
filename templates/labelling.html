@@ -48,7 +48,8 @@
             <p>{{ gettext('If you see an error, please clear browser cookies and refresh the page.') }}</p>
           {% elif current_user %}
             <h3>{{ gettext('Label this user') }}</h3>
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
+            {% if count == 0 %}
+              <div class="alert alert-info alert-dismissible fade show" role="alert">
               <p><b>{{ gettext('Your task is to understand whether this VKontakte user is a social bot or a real human.') }}</b></p>
               <p>{{ gettext('Definitions:') }}</p>
               <ul>
@@ -67,6 +68,7 @@
               <p>{{ gettext('Normally, labelling each user should not take more than 5 minutes.') }}</p>
               <p>{{ gettext('<b>Scroll down</b> to see user info, comments and buttons.') }}</p>
             </div>
+            {% endif %}
           {% endif %}
         </div>
       </div>
