@@ -127,14 +127,22 @@ def labelling():
         aggregation = db_client.dataVKnodup.users.aggregate([
             {'$match': {"$and": [
                 {
-                    "labels": {"$not": {"$elemMatch": {"by": session['prolific_id']}}}
+                    "labels": {"$not": {
+                        "$elemMatch": {"by": session['prolific_id']}
+                    }}
                 },
                 {
                     "user_to_label": True
                 }
             ]}},
-            {'$project': {'vk_id': 1, 'photo_100': 1, 'screen_name': 1, 'first_name': 1, 'last_name': 1,
-                          'deactivated': 1}},
+            {'$project': {
+                'vk_id': 1,
+                'photo_100': 1,
+                'screen_name': 1,
+                'first_name': 1,
+                'last_name': 1,
+                'deactivated': 1
+            }},
             {'$sample': {'size': USERS_TO_LABEL_LIMIT}}
         ])
         users_to_label = dumps(list(aggregation), separators=(',', ':'))
@@ -149,7 +157,10 @@ def labelling():
             prev_user_result = request.args.get('prev_user_result')
             db_client.dataVKnodup.users.update_one(
                 {'vk_id': int(users_to_label[prev_user_id]['vk_id'])},
-                {'$push': {'labels': {'by': prolific_id, 'result': prev_user_result}}}
+                {'$push': {'labels': {
+                    'by': prolific_id,
+                    'result': prev_user_result
+                }}}
             )
         session['total_to_label'] = USERS_TO_LABEL_LIMIT - prev_user_id - 1
         if session['total_to_label'] == 0:
@@ -177,7 +188,10 @@ def labelling_end():
         })
         session.pop('prolific_id', None)
         session.pop('users_to_label', None)
-        return render_template('labelling-end.html', completion_code=config['COMPLETION_CODE'])
+        return render_template(
+            'labelling-end.html',
+            completion_code=config['COMPLETION_CODE']
+        )
     return render_template('labelling-end.html')
 
 

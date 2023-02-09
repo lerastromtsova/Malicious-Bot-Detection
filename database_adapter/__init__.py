@@ -6,7 +6,7 @@ import pymongo
 from datetime import datetime
 import os
 
-from dotenv import dotenv_values
+# from dotenv import dotenv_values
 from vk import API, exceptions
 from langdetect import detect, lang_detect_exception
 
@@ -305,10 +305,16 @@ def get_users_by_name(
         ).limit(users_limit))
     else:
         users_by_lname = db_client.dataVKnodup.users.find(
-            {'last_name': {'$regex': to_search[0], '$options': 'i'}, 'cluster': {'$exists': 1}}
+            {'last_name': {
+                '$regex': to_search[0],
+                '$options': 'i'
+            }, 'cluster': {'$exists': 1}}
         ).limit(users_limit)
         users_by_fname = db_client.dataVKnodup.users.find(
-            {'first_name': {'$regex': to_search[0], '$options': 'i'}, 'cluster': {'$exists': 1}}
+            {'first_name': {
+                '$regex': to_search[0],
+                '$options': 'i'
+            }, 'cluster': {'$exists': 1}}
         ).limit(users_limit)
         users = list(users_by_lname) + list(users_by_fname)
     return users
@@ -452,5 +458,7 @@ def generate_database_sample(
 #                                 f'{config["MONGO_DB_PASSWORD"]}' +
 #                                 f'@{config["MONGO_DB_HOST"]}' +
 #                                 f'?tls=true&authSource=admin&replicaSet={config["MONGO_REPLICA_SET"]}&tlsInsecure=true')
-# db_client.dataVKnodup.users.update_many({"user_to_label": True}, {"$set": {"labels": []}})
+# db_client.dataVKnodup.users.update_many(
+# {"user_to_label": True}, {"$set": {"labels": []}}
+# )
 # generate_database_sample(db_client, 100, 8)
