@@ -77,7 +77,7 @@ pybabel compile -d translations
 
 ### Run the web app
 ```commandline
-gunicorn app:app
+gunicorn app:app --reload
 ```
 
 ### Run Mongo

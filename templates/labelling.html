@@ -46,12 +46,25 @@
             <p>{{ gettext('Thank you for taking part in our data labelling. First, please enter your Prolific ID.') }}</p>
           {% elif current_user %}
             <h3>{{ gettext('Label this user') }}</h3>
-            <p>{{ gettext('Please inspect this user and their comments on VKontakte.') }}</p>
-            <ul>
-              <li>{{ gettext('If you think this user is a bot, press the "BOT" button.') }}</li>
-              <li>{{ gettext('If you think this user is a real human, press the "HUMAN" button.') }}</li>
-              <li>{{ gettext('If you are not sure, press the "UNKNOWN" button.') }}</li>
-            </ul>
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+              <p><b>{{ gettext('Your task is to understand whether this VKontakte user is a social bot or a real human.') }}</b></p>
+              <p>{{ gettext('Definitions:') }}</p>
+              <ul>
+                <li>{{ gettext('<b>Social bot</b> - a software agent that communicates autonomously on social media.
+                  Bots are typically fake accounts with fake personalities.') }}</li>
+                <li>{{ gettext('<b>Real human</b> - an account that belongs to a real person and is not managed automatically.') }}</li>
+              </ul>
+              <p>{{ gettext('Please inspect this user and their comments on VKontakte.') }}</p>
+              <p>{{ gettext('For each user, you can see their VKontakte page by clicking ') }}"{{ gettext('Open VK page') }}".</p>
+              <p>{{ gettext('For each comment, you can see the source comment and post by clicking ') }}"{{gettext('See original post and comment')}}".</p>
+              <p>{{ gettext('After you make a decision:') }}</p>
+              <ul>
+                <li>{{ gettext('If you think this user is a bot, press the <b>"BOT" button</b>.') }}</li>
+                <li>{{ gettext('If you think this user is a real human, press the <b>"HUMAN" button</b>.') }}</li>
+              </ul>
+              <p>{{ gettext('Normally, labelling each user should not take more than 5 minutes.') }}</p>
+              <p>{{ gettext('<b>Scroll down</b> to see user info, comments and buttons.') }}</p>
+            </div>
           {% endif %}
         </div>
       </div>
@@ -67,11 +80,13 @@
                       name="prolific_id"
                       required
               >
+              <input type="hidden" id="prev_user_id" name="prev_user_id" value="-1">
               <button class="btn btn-dark shadow">{{ gettext('PROCEED') }}</button>
             </form>
           {% else %}
-            <p>Your Prolific ID: {{session['prolific_id']}}</p>
-            <p>Left to label: {{session['total_to_label']}}</p>
+            <p class="text-secondary">
+              {{ gettext('Your Prolific ID')}}: {{session['prolific_id']}}, {{ gettext('Left to label')}}: {{session['total_to_label']}}
+            </p>
           {% endif %}
         </div>
       </div>
@@ -128,11 +143,11 @@
         </div>
       </div>
       <div class="row mt-3">
-        <div class="col-4">
+        <div class="col-6">
             <a
                     type="button"
                     class="d-flex justify-content-center align-items-center btn btn-outline-danger shadow"
-                    href="labelling?prolific_id={{prolific_id}}&prev_user_id={{current_user.vk_id}}&prev_user_result=BOT"
+                    href="labelling?prev_user_id={{count}}&prev_user_result=BOT"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-robot" viewBox="0 0 16 16">
                 <path d="M6 12.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5ZM3 8.062C3 6.76 4.235 5.765 5.53 5.886a26.58 26.58 0 0 0 4.94 0C11.765 5.765 13 6.76 13 8.062v1.157a.933.933 0 0 1-.765.935c-.845.147-2.34.346-4.235.346-1.895 0-3.39-.2-4.235-.346A.933.933 0 0 1 3 9.219V8.062Zm4.542-.827a.25.25 0 0 0-.217.068l-.92.9a24.767 24.767 0 0 1-1.871-.183.25.25 0 0 0-.068.495c.55.076 1.232.149 2.02.193a.25.25 0 0 0 .189-.071l.754-.736.847 1.71a.25.25 0 0 0 .404.062l.932-.97a25.286 25.286 0 0 0 1.922-.188.25.25 0 0 0-.068-.495c-.538.074-1.207.145-1.98.189a.25.25 0 0 0-.166.076l-.754.785-.842-1.7a.25.25 0 0 0-.182-.135Z"/>
@@ -141,11 +156,11 @@
               <span class="ps-1">{{gettext('BOT')}}</span>
             </a>
         </div>
-        <div class="col-4">
+        <div class="col-6">
             <a
                     type="button"
                     class="d-flex justify-content-center align-items-center btn btn-outline-success shadow"
-                    href="labelling?prolific_id={{prolific_id}}&prev_user_id={{current_user.vk_id}}&prev_user_result=HUMAN"
+                    href="labelling?prev_user_id={{count}}&prev_user_result=HUMAN"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z"/>
@@ -153,23 +168,11 @@
               <span class="ps-1">{{gettext('HUMAN')}}</span>
             </a>
         </div>
-        <div class="col-4">
-            <a
-                    type="button"
-                    class="d-flex justify-content-center align-items-center btn btn-outline-dark shadow"
-                    href="labelling?prolific_id={{prolific_id}}&prev_user_id={{current_user.vk_id}}&prev_user_result=UNKNOWN"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
-              </svg>
-              <span class="ps-1">{{gettext('UNKNOWN')}}</span>
-            </a>
-        </div>
       </div>
 
       {% endif %}
     </div>
+    <script src=”https://code.jquery.com/jquery-3.6.0.slim.js”> </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
   </body>
 </html>
