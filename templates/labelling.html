@@ -44,6 +44,8 @@
            {% if not prolific_id %}
             <h3>{{ gettext('Enter your Prolific ID') }}</h3>
             <p>{{ gettext('Thank you for taking part in our data labelling. First, please enter your Prolific ID.') }}</p>
+            <p>{{ gettext('After that, do not reload or close the page.') }}</p>
+            <p>{{ gettext('If you see an error, please clear browser cookies and refresh the page.') }}</p>
           {% elif current_user %}
             <h3>{{ gettext('Label this user') }}</h3>
             <div class="alert alert-info alert-dismissible fade show" role="alert">
