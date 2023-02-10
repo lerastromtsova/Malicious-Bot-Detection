@@ -128,7 +128,8 @@ def labelling():
             {'$match': {"$and": [
                 {
                     "labels": {"$not": {
-                        "$elemMatch": {"by": session['prolific_id']}
+                        "$elemMatch": {"by": session['prolific_id']},
+                        '$size': 3
                     }}
                 },
                 {
