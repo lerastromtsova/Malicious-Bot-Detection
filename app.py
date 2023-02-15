@@ -128,8 +128,7 @@ def labelling():
             {'$match': {"$and": [
                 {
                     "labels": {"$not": {
-                        "$elemMatch": {"by": session['prolific_id']},
-                        '$size': 3
+                        "$elemMatch": {"by": session['prolific_id']}
                     }}
                 },
                 {
@@ -142,9 +141,13 @@ def labelling():
                 'screen_name': 1,
                 'first_name': 1,
                 'last_name': 1,
-                'deactivated': 1
+                'deactivated': 1,
+                'labels_count': {'$size': {"$ifNull": ["$labels", []]}},
+                'more_than_three_labels': { '$gt': [ {'$size': {"$ifNull": ["$labels", []]} }, 3 ] }
             }},
-            {'$sample': {'size': USERS_TO_LABEL_LIMIT}}
+            {'$match': {'more_than_three_labels': False}},
+            {'$sample': {'size': USERS_TO_LABEL_LIMIT}},
+            {'$sort': {'labels_count': 1}}
         ])
         users_to_label = dumps(list(aggregation), separators=(',', ':'))
         session['users_to_label'] = users_to_label
