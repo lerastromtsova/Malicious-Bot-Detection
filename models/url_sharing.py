@@ -32,15 +32,15 @@ def retrieve_urls(db_client):
     return all_urls
 
 
-config = dotenv_values("../.env")
-db_client = pymongo.MongoClient('mongodb+srv://' +
-                                f'{config["MONGO_DB_USERNAME"]}:' +
-                                f'{config["MONGO_DB_PASSWORD"]}' +
-                                f'@{config["MONGO_DB_HOST"]}' +
-                                f'?tls=true&authSource=admin&replicaSet={config["MONGO_REPLICA_SET"]}&tlsInsecure=true')
-
-with open("urls.json", "w") as f:
-    json.dump(retrieve_urls(db_client), f)
+# config = dotenv_values("../.env")
+# db_client = pymongo.MongoClient('mongodb+srv://' +
+#                                 f'{config["MONGO_DB_USERNAME"]}:' +
+#                                 f'{config["MONGO_DB_PASSWORD"]}' +
+#                                 f'@{config["MONGO_DB_HOST"]}' +
+#                                 f'?tls=true&authSource=admin&replicaSet={config["MONGO_REPLICA_SET"]}&tlsInsecure=true')
+#
+# with open("urls.json", "w") as f:
+#     json.dump(retrieve_urls(db_client), f)
 
 with open("urls.json", "r") as f:
     urls = json.loads(f.read())
@@ -94,17 +94,27 @@ def get_weighted_edge(user1, user2, urls):
 
 # 2. Build user graph based on image similarity
 
-G = nx.Graph()
-G.add_nodes_from([k for k in urls.keys()])
-users = list(urls.keys())
-edges = []
-for u1 in range(len(users)):
-    for u2 in range(u1+1, len(users)):
-        edge = get_weighted_edge(users[u1], users[u2], urls)
-        if edge[2] != 0:
-            edges.append(edge)
+# G = nx.Graph()
+# G.add_nodes_from([k for k in urls.keys()])
+# users = list(urls.keys())
+# edges = []
+# for u1 in range(len(users)):
+#     for u2 in range(u1+1, len(users)):
+#         edge = get_weighted_edge(users[u1], users[u2], urls)
+#         if edge[2] != 0:
+#             edges.append(edge)
+#
+# G.add_weighted_edges_from(edges)
+# G.remove_nodes_from(list(nx.isolates(G)))
+# Gcc = sorted(nx.connected_components(G), key=len, reverse=True)
+# print(Gcc)
+#
+# nx.write_gexf(G, '../outputs/url_sharing.gexf')
 
-G.add_weighted_edges_from(edges)
-G.remove_nodes_from(list(nx.isolates(G)))
-print([int(n) for n in G.nodes])
-nx.write_gexf(G, '../outputs/url_sharing.gexf')
+
+G = nx.read_gexf('../outputs/url_sharing.gexf')
+print(list([int(n) for n in G.nodes]))
+Gcc = sorted(nx.connected_components(G), key=len, reverse=True)
+component_size_limit = 5
+largest_components = [el for el in Gcc if len(el) >= component_size_limit]
+print(largest_components)
