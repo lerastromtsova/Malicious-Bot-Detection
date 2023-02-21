@@ -12,22 +12,24 @@ import pymongo
 from dotenv import dotenv_values
 
 
-def retrieve_pictures(db_client):
-    comments_with_pictures = list(db_client.dataVKnodup.comments.find({'text': {'$regex': "photo|img|image|jpg|png", '$options': 'i'}}))
-    ks = {c['from_id'] for c in comments_with_pictures}
-    pictures_urls = dict(zip(ks, ([] for _ in ks)))
-    url_pattern = "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9(" \
+def retrieve_urls(db_client):
+    url_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9(" \
                   ")@:%_\\+.~#?&\\/=]*)$"
-    for comment in comments_with_pictures:
+    regx = re.compile(url_pattern, re.IGNORECASE)
+    comments_with_urls = list(db_client.dataVKnodup.comments.find({'text': regx}))
+    ks = {c['from_id'] for c in comments_with_urls}
+    all_urls = dict(zip(ks, ([] for _ in ks)))
+
+    for comment in comments_with_urls:
         splitted_text = comment['text'].split(' ')
-        urls = []
+        us = []
         for it in splitted_text:
             url = re.match(url_pattern, it)
             if url:
-                urls.append(url.group())
-        if len(urls) > 0:
-            pictures_urls[comment['from_id']].append({comment['vk_id']: urls})
-    return pictures_urls
+                us.append(url.group())
+        if len(us) > 0:
+            all_urls[comment['from_id']].append({comment['vk_id']: us})
+    return all_urls
 
 
 config = dotenv_values("../.env")
@@ -37,11 +39,11 @@ db_client = pymongo.MongoClient('mongodb+srv://' +
                                 f'@{config["MONGO_DB_HOST"]}' +
                                 f'?tls=true&authSource=admin&replicaSet={config["MONGO_REPLICA_SET"]}&tlsInsecure=true')
 
-with open("images.json", "w") as f:
-    json.dump(retrieve_pictures(db_client), f)
+with open("urls.json", "w") as f:
+    json.dump(retrieve_urls(db_client), f)
 
-with open("images.json", "r") as f:
-    images = json.loads(f.read())
+with open("urls.json", "r") as f:
+    urls = json.loads(f.read())
 #
 # # 1. Create histograms for each image
 #
@@ -77,32 +79,32 @@ def get_jaccard_similarity(vec1, vec2):
     return 0
 
 
-def get_weighted_edge(user1, user2, images):
+def get_weighted_edge(user1, user2, urls):
     user1_vector = []
     user2_vector = []
-    for comment in images[user1]:
-        for vk_id, imgs in comment.items():
-            for i in imgs:
+    for comment in urls[user1]:
+        for vk_id, urs in comment.items():
+            for i in urs:
                 user1_vector.append(i)
-    for comment in images[user2]:
-        for vk_id, imgs in comment.items():
-            for i in imgs:
+    for comment in urls[user2]:
+        for vk_id, urs in comment.items():
+            for i in urs:
                 user2_vector.append(i)
     return user1, user2, get_jaccard_similarity(user1_vector, user2_vector)
 
 # 2. Build user graph based on image similarity
 
 G = nx.Graph()
-G.add_nodes_from([k for k in images.keys()])
-users = list(images.keys())
+G.add_nodes_from([k for k in urls.keys()])
+users = list(urls.keys())
 edges = []
 for u1 in range(len(users)):
     for u2 in range(u1+1, len(users)):
-        edge = get_weighted_edge(users[u1], users[u2], images)
+        edge = get_weighted_edge(users[u1], users[u2], urls)
         if edge[2] != 0:
             edges.append(edge)
 
 G.add_weighted_edges_from(edges)
 G.remove_nodes_from(list(nx.isolates(G)))
 print([int(n) for n in G.nodes])
-nx.write_gexf(G, '../outputs/image_similarity.gexf')
+nx.write_gexf(G, '../outputs/url_sharing.gexf')
