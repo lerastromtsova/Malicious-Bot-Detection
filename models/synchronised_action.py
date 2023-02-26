@@ -19,8 +19,9 @@ def ceil_dt(dt, delta):
 
 def retrieve_comments(db_client):
     comments = list(db_client.dataVKnodup.comments.aggregate([
-        {'$match': {'from_id': {'$exists': True}, 'date': {'$exists': True}, 'binned_time': {'$exists': False}}},
-        {'$sample': {'size': 10000}}
+        {'$match': {'binned_time': {'$exists': False}}},
+        {'$sample': {'size': 10000}},
+        {'$project': {'vk_id': 1, 'from_id': 1, 'date': 1, 'binned_time': 1}}
     ]
     ))
     ks = {c['from_id'] for c in comments if 'from_id' in c}
