@@ -108,7 +108,6 @@
                       <div class="col-9 align-items-center mt-auto mb-auto">
                         <a href="https://vk.com/{{current_user.screen_name}}" target="_blank" class="link-dark text-decoration-none">
                           <h5 class="card-title">{{current_user.first_name}} {{current_user.last_name}}</h5>
-                          <span>{{current_user.vk_id}}</span>
                         </a>
                         {% if current_user.deactivated != "active" %}
                           <p class="card-text"><span class="badge bg-danger text-capitalize">{{current_user.deactivated}}</span></p>
