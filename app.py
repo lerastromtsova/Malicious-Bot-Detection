@@ -35,6 +35,13 @@ else:
 USERS_LIMIT = 10
 USERS_TO_LABEL_LIMIT = 10
 
+URL_SHARING_USERS_TO_LABEL = [702784146, 694974368, 708042007, 649499218, 707754356, 687545774, 708269978, 708899664,
+                              228873813, 189830086, 2682374, 26779373, 210672246, 3938809, 573785432, 713634297,
+                              627826591, 170652421, 714581383, 719005425]
+HASHTAG_SEQUENCES_USERS_TO_LABEL = [19514526, 656445370, 13014907, 415217672, 45685036, 633339603, 75932, 651242477,
+                                    345899328, 681273748, 175874956, 470385550, 692756807, 223692672, 222939753,
+                                    137702183, 423737165, 224720979, 619650776, 628540177]
+USER_IDS_TO_LABEL = URL_SHARING_USERS_TO_LABEL + HASHTAG_SEQUENCES_USERS_TO_LABEL
 
 @app.route("/")
 def index():
@@ -132,7 +139,9 @@ def labelling():
                     }}
                 },
                 {
-                    "user_to_label": True
+                    "vk_id": {
+                        "$in": USER_IDS_TO_LABEL
+                    }
                 }
             ]}},
             {'$project': {
@@ -143,7 +152,7 @@ def labelling():
                 'last_name': 1,
                 'deactivated': 1,
                 'labels_count': {'$size': {"$ifNull": ["$labels", []]}},
-                'more_than_three_labels': { '$gt': [ {'$size': {"$ifNull": ["$labels", []]} }, 3 ] }
+                'more_than_three_labels': {'$gt': [{'$size': {"$ifNull": ["$labels", []]}}, 3]}
             }},
             {'$match': {'more_than_three_labels': False}},
             {'$sample': {'size': USERS_TO_LABEL_LIMIT}},
@@ -155,7 +164,6 @@ def labelling():
     if 'prolific_id' in session and 'users_to_label' in session:
         prolific_id = session['prolific_id']
         users_to_label = loads(session['users_to_label'])
-
         prev_user_id = int(request.args.get('prev_user_id'))
         if request.args.get('prev_user_result'):
             prev_user_result = request.args.get('prev_user_result')
