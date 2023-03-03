@@ -133,3 +133,6 @@ dmypy.json
 
 # SentiStrength - for access read http://sentistrength.wlv.ac.uk/
 sentistrength/*
+
+# File too large
+models/binned_comments.json
