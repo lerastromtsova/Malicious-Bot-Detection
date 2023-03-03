@@ -15,7 +15,9 @@ db_client = pymongo.MongoClient(f"mongodb+srv://"
                                 tls=True,
                                 tlsAllowInvalidCertificates=True)
 
-bot_users = list(db_client.dataVKnodup.users.find({'cluster': {'$exists': 1}, 'gosvon_bot': 1}, {'_id': 0, 'vk_id': 1}))
+bot_users = list(db_client.dataVKnodup.users.find(
+    {'cluster': {'$exists': 1}, 'gosvon_bot': 1}, {'_id': 0, 'vk_id': 1}
+))
 vk_ids = [_['vk_id'] for _ in bot_users]
 
 for i, value in nodes:
