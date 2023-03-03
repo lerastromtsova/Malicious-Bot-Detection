@@ -18,6 +18,7 @@ def ceil_dt(dt, delta):
 
 
 def retrieve_comments(db_client):
+    print('retrieving...')
     comments = list(db_client.dataVKnodup.comments.aggregate([
         {'$match': {'binned_time': {'$exists': False}}},
         {'$sample': {'size': 50000}},
@@ -25,16 +26,19 @@ def retrieve_comments(db_client):
     ]
     ))
     ks = {c['from_id'] for c in comments if 'from_id' in c}
+    comments = [c for c in comments if 'date' in c and 'from_id' in c and 'binned_time' not in c]
     binned_comments = dict(zip(ks, ([] for _ in ks)))
 
+    if len(comments) == 0:
+        return None
+
     for comment in tqdm(comments):
-        if 'date' in comment and 'from_id' in comment and 'binned_time' not in comment:
-            time_bin = ceil_dt(comment['date'], timedelta(minutes=30))
-            db_client.dataVKnodup.comments.update_one(
-                {'_id': comment['_id']},
-                {'$set': {'binned_time': time_bin}}
-            )
-            binned_comments[comment['from_id']].append({comment['vk_id']: time_bin.strftime("%m/%d/%Y, %H:%M")})
+        time_bin = ceil_dt(comment['date'], timedelta(minutes=30))
+        db_client.dataVKnodup.comments.update_one(
+            {'_id': comment['_id']},
+            {'$set': {'binned_time': time_bin}}
+        )
+        binned_comments[comment['from_id']].append({comment['vk_id']: time_bin.strftime("%m/%d/%Y, %H:%M")})
     return binned_comments
 
 
@@ -45,14 +49,18 @@ db_client = pymongo.MongoClient('mongodb+srv://' +
                                 f'@{config["MONGO_DB_HOST"]}' +
                                 f'?tls=true&authSource=admin&replicaSet={config["MONGO_REPLICA_SET"]}&tlsInsecure=true')
 
-while True:
-    retrieve_comments(db_client)
+comments = list(db_client.dataVKnodup.comments.find({'binned_time': {'$exists': True}}))
+final_array = dict()
 
-# with open("binned_comments.json", "w") as f:
-#     json.dump(retrieve_comments(db_client), f)
+for c in comments:
+    if c['from_id'] in final_array.keys():
+        final_array[c['from_id']].append({c['vk_id']: [c['binned_time'].strftime("%m/%d/%Y, %H:%M")]})
+    else:
+        final_array[c['from_id']] = [{c['vk_id']: [c['binned_time'].strftime("%m/%d/%Y, %H:%M")]}]
 
-# with open("hashtags.json", "r") as f:
-#     hashtags = json.loads(f.read())
+with open('binned_comments.json', 'w') as f:
+    json.dump(final_array, f)
+
 #
 # def get_jaccard_similarity(vec1, vec2):
 #     v1, v2 = set([_.lower() for _ in vec1]), set([_.lower() for _ in vec2])
