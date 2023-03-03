@@ -1,10 +1,10 @@
 import json
-
-import pandas as pd
 import pymongo
 from dotenv import dotenv_values
-from tqdm import tqdm
-import matplotlib.pyplot as plt
+
+# import pandas as pd
+# from tqdm import tqdm
+# import matplotlib.pyplot as plt
 
 # with open('../data/bots_from_gosvon.json', 'r') as f:
 #     bots = json.load(f)[0]['items']
@@ -27,12 +27,18 @@ users = db_client.dataVKnodup.users.find({'cluster': {'$exists': 1}})
 # print(common_ids)
 # print(len(common_ids))
 #
-# db_client.dataVKnodup.users.update_many({'vk_id': {'$in': common_ids}}, {'$set': {'gosvon_bot': 1}})
-# db_client.dataVKnodup.users.update_many({'vk_id': {'$nin': common_ids}}, {'$set': {'gosvon_bot': 0}})
+# db_client.dataVKnodup.users.update_many({
+#   'vk_id': {'$in': common_ids}}, {'$set': {'gosvon_bot': 1}
+# })
+# db_client.dataVKnodup.users.update_many({
+#   'vk_id': {'$nin': common_ids}}, {'$set': {'gosvon_bot': 0}
+# })
 #
 # print(db_client.dataVKnodup.users.count_documents({'gosvon_bot': 1}))
 # print(db_client.dataVKnodup.users.count_documents({'gosvon_bot': 0}))
-# print(db_client.dataVKnodup.users.count_documents({'gosvon_bot': {'$exists': 1}}))
+# print(db_client.dataVKnodup.users.count_documents({
+#   'gosvon_bot': {'$exists': 1}
+# }))
 
 # bots_in_clusters = dict.fromkeys(range(5488))
 # for u in tqdm(users):
@@ -43,7 +49,8 @@ users = db_client.dataVKnodup.users.find({'cluster': {'$exists': 1}})
 #         bots_in_clusters[u['cluster']]['bots'] += 1
 #
 # for cluster in tqdm(bots_in_clusters.keys()):
-#     bots_in_clusters[cluster]['ratio'] = bots_in_clusters[cluster]['bots'] / bots_in_clusters[cluster]['total']
+#     bots_in_clusters[cluster]['ratio'] = bots_in_clusters[cluster]['bots'] \
+#                                          / bots_in_clusters[cluster]['total']
 #
 # with open('../outputs/bots_in_clusters.json', 'w') as f:
 #     json.dump(bots_in_clusters, f)
@@ -52,9 +59,11 @@ users = db_client.dataVKnodup.users.find({'cluster': {'$exists': 1}})
 with open('../outputs/bots_in_clusters.json', 'r') as f:
     bots_in_clusters = json.load(f)
 
-clusters = [k for k in bots_in_clusters.keys() if bots_in_clusters[k]['ratio'] >= 0.5]
+clusters = [k for k in bots_in_clusters.keys()
+            if bots_in_clusters[k]['ratio'] >= 0.5]
 print(clusters)
-bot_ratio = [bots_in_clusters[k]['ratio'] for k in bots_in_clusters.keys() if bots_in_clusters[k]['ratio'] > 0]
+bot_ratio = [bots_in_clusters[k]['ratio'] for k in bots_in_clusters.keys()
+             if bots_in_clusters[k]['ratio'] > 0]
 
 # df = pd.DataFrame({'clusters': clusters, 'bot_ratio': bot_ratio})
 # df.plot(column=bot_ratio, kind='line')
@@ -62,4 +71,3 @@ bot_ratio = [bots_in_clusters[k]['ratio'] for k in bots_in_clusters.keys() if bo
 
 our_clusters = {'1', '3', '7', '24', '35', '158'}
 print(our_clusters.intersection(set(clusters)))
-

@@ -1,16 +1,15 @@
-import re
 import json
-from time import sleep
 from tqdm import tqdm
-import networkx as nx
 from datetime import datetime, timedelta
-
-from io import BytesIO
-from PIL import Image
-import requests
-
 import pymongo
 from dotenv import dotenv_values
+
+# import re
+# from io import BytesIO
+# from PIL import Image
+# import requests
+# import networkx as nx
+# from time import sleep
 
 
 def ceil_dt(dt, delta):
@@ -26,7 +25,10 @@ def retrieve_comments(db_client):
     ]
     ))
     ks = {c['from_id'] for c in comments if 'from_id' in c}
-    comments = [c for c in comments if 'date' in c and 'from_id' in c and 'binned_time' not in c]
+    comments = [
+        c for c in comments
+        if 'date' in c and 'from_id' in c and 'binned_time' not in c
+    ]
     binned_comments = dict(zip(ks, ([] for _ in ks)))
 
     if len(comments) == 0:
@@ -38,7 +40,9 @@ def retrieve_comments(db_client):
             {'_id': comment['_id']},
             {'$set': {'binned_time': time_bin}}
         )
-        binned_comments[comment['from_id']].append({comment['vk_id']: time_bin.strftime("%m/%d/%Y, %H:%M")})
+        binned_comments[comment['from_id']].append({
+            comment['vk_id']: time_bin.strftime("%m/%d/%Y, %H:%M")
+        })
     return binned_comments
 
 
@@ -47,16 +51,24 @@ db_client = pymongo.MongoClient('mongodb+srv://' +
                                 f'{config["MONGO_DB_USERNAME"]}:' +
                                 f'{config["MONGO_DB_PASSWORD"]}' +
                                 f'@{config["MONGO_DB_HOST"]}' +
-                                f'?tls=true&authSource=admin&replicaSet={config["MONGO_REPLICA_SET"]}&tlsInsecure=true')
+                                f'?tls=true&authSource=admin&replicaSet='
+                                f'{config["MONGO_REPLICA_SET"]}'
+                                f'&tlsInsecure=true')
 
-comments = list(db_client.dataVKnodup.comments.find({'binned_time': {'$exists': True}}))
+comments = list(db_client.dataVKnodup.comments.find({
+    'binned_time': {'$exists': True}
+}))
 final_array = dict()
 
 for c in comments:
     if c['from_id'] in final_array.keys():
-        final_array[c['from_id']].append({c['vk_id']: [c['binned_time'].strftime("%m/%d/%Y, %H:%M")]})
+        final_array[c['from_id']].append({
+            c['vk_id']: [c['binned_time'].strftime("%m/%d/%Y, %H:%M")]
+        })
     else:
-        final_array[c['from_id']] = [{c['vk_id']: [c['binned_time'].strftime("%m/%d/%Y, %H:%M")]}]
+        final_array[c['from_id']] = [{
+            c['vk_id']: [c['binned_time'].strftime("%m/%d/%Y, %H:%M")]
+        }]
 
 with open('binned_comments.json', 'w') as f:
     json.dump(final_array, f)

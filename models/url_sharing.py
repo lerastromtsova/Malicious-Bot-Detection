@@ -1,22 +1,25 @@
 import re
 import json
-from time import sleep
-from tqdm import tqdm
 import networkx as nx
 
-from io import BytesIO
-from PIL import Image
-import requests
-
-import pymongo
-from dotenv import dotenv_values
+# from models.common import get_jaccard_similarity, get_weighted_edge
+# from time import sleep
+# from tqdm import tqdm
+# from io import BytesIO
+# from PIL import Image
+# import requests
+# import pymongo
+# from dotenv import dotenv_values
 
 
 def retrieve_urls(db_client):
-    url_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9(" \
+    url_pattern = "https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\." \
+                  "[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9(" \
                   ")@:%_\\+.~#?&\\/=]*)$"
     regx = re.compile(url_pattern, re.IGNORECASE)
-    comments_with_urls = list(db_client.dataVKnodup.comments.find({'text': regx}))
+    comments_with_urls = list(
+        db_client.dataVKnodup.comments.find({'text': regx})
+    )
     ks = {c['from_id'] for c in comments_with_urls}
     all_urls = dict(zip(ks, ([] for _ in ks)))
 
@@ -71,26 +74,6 @@ with open("urls.json", "r") as f:
 #     with open('histograms.txt', 'w') as f:
 #         json.dump(histograms, f)
 #
-#
-def get_jaccard_similarity(vec1, vec2):
-    v1, v2 = set(vec1), set(vec2)
-    if v1 and v2:
-        return len(v1.intersection(v2)) / len(v1.union(v2))
-    return 0
-
-
-def get_weighted_edge(user1, user2, urls):
-    user1_vector = []
-    user2_vector = []
-    for comment in urls[user1]:
-        for vk_id, urs in comment.items():
-            for i in urs:
-                user1_vector.append(i)
-    for comment in urls[user2]:
-        for vk_id, urs in comment.items():
-            for i in urs:
-                user2_vector.append(i)
-    return user1, user2, get_jaccard_similarity(user1_vector, user2_vector)
 
 # 2. Build user graph based on image similarity
 

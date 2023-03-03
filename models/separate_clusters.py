@@ -19,7 +19,8 @@ try:
 except FileNotFoundError:
     config = dotenv_values("../.env")
     db_client = pymongo.MongoClient(f"mongodb+srv://"
-                                    f"lerastromtsova:{config['MONGO_DB_PASSWORD']}"
+                                    f"lerastromtsova:"
+                                    f"{config['MONGO_DB_PASSWORD']}"
                                     f"@cluster0.ubfnhtk.mongodb.net/"
                                     f"?retryWrites=true&w=majority",
                                     tls=True,
@@ -63,7 +64,9 @@ except FileNotFoundError:
         ]
         characteristics[cluster]['banned_ratio'] = sum(banned) / len_nodes
 
-        characteristics[cluster]['avg_age'] = [c['avg_age'] for c in avg_ages if c['_id'] == cluster][0]
+        characteristics[cluster]['avg_age'] = [
+            c['avg_age'] for c in avg_ages if c['_id'] == cluster
+        ][0]
 
     with open('../outputs/cluster_characteristics.json', 'w') as f:
         json.dump(characteristics, f)

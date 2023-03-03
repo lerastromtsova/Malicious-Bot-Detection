@@ -143,7 +143,9 @@ def labelling():
                 'last_name': 1,
                 'deactivated': 1,
                 'labels_count': {'$size': {"$ifNull": ["$labels", []]}},
-                'more_than_three_labels': { '$gt': [ {'$size': {"$ifNull": ["$labels", []]} }, 3 ] }
+                'more_than_three_labels': {'$gt': [
+                    {'$size': {"$ifNull": ["$labels", []]}}, 3
+                ]}
             }},
             {'$match': {'more_than_three_labels': False}},
             {'$sample': {'size': USERS_TO_LABEL_LIMIT}},
