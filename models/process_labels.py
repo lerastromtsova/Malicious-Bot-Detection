@@ -1,5 +1,7 @@
 import pymongo
 from dotenv import dotenv_values
+import networkx as nx
+import pandas as pd
 
 config = dotenv_values("../.env")
 db_client = pymongo.MongoClient('mongodb+srv://' +
@@ -10,22 +12,21 @@ db_client = pymongo.MongoClient('mongodb+srv://' +
                                 f'{config["MONGO_REPLICA_SET"]}'
                                 f'&tlsInsecure=true')
 
-labelled_users = list(db_client.dataVKnodup.users.aggregate(
-    [
-        {'$project':
-            {
-                'vk_id': 1,
-                'labels': 1,
-                'labels_count': {'$size': {"$ifNull": ["$labels", []]}}
-            }
-        },
-        {'$match': {"labels_count": {'$gt': 0}}}
-    ])
-)
 
-
-def get_summarised_label(users):
-    for user in users:
+def get_summarised_label():
+    labelled_users = list(db_client.dataVKnodup.users.aggregate(
+        [
+            {'$project':
+                {
+                    'vk_id': 1,
+                    'labels': 1,
+                    'labels_count': {'$size': {"$ifNull": ["$labels", []]}}
+                }
+            },
+            {'$match': {"labels_count": {'$gt': 0}}}
+        ])
+    )
+    for user in labelled_users:
         db_client.dataVKnodup.users.update_one(
             {'vk_id': user['vk_id']},
             {'$unset': {'labelling_result': 1}}
@@ -44,3 +45,28 @@ def get_summarised_label(users):
             {'$set': {'labelling_result': final_result}}
         )
 
+
+def check_labels_against_model(model_graph):
+    labelled_users = db_client.dataVKnodup.users.find({'labelling_result': {'$exists': True}})
+    labelled_user_ids = {str(u['vk_id']): u['labelling_result'] for u in labelled_users}
+    common_users = {k: {'labelling_result': v} for k, v in labelled_user_ids.items() if k in model_graph.nodes}
+    nx.set_node_attributes(model_graph, common_users)
+    return model_graph
+
+
+# g_url_sharing = nx.read_gexf('../outputs/bipartire_url_sharing.gexf')
+# updated_g_url_sharing = check_labels_against_model(g_url_sharing)
+# nx.write_gexf(updated_g_url_sharing, '../outputs/url_sharing_with_labels.gexf')
+#
+# g_hashtag_sequences = nx.read_gexf('../outputs/bipartire_hashtags_sequences.gexf')
+# updated_g_hashtag_sequences = check_labels_against_model(g_hashtag_sequences)
+# nx.write_gexf(g_hashtag_sequences, '../outputs/hashtag_sequences_with_labels.gexf')
+
+df = pd.read_csv('../outputs/full_graph.csv')
+Graphtype = nx.Graph()
+G = nx.from_pandas_edgelist(df, edge_attr='weight', create_using=Graphtype)
+nx.write_gexf(G, '../outputs/full_graph.gexf')
+
+g_friendship_relations = nx.read_gexf('../outputs/full_graph.gexf')
+updated_g_friendship_relations = check_labels_against_model(g_friendship_relations)
+nx.write_gexf(g_friendship_relations, '../outputs/friendship_relations_with_labels.gexf')
