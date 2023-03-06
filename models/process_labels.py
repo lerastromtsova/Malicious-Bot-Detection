@@ -62,11 +62,29 @@ def check_labels_against_model(model_graph):
 # updated_g_hashtag_sequences = check_labels_against_model(g_hashtag_sequences)
 # nx.write_gexf(g_hashtag_sequences, '../outputs/hashtag_sequences_with_labels.gexf')
 
-df = pd.read_csv('../outputs/full_graph.csv')
-Graphtype = nx.Graph()
-G = nx.from_pandas_edgelist(df, edge_attr='weight', create_using=Graphtype)
-nx.write_gexf(G, '../outputs/full_graph.gexf')
+# df = pd.read_csv('../outputs/full_graph.csv')
+# Graphtype = nx.Graph()
+# G = nx.from_pandas_edgelist(df, edge_attr='weight', create_using=Graphtype)
+# nx.write_gexf(G, '../outputs/full_graph.gexf')
+#
+# g_friendship_relations = nx.read_gexf('../outputs/full_graph.gexf')
+# updated_g_friendship_relations = check_labels_against_model(g_friendship_relations)
+# nx.write_gexf(g_friendship_relations, '../outputs/friendship_relations_with_labels.gexf')
 
-g_friendship_relations = nx.read_gexf('../outputs/full_graph.gexf')
-updated_g_friendship_relations = check_labels_against_model(g_friendship_relations)
-nx.write_gexf(g_friendship_relations, '../outputs/friendship_relations_with_labels.gexf')
+def compare_labels_with_louvain_model():
+    bot_clusters_according_to_louvain = {1: [], 3: [], 7: [], 24: [], 35: [], 158: []}
+    human_clusters_according_to_louvain = dict()
+    labelled_users = list(db_client.dataVKnodup.users.find({'labelling_result': {'$exists': True}}))
+    for user in labelled_users:
+        if 'cluster' in user:
+            cluster = int(user['cluster'])
+            if cluster in bot_clusters_according_to_louvain.keys():
+                bot_clusters_according_to_louvain[cluster].append(user['labelling_result'])
+            else:
+                if cluster in human_clusters_according_to_louvain.keys():
+                    human_clusters_according_to_louvain[cluster].append(user['labelling_result'])
+                else:
+                    human_clusters_according_to_louvain[cluster] = []
+    print(bot_clusters_according_to_louvain)
+    print(human_clusters_according_to_louvain)
+
