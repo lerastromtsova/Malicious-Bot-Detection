@@ -4,63 +4,82 @@ import matplotlib.pyplot as plt
 import pymongo
 from dotenv import dotenv_values
 
-graph = nx.read_gexf('../outputs/new_graph.gexf')
-nodes = graph.nodes(data=True)
-nodes_array = []
+from models import get_centrality_metrics, get_average_sentiment
+
 config = dotenv_values("../.env")
-db_client = pymongo.MongoClient(f"mongodb+srv://"
-                                f"lerastromtsova:{config['MONGO_DB_PASSWORD']}"
-                                f"@cluster0.ubfnhtk.mongodb.net/"
-                                f"?retryWrites=true&w=majority",
-                                tls=True,
-                                tlsAllowInvalidCertificates=True)
+db_client = pymongo.MongoClient('mongodb+srv://' +
+                                f'{config["MONGO_DB_USERNAME"]}:' +
+                                f'{config["MONGO_DB_PASSWORD"]}' +
+                                f'@{config["MONGO_DB_HOST"]}' +
+                                f'?tls=true&authSource=admin&replicaSet='
+                                f'{config["MONGO_REPLICA_SET"]}'
+                                f'&tlsInsecure=true')
 
-bot_users = list(db_client.dataVKnodup.users.find(
-    {'cluster': {'$exists': 1}, 'gosvon_bot': 1}, {'_id': 0, 'vk_id': 1}
-))
-vk_ids = [_['vk_id'] for _ in bot_users]
 
-for i, value in nodes:
-    if i in vk_ids:
-        nodes_array.append({'id': i, 'gosvon_bot': 1, **value})
-    else:
-        nodes_array.append({'id': i, 'gosvon_bot': 0, **value})
+graph = nx.read_gexf('../outputs/bipartire_url_sharing.gexf')
+graph = get_centrality_metrics(graph)
+graph = get_average_sentiment(graph, db_client)
+nodes_all = []
+for i, node in graph.nodes(data=True):
+    nodes_all.append({
+        'id': i,
+        'degree_centrality': node['degree_centrality'],
+        'clustering_coefficient': node['clustering_coefficient'],
+        'avg_neg_sent': node['avg_neg_sent'],
+        'avg_pos_sent': node['avg_pos_sent'],
+        'avg_sent': node['avg_sent']
+    })
 
-df = pd.DataFrame(nodes_array)
+to_keep = list(n for n, d in graph.degree() if d <= 5)
+filtered = graph.subgraph(to_keep)
+nodes_filtered = []
+
+for i, node in filtered.nodes(data=True):
+    nodes_filtered.append({
+        'id': i,
+        'degree_centrality': node['degree_centrality'],
+        'clustering_coefficient': node['clustering_coefficient'],
+        'avg_neg_sent': node['avg_neg_sent'],
+        'avg_pos_sent': node['avg_pos_sent'],
+        'avg_sent': node['avg_sent']
+    })
+
+df = pd.DataFrame(nodes_all)
+
 df.boxplot(column=[
     'degree_centrality',
-    'eigenvector_centrality',
+    # 'eigenvector_centrality',
     'clustering_coefficient'
 ])
+plt.figure()
 plt.title('Full centrality metrics distribution')
-plt.show()
+plt.savefig('../outputs/full-centrality.pdf')
 
-df_filtered = df[~df.cluster.isin([1, 3, 7, 24, 35, 158])]
-df_filtered = df_filtered[df_filtered.gosvon_bot != 1]
+plt.figure()
+df_filtered = pd.DataFrame(nodes_filtered)
 df_filtered.boxplot(column=[
     'degree_centrality',
-    'eigenvector_centrality',
+    # 'eigenvector_centrality',
     'clustering_coefficient'
 ])
 plt.title('Filtered centrality metrics distribution')
-plt.show()
-
-
-df.boxplot(column=[
-    'avg_neg_sent',
-    'avg_pos_sent',
-    'avg_sent'
-])
-plt.title('Full sentiments distribution')
-plt.show()
-
-df_filtered.boxplot(column=[
-    'avg_neg_sent',
-    'avg_pos_sent',
-    'avg_sent'
-])
-plt.title('Filtered sentiments distribution')
-plt.show()
+plt.savefig('../outputs/filtered-centrality.pdf')
+#
+# df.boxplot(column=[
+#     'avg_neg_sent',
+#     'avg_pos_sent',
+#     'avg_sent'
+# ])
+# plt.title('Full sentiments distribution')
+# plt.show()
+#
+# df_filtered.boxplot(column=[
+#     'avg_neg_sent',
+#     'avg_pos_sent',
+#     'avg_sent'
+# ])
+# plt.title('Filtered sentiments distribution')
+# plt.show()
 
 df.describe().to_csv('../outputs/full_characteristics.csv')
 df_filtered.describe().to_csv('../outputs/filtered_characteristics.csv')

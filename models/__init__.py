@@ -287,7 +287,7 @@ def get_centrality_metrics(
     :return: Three centrality metrics
     """
     degree_centrality = nx.degree_centrality(graph)
-    eigenvector_centrality = nx.eigenvector_centrality(graph)
+    # eigenvector_centrality = nx.eigenvector_centrality(graph)
     clustering_coefficient = nx.clustering(graph)
     for k, v in clustering_coefficient.items():
         clustering_coefficient[k] = float(round(v, 6))
@@ -296,11 +296,11 @@ def get_centrality_metrics(
         degree_centrality,
         'degree_centrality'
     )
-    nx.set_node_attributes(
-        graph,
-        eigenvector_centrality,
-        'eigenvector_centrality'
-    )
+    # nx.set_node_attributes(
+    #     graph,
+    #     eigenvector_centrality,
+    #     'eigenvector_centrality'
+    # )
     nx.set_node_attributes(
         graph,
         clustering_coefficient,
@@ -333,7 +333,7 @@ def get_average_sentiment(
     for u in graph.nodes:
         if 'avg_pos_sent' not in graph.nodes[u].keys():
             comments = db_client.dataVKnodup.comments.find(
-                {'from_id': u, 'sentiment': {'$exists': 1}}
+                {'from_id': int(u), 'sentiment': {'$exists': 1}}
             )
             sentiments = [c['sentiment'] for c in comments]
             correct_sentiments = []
