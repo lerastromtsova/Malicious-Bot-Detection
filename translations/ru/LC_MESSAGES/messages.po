@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-09 16:17+0100\n"
+"POT-Creation-Date: 2023-03-08 00:24+0100\n"
 "PO-Revision-Date: 2022-08-29 23:41+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -30,8 +30,8 @@ msgid "Contact"
 msgstr "Контакты"
 
 #: templates/bot-check-results.html:32 templates/contact.html:31
-#: templates/index.html:31 templates/labelling-end.html:25
-#: templates/labelling.html:25 templates/methods.html:31
+#: templates/index.html:31 templates/labelling.html:25
+#: templates/methods.html:31
 msgid "Language"
 msgstr "Язык"
 
@@ -106,19 +106,19 @@ msgstr "Пользователь не найден. Попробуйте зад�
 msgid "Check"
 msgstr "Проверить"
 
-#: templates/labelling-end.html:45
+#: templates/labelling-end.html:25
 msgid "Thank you!"
 msgstr "Спасибо!"
 
-#: templates/labelling-end.html:46
+#: templates/labelling-end.html:26
 msgid "Here is your completion code: "
 msgstr "Ваш код завершения для платформы Prolific: "
 
-#: templates/labelling-end.html:52
+#: templates/labelling-end.html:32
 msgid "Justify your decisions"
 msgstr "Обоснуйте свой выбор"
 
-#: templates/labelling-end.html:53
+#: templates/labelling-end.html:33
 msgid ""
 "In the form below, please shortly describe which criteria you used to "
 "label users."
@@ -126,11 +126,11 @@ msgstr ""
 "В форме ниже, пожалуйста, кратко опишите, на чём вы основывали свои "
 "решения при классификации пользователей."
 
-#: templates/labelling-end.html:61
+#: templates/labelling-end.html:41
 msgid "Enter an explanation"
 msgstr "Введите объяснение"
 
-#: templates/labelling-end.html:68
+#: templates/labelling-end.html:48
 msgid "SUBMIT AND GET COMPLETION CODE"
 msgstr "СОХРАНИТЬ И ЗАВЕРШИТЬ"
 
@@ -146,11 +146,19 @@ msgstr ""
 "Спасибо, что принимаете участие в разметке данных для нашего "
 "исследования. Пожалуйста, введите свой Prolific ID в форме ниже."
 
+#: templates/labelling.html:47
+msgid "After that, do not reload or close the page."
+msgstr "После этого, не перезагружайте и не закрывайте страницу."
+
 #: templates/labelling.html:48
+msgid "If you see an error, please clear browser cookies and refresh the page."
+msgstr "Если вам встретится ошибка, очистите куки и перезагрузите страницу."
+
+#: templates/labelling.html:50
 msgid "Label this user"
 msgstr "Классифицируйте этого пользователя"
 
-#: templates/labelling.html:51
+#: templates/labelling.html:53
 msgid ""
 "Your task is to understand whether this VKontakte user is a social bot or"
 " a real human."
@@ -158,11 +166,11 @@ msgstr ""
 "Ваша задача - понять, является ли заданный пользователь ВКонтакте "
 "социальным ботом или настоящим человеком."
 
-#: templates/labelling.html:52
+#: templates/labelling.html:54
 msgid "Definitions:"
 msgstr "Определения:"
 
-#: templates/labelling.html:54
+#: templates/labelling.html:56
 msgid ""
 "<b>Social bot</b> - a software agent that communicates autonomously on "
 "social media.\n"
@@ -173,7 +181,7 @@ msgstr ""
 "коммуницирует в социальных сетях.\n"
 "Обычно боты - это фейковые, ненастоящие аккаунты с выдуманными личностями."
 
-#: templates/labelling.html:56
+#: templates/labelling.html:58
 msgid ""
 "<b>Real human</b> - an account that belongs to a real person and is not "
 "managed automatically."
@@ -181,73 +189,75 @@ msgstr ""
 "<b>Настоящий человек</b> - аккаунт, принадлежащий настоящему человеку и "
 "не управляемый автоматическими средствами."
 
-#: templates/labelling.html:58
+#: templates/labelling.html:60
 msgid "Please inspect this user and their comments on VKontakte."
 msgstr ""
 "Пожалуйста, просмотрите информацию о пользователе и его/её комментарии "
 "ВКонтакте."
 
-#: templates/labelling.html:59
+#: templates/labelling.html:61
 msgid "For each user, you can see their VKontakte page by clicking "
 msgstr "Вы можете просмотреть страницу каждого пользователя, нажав на "
 
-#: templates/labelling.html:59 templates/labelling.html:121
+#: templates/labelling.html:61 templates/labelling.html:123
 msgid "Open VK page"
 msgstr "Открыть страницу ВК"
 
-#: templates/labelling.html:60
+#: templates/labelling.html:62
 msgid "For each comment, you can see the source comment and post by clicking "
 msgstr ""
 "Вы можете просмотреть каждый комментарий и пост, к которому он оставлен, "
 "нажав на "
 
-#: templates/labelling.html:60 templates/labelling.html:139
+#: templates/labelling.html:62 templates/labelling.html:141
 msgid "See original post and comment"
 msgstr "К исходному посту и комментарию"
 
-#: templates/labelling.html:61
+#: templates/labelling.html:63
 msgid "After you make a decision:"
 msgstr "После того, как вы примете решение:"
 
-#: templates/labelling.html:63
+#: templates/labelling.html:65
 msgid "If you think this user is a bot, press the <b>\"BOT\" button</b>."
 msgstr "Если вы думаете, что этот пользователь бот, нажмите кнопку <b>\"БОТ\"</b>."
 
-#: templates/labelling.html:64
-msgid "If you think this user is a real human, press the <b>\"HUMAN\" button</b>."
-msgstr "Если вы думаете, что этот пользователь человек, нажмите кнопку <b>\"ЧЕЛОВЕК\"</b>."
-
 #: templates/labelling.html:66
+msgid "If you think this user is a real human, press the <b>\"HUMAN\" button</b>."
+msgstr ""
+"Если вы думаете, что этот пользователь человек, нажмите кнопку "
+"<b>\"ЧЕЛОВЕК\"</b>."
+
+#: templates/labelling.html:68
 msgid "Normally, labelling each user should not take more than 5 minutes."
 msgstr "Обычно классификация каждого пользователя не занимает более 5 минут."
 
-#: templates/labelling.html:67
+#: templates/labelling.html:69
 msgid "<b>Scroll down</b> to see user info, comments and buttons."
 msgstr ""
 "<b>Опуститесь ниже</b>, чтобы увидеть информацию о первом пользователе, "
 "его комментарии и кнопки для классификации."
 
-#: templates/labelling.html:79
+#: templates/labelling.html:81
 msgid "Enter your Prolific user ID"
 msgstr "Введите свой Prolific ID"
 
-#: templates/labelling.html:86
+#: templates/labelling.html:88
 msgid "PROCEED"
 msgstr "ДАЛЕЕ"
 
-#: templates/labelling.html:90
+#: templates/labelling.html:92
 msgid "Your Prolific ID"
 msgstr "Ваш Prolific ID"
 
-#: templates/labelling.html:90
+#: templates/labelling.html:92
 msgid "Left to label"
 msgstr "Осталось классифицировать"
 
-#: templates/labelling.html:158
+#: templates/labelling.html:160
 msgid "BOT"
 msgstr "БОТ"
 
-#: templates/labelling.html:170
+#: templates/labelling.html:172
 msgid "HUMAN"
 msgstr "ЧЕЛОВЕК"
 
@@ -276,18 +286,10 @@ msgid "Build a graph of users who have been leaving these comments"
 msgstr "Построение сети пользователей, оставивших комментарии"
 
 #: templates/methods.html:60
-msgid "Cluster the users using Louvain community detection algorithm"
-msgstr "Кластеризация сети при помощи алгоритма обнаружения сообществ Louvain"
+msgid "Identify suspicious clusters with high concentration of bots"
+msgstr "Определение подозрительных кластеров с высокой концентрацией ботов"
 
 #: templates/methods.html:61
-msgid ""
-"Calculate characteristics of each cluster and probability of it being a "
-"bot cluster"
-msgstr ""
-"Вычисление характеристик каждого кластера и вероятности того, что в "
-"кластере находятся боты"
-
-#: templates/methods.html:62
 msgid ""
 "Calculate centrality metrics to identify most influential users in "
 "communities"
@@ -295,45 +297,55 @@ msgstr ""
 "Подсчёт метрик центральности для определения наиболее влиятельных "
 "пользователей в кластерах"
 
-#: templates/methods.html:63
+#: templates/methods.html:62
 msgid "Conduct sentiment analysis to understand the tone conveyed by a cluster"
 msgstr "Анализ настроений в комментариях"
 
-#: templates/methods.html:64
-msgid "Conduct content analysis to understand the users' ideas and opinions"
-msgstr "Анализ содержания комментариев"
-
-#: templates/methods.html:65
+#: templates/methods.html:63
 msgid "Store this data and make it accessible to you"
 msgstr "Сохранение данных и предоставление доступа к ним широкой аудитории"
 
-#: templates/methods.html:71
+#: templates/methods.html:69
 msgid "Dataset"
 msgstr "Данные"
 
-#: templates/methods.html:72
+#: templates/methods.html:70
 msgid "Currently, we have data about 283 506 users from VKontakte."
 msgstr "Сейчас у нас в базе данных информация о 283 506 пользователях ВКонтакте"
 
-#: templates/methods.html:77
+#: templates/methods.html:75
 msgid "Reference"
 msgstr "Литература"
 
-#: templates/methods.html:78
+#: templates/methods.html:76
 msgid "The algorithm is based on this scientific paper:"
 msgstr "Наш алгоритм основан на научной статье:"
 
-#: templates/methods.html:82
+#: templates/methods.html:80
 msgid "written by"
 msgstr ", которая написана авторами"
-
-#: templates/methods.html:82
-msgid ", and"
-msgstr " и"
 
 #~ msgid "If you are not sure, press the \"UNKNOWN\" button."
 #~ msgstr "Если вы не уверены, нажмите кнопку \"НЕ ЗНАЮ\"."
 
 #~ msgid "UNKNOWN"
 #~ msgstr "НЕ ЗНАЮ"
+
+#~ msgid "Cluster the users using Louvain community detection algorithm"
+#~ msgstr "Кластеризация сети при помощи алгоритма обнаружения сообществ Louvain"
+
+#~ msgid ""
+#~ "Calculate characteristics of each cluster "
+#~ "and probability of it being a bot"
+#~ " cluster"
+#~ msgstr ""
+#~ "Вычисление характеристик каждого кластера и"
+#~ " вероятности того, что в кластере "
+#~ "находятся боты"
+
+#~ msgid "Conduct content analysis to understand the users' ideas and opinions"
+#~ msgstr "Анализ содержания комментариев"
+
+#~ msgid ", and"
+#~ msgstr " и"
 
