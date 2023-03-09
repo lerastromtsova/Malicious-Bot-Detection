@@ -1,0 +1,107 @@
+%finalthesis.sty, 05.11.2009 me%%
+%title page for final thesis 
+
+\NeedsTeXFormat{LaTeX2e}
+\usepackage{wappen_up}
+
+\newcommand\fttoday{\number\day .\space\ifcase\month\or
+  Januar\or Februar\or M\"arz\or April\or Mai\or Juni\or
+  Juli\or August\or September\or Oktober\or November\or Dezember\fi
+  \space\number\year}
+
+\def\ftdate#1{\gdef\@ftdate{#1}}
+\gdef\@ftdate{\fttoday}
+\gdef\ftauthor#1{\gdef\@ftauthor{#1}}
+\def\@ftauthor{Fehlende Autorenangabe}
+\def\fttitle#1{\gdef\@fttitle{#1}}
+\def\@fttitle{Fehlende Titelangabe}
+\gdef\ftgutachter#1{\gdef\@ftgutachter{#1}}
+\def\@ftgutachter{Fehlende Gutachterangabe}
+\gdef\ftzweitgutachter#1{\gdef\@ftzweitgutachter{#1}}
+\def\@ftzweitgutachter{Fehlende Zweitgutachterangabe}
+\gdef\ftbetreuer#1{\gdef\@ftbetreuer{#1}}
+\def\@ftbetreuer{Fehlende Betreuerangabe}
+\gdef\ftgrad#1{\gdef\@ftgrad{#1}}
+\def\@ftgrad{Fehlender Abschlussgrad}
+
+\newcommand\makefttitle{\begin{titlepage}%
+
+\let\footnotesize\small
+\let\footnoterule\relax
+%\null\vfil
+\vskip 60\p@
+\begin{center}%
+%%%%%%%%%%%%%%%%%%%% English %%%%%%%%%%%%%%%%%%%%
+	\textsc{\huge University of Passau} \\[1em]%
+  \textsc{\Large Faculty of Computer Science and Mathematics}\\[1em]%
+  % \textsc{\large Chair for Digital Libraries \& Web Information Systems}
+  \textsc{\large Chair Software Engineering II}%%
+%%%%%%%%%%%%%%%%%%%% German %%%%%%%%%%%%%%%%%%%%
+  %\textsc{\huge Universit\"at Passau} \\[1em]%
+  %\textsc{\huge Fakult\"at f\"ur Informatik und Mathematik}%
+  %\textsc{\large Lehrstuhl f\"ur Digital Libraries \& Web Information Systems}%
+  
+  
+  %\vskip 5em%
+%  {\font\wappen=crz scaled 830 \wappen ROMUNHSG0}%
+\ifx\pdfoutput\undefined%
+  \vskip 0em%
+    \uniwappen%
+\else%
+    \vskip1cm%
+%%%%%%%%%%%%%%%%%%%% English %%%%%%%%%%%%%%%%%%%%
+    \includegraphics[height=2.2cm]{Images/unilogo_en}%
+%%%%%%%%%%%%%%%%%%%% German %%%%%%%%%%%%%%%%%%%%
+    %\includegraphics[height=4.2cm]{Images/unilogo_de}%
+\fi%
+  \vskip 8em%
+  \begin{minipage}[c]{12cm}%
+  \begin{center}%
+%%%%%%%%%%%%%%%%%%%% English %%%%%%%%%%%%%%%%%%%%
+  {\LARGE \@ftgrad ~in Informatics \par}%
+%%%%%%%%%%%%%%%%%%%% German %%%%%%%%%%%%%%%%%%%%
+  %{\LARGE \@ftgrad ~im Studiengang Informatik \par}%
+  \vskip 3em%
+  {\LARGE \bfseries \@fttitle \par}%
+  \vskip 3em%
+  {\large
+   \lineskip .75em%
+    \begin{tabular}[t]{c}%
+%%%%%%%%%%%%%%%%%%%% English %%%%%%%%%%%%%%%%%%%%	
+		{submitted by}\\
+%%%%%%%%%%%%%%%%%%%% German %%%%%%%%%%%%%%%%%%%%
+		% {vorgelegt von }\\
+	  \\
+      {\LARGE\bfseries\@ftauthor}
+    \end{tabular}\par}%
+    \vskip 10em%
+   
+  \begin{tabular}{rl}
+ %%%%%%%%%%%%%%%%%%%% English %%%%%%%%%%%%%%%%%%%%
+  1. Examiner:& \@ftgutachter \\      
+  2. Examiner:& \@ftzweitgutachter \\       
+  Supervisor:& \@ftbetreuer \\       
+  Date: & \@ftdate \\
+ %%%%%%%%%%%%%%%%%%%% German %%%%%%%%%%%%%%%%%%%%
+  %Gutachter: & \@ftgutachter \\      
+  %Zweitgutachter: & \@ftzweitgutachter \\       
+  %Betreuer: & \@ftbetreuer \\       
+  %Datum: & \@ftdate \\
+   \end{tabular}       
+  \end{center}\par
+  \end{minipage}
+  \null\vfill
+
+\end{center}\par
+\vfil\null
+\end{titlepage}%
+
+\begin{titlepage}%
+\vspace*{\fill}
+\begingroup
+\def\and{\\ &}
+\begin{tabular}{ll}
+\end{tabular}
+\endgroup
+\end{titlepage}%
+\setcounter{footnote}{0}}

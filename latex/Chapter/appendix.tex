@@ -1,0 +1,28 @@
+%\chapter{Appendix}
+\chapter{List of user features retrieved from VKontakte}
+\label{app:features}
+
+\begin{table}[]
+\caption{List of user features retrieved from VKontakte}
+\begin{tabular}{p{3cm}p{6cm}p{5cm}} \toprule
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\textbf{Feature}       & \textbf{Description}                                                                          & \textbf{Data source}                                                                   \\ \midrule
+created\_at            & Date and time when user created the profile.                                                  & \multirow{4}{*}{FOAF response}                                                         \\ 
+timezone               & Timezone of the profile.                                                                      &                                                                                        \\ 
+followee\_rate         & Number of followees of this user.                                                             &                                                                                        \\ 
+follower\_rate         & Number of followers of this user.                                                             &                                                                                        \\ 
+follower\_to\_followee & Ratio between followers number and followee number.                                           & \begin{tabular}[c]{@{}l@{}}Calculation:\\ follower\_rate / followee\_rate\end{tabular} \\
+vk\_age                & Number of days from account creation until 1st August.                                        & \begin{tabular}[c]{@{}l@{}}Calculation:\\ 01.08.2022 - created\_at\end{tabular}        \\
+first\_name            & User’s first name.                                                                            & \multirow{10}{*}{VK API response}                                                      \\ 
+last\_name             & User’s last name.                                                                             &                                                                                        \\ 
+photo\_50              & URL of a 50x50px profile picture.                                                             &                                                                                        \\ 
+photo\_100             & URL of a 100x100px profile picture.                                                           &                                                                                        \\ 
+screen\_name           & Short nickname of the user.                                                                   &                                                                                        \\ 
+is\_closed             & If the page is hidden by privacy settings.                                                    &                                                                                        \\ 
+sex                    & User’s sex.                                                                                   &                                                                                        \\ 
+vk\_id                 & User’s ID.                                                                                    &                                                                                        \\ 
+verified               & If VKontakte moderators verified the user account with documents proving it is a real person. &                                                                                        \\ 
+deactivated            & If a user account is either banned or deleted.                                                &                                                                                        \\ \bottomrule
+\end{tabular}
+\end{table}

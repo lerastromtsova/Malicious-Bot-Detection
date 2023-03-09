@@ -1,0 +1,190 @@
+% 14.06.2019, markus endres
+
+% delete „english“ if you are writing a thesis in German.
+\documentclass[11pt,fleqn,a4paper,headsepline, numbers=noenddot,bibliography=totoc,oneside, version=first,listof=totoc,ngerman,english]{scrreprt}
+
+\usepackage{scrhack}
+\usepackage{finalthesis}
+\usepackage{fancyheadings}
+\usepackage[utf8]{inputenc} 
+\usepackage[style=alphabetic,language=english]{biblatex}
+
+\usepackage{pdfsync}
+%\usepackage{ngerman,english}
+\usepackage[ngerman,english]{babel}
+\usepackage{epsfig}
+
+\usepackage[all]{xy}
+\usepackage{a4wide}
+\usepackage{longtable,multicol}
+\usepackage{eurosym}
+\usepackage{alltt}
+\usepackage[small, bf]{caption}
+\usepackage{helvet}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage[active]{srcltx}
+\usepackage{cancel}
+\usepackage{eepic}
+\usepackage{epic}
+\usepackage{enumerate}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm} 
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[normalem]{ulem}
+\usepackage{multirow}
+\usepackage{booktabs}
+
+\usepackage{listings}
+\lstset{language=}
+\lstset{basicstyle=\ttfamily}
+\lstdefinelanguage{PSQL}[]{SQL}{
+   morekeywords={PREFERRING}
+   sensitive=true,% DJ
+   morecomment=[l]--,%
+   morecomment=[s]{/*}{*/},%
+   morestring=[d]',%
+   morestring=[d]"%
+}[keywords,comments,strings]%
+
+% better bibliography (biblatex style)
+% use biber to compile
+\usepackage[autostyle,english=american,german=quotes]{csquotes}
+\addbibresource{literature.bib}
+
+\newcommand{\pareto}{\otimes}
+\newcommand{\prio}{~\&~}
+\newcommand{\indiff}[3]{#1\ \|_{#2}\ #3}
+\newcommand{\antichain}[1]{#1^\leftrightarrow}
+
+%\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem*{theoremproof}{Proof}
+\newtheorem{lemma}{Lemma}
+\newtheorem*{lemmaproof}{Proof}
+\newtheorem{example}{Example}
+\newtheorem{def_internal}{Definition}
+\newenvironment{definition}[1]{
+  \begin{def_internal}{\textbf{#1}\\}
+}{ 
+  \hfill $\Box$
+  \end{def_internal}
+}
+
+\renewcommand{\algorithmiccomment}[1]{$\rhd$ #1 \hfill}
+\renewcommand{\labelenumi}{\alph{enumi})}
+\renewcommand{\algorithmiccomment}[1]{//#1 }
+
+\renewcommand{\sectfont}{\rmfamily\bfseries}
+\renewcommand{\topmargin}{0mm}
+\renewcommand{\textheight}{222mm}
+%\renewcommand{\textwidth}{152mm}
+%\renewcommand{\evensidemargin}{-2mm}
+%\renewcommand{\oddsidemargin}{29mm}
+%\setlength{\oddsidemargin}{1.8cm}
+
+\setcounter{topnumber}{3}
+%\renewcommand{\baselinestretch}{1.09}
+
+\setlength{\mathindent}{0.5cm}
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{1.2ex plus0.5ex minus0.2ex}
+\setcounter{secnumdepth}{5}
+
+\setcounter{tocdepth}{5}
+\renewcommand{\textfraction}{0.0}
+
+%
+% Kopfzeile
+%
+\pagestyle{fancyplain}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\lhead[\fancyplain{}{\bfseries\thepage}]
+ {\fancyplain{}{\bfseries\rightmark}}
+\rhead[\fancyplain{}{\bfseries\leftmark}]
+ {\fancyplain{}{\bfseries\thepage}}
+\cfoot{\fancyplain{\bfseries\thepage}{}}
+
+%
+
+
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Modify this
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Bachelor or Master thesis
+\ftgrad{Master Thesis}
+% title
+\fttitle{Towards the detection of malicious bots in Russian social networks} 
+% Author
+\ftauthor{Valeriia Stromtcova} 
+% 1. examiner
+\ftgutachter{Prof. Dr. Gordon Fraser}
+% 2. examiner
+% Delete this line if you write a Bachelor thesis
+\ftzweitgutachter{Prof. Dr. Christian Hammer} 
+% supervisor
+\ftbetreuer{Isabella Graßl}
+% date of submission
+\ftdate{\today}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\makefttitle
+
+
+\pagenumbering{roman}
+
+\tableofcontents
+\newpage
+
+% Abstract
+\input{Chapter/abstract.tex}
+\newpage
+
+% Acknowledgements (optional)
+\input{Chapter/acknowledgements.tex}
+\newpage
+
+
+%\addcontentsline{toc}{chapter}{Abbildungen}
+\listoffigures
+%\addcontentsline{toc}{chapter}{Tabellen}
+\listoftables
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{Chapter/introduction.tex} 
+\input{Chapter/background.tex}
+\input{Chapter/methods.tex}
+\input{Chapter/results.tex}
+\input{Chapter/discussion.tex}
+\input{Chapter/conclusion.tex}
+
+%\bibliographystyle{gerabbrv}
+%\bibliography{literature}
+
+
+\newpage
+\printbibliography
+
+\appendix
+% -- Appendix (optional)
+\input{Chapter/appendix.tex}
+
+
+\include{Includes/declaration}
+
+
+\end{document}

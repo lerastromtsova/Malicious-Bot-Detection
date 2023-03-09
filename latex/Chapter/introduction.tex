@@ -1,0 +1,69 @@
+\chapter{Introduction}
+\label{ch:introduction}
+
+% Do not delete this
+\pagenumbering{arabic}
+% 
+
+
+\section{Motivation}
+
+The presence of autonomous agents in online social networks (OSNs), or so-called social bots, dates to the rise of OSNs and has long been an interest to computer scientists. Social bots are widespread: for example, according to Twitter’s statistics, 15\% of users on this social network are bots \cite{twitterBots}. Of these, one-third are ``malicious bots'' created to misinform other users and manipulate their opinions \cite{twitterBots}. The other two-thirds are identified as benign or ``good'' bots that do not serve malicious purposes.
+
+Bots often actively participate in the online social discourse, generating an impact on the life of society. Probably one of the reasons why bots influence our opinions is how credible, sometimes indistinguishable from humans, their online behaviour is. Technological advances made their posts and even appearance very realistic. With the usage of such deep learning models as GPT-3\footnote{https://beta.openai.com/docs/introduction/overview}, bots can authentically imitate human writing style; using realistic image generators, e.g., DALLE-2\footnote{https://openai.com/dall-e-2/}, they can pretend to have human faces. Moreover, ordinary users are sometimes unaware of bots on the Internet and believe that all the information they see on social networks is human-produced. This effect causes users to have an inadequate high level of trust in the content on social networks.
+
+It is not only people for whom the distinction between bots and real users is a challenge. Automatic methods, including ML models, sometimes achieve very high accuracy of bot detection on test datasets. However, when released ``in the wild'', they fail to function with the same efficiency \cite{Cresci2020}. Moreover, bot developers constantly create more and more sophisticated bot accounts, and it takes some time for researchers and practitioners to adapt their bot detection models for these new kinds of bots. As a result, many social bots remain unnoticed.
+
+Apart from adjusting the bot detection models to new generations of bots, another challenge for this research area is building models able to process content in languages other than English. Currently, there is not much research on bots that
+produce content in another language, e.g., Russian. The query ``bot detection'' AND
+ ``English language'' yields seven times more search results in Google Scholar than the same query with ``Russian language''.
+ 
+Meanwhile, current political events in Russia and the entire world (the current Russian-Ukrainian armed conflict that escalated on the 24th of February 2022) influence worldwide society in many ways. This conflict is widely discussed in OSNs, with conflict-related posts published and numerous comments appearing under them every day. Therefore, it is crucial to understand what role social networks play in these events and, more specifically, how bots manipulate people's opinions on all sides of the conflict.
+
+The Russian-Ukrainian armed conflict of 2022\footnote{https://www.cfr.org/global-conflict-tracker/conflict/conflict-ukraine} is also known as the Russian-Ukrainian war, the Russian invasion of Ukraine, or the special military operation of Russia in Ukraine. Since all these terms are associated with a certain attitude towards the events of the conflict, be it a Pro-Russian or Pro-Ukrainian position, we will adhere to the most neutral term ``armed conflict'' to avoid bias and subjectivity.
+
+This conflict is a severe escalation that started on 24th February 2022 after a long confrontation between countries in the regions of Donetsk, Luhansk and Crimea, during which, according to The Office of the United Nations High Commissioner for Human Rights (OHCHR), at least 3,400 civilians were killed \cite{Statista2022a}. On the morning on 24th February 2022, the president of Russia, Vladimir Putin, declared this escalation, motivating it with ``denazification'' and ``demilitarisation'' of Ukraine, preventing the expansion of the North Atlantic Treaty Organization (NATO) and denial of the very idea of a separate Ukrainian identity and the legitimacy of the Ukrainian state \cite{Mankoff2022}. Minutes after the speech, missiles hit numerous cities across Ukraine. Aside from the dramatic numbers of killed and injured civilians (8,173 civilians killed and 13,620 wounded, by the August 2022 estimations by OHCHR \cite{Statista2022}, the conflict ``triggered a tsunami that dramatically impacted the world economy, geopolitics, and food security'' \cite{Pereira2022}. Moreover, there is a tremendous impact on human health and the environment \cite{Pereira2022}. Such an impactful global event presents an essential target for scientific research. Now, more than a year after the escalation of the conflict, the query ``Russian-Ukrainian armed conflict 2022'' in Google Scholar returns over 28,200 papers on the subject. All these studies approach the conflict from a different perspective: economics, geopolitics, history, ecology, medicine, etc. In the upcoming years, we will most likely observe a boom in scientific interest in this research area.
+
+The Russian-Ukrainian armed conflict is undoubtedly one of the most popular topics on social networks. Especially at the beginning of the escalation, numerous accounts on Twitter, Instagram, Facebook, VKontakte and other OSNs were buzzing with discussion, with thousands of posts and comments published every day. The confrontation between pro-Ukrainian and pro-Russian OSN users was heated and emotional right from the start. It was not rare to see social network users claiming that someone they disagree with is a social bot. However, nobody was able to precisely identify bots participating in this discourse. 
+
+Thus, the motivation of the current study is to take a look at the conflict from the perspective of the intersection of sociology and computer science and try to uncover the political bots that aim to manipulate the minds of Russian-language social network users. Developing a new political bot detection tool can help researchers and society better understand the dynamics of the ongoing conflict, its impact on the online environment and, ultimately, on the real people who use Russian-language social networks.
+
+Aside from being a relevant research area for society during major political events, bot detection presents a crucial business need for companies that own social networks. The presence of bots in these networks can undermine user trust and threaten a company's image. Moreover, as the recent scandal related to Elon Musk's possible acquisition of Twitter shows \cite{Zahn2022}, bots can even become an obstacle to 44 billion dollar deals. Finding and eliminating bots presents a task of increased interest for OSN owners. Therefore, bot detection is a relevant task both for businesses and society.
+
+This paper aims to develop a method to automatically detect bots that produce content related to the Russian-Ukrainian conflict of 2022 in the Russian-language social network VKontakte. Moreover, the goal is to analyse their behaviour and understand common patterns; figure out their role and influence on the OSN landscape; provide the audience of the social networks with a tool to check if a given user is a bot or not, in order to increase awareness of the existence of bots in OSNs.
+
+The contributions of the thesis include:
+\begin{enumerate}
+    \item Collection of posts and comments dataset from VKontakte;
+    \item Development of three bot detection models based on this dataset;
+    \item Analysis and evaluation of the results of the bot detection models;
+    \item Identification and analysis of the influence that bots have on the discourse on VKontakte;
+    \item Development of a web interface that allows checking if a user is identified as a bot or a real human.
+\end{enumerate}
+
+\section{Research Questions}
+\label{sec:reserach_questions}
+
+The goal of this research is to explore the bot landscape on the social network VKontakte in relation to the escalation of the Russian-Ukrainian armed conflict in February 2022. In order to do so, the first step is the collection of a dataset of content with the usage of the VKontakte API. Then, a bot detection model based on the recent advances in this area should be developed. Evaluation of the model's results should also be performed. After that, the next task is to identify the influence of bots on the network. To do so, several techniques are applied, including sentiment analysis.
+
+Another contribution of this project is to develop a tool to let social network users check other users' accounts and automatically classify them into bot- and non-bot accounts. The end goal of such a tool would be to raise awareness of social bots in the Russian-speaking community and attract users' attention to the problem of misinformation spread in OSNs. The tool should be publicly available on the Web and function automatically on the base of the model developed in the course of this research.
+
+The thesis research aims to detect the bots that post information about the Russian-Ukrainian armed conflict of 2022 in OSNs; analyse their behaviour and understand common patterns; figure out their role and influence on the OSN landscape.
+
+The thesis research attempts to answer the following questions:
+\begin{enumerate}
+    \item How to automatically detect bot accounts that spread propaganda on the topic of the Russian-Ukrainian armed conflict of 2022 on Russian social networks?
+    \item What influence do these bots have on the VKontakte discussion around the aforementioned conflict?
+    \item How to make bot detection results available to the public? 
+\end{enumerate}
+
+% \section{Structure of the Thesis}
+% \label{sec:structure_of_the_thesis}
+
+% The consequent parts of this paper are structured as follows.
+
+% The first chapter covers the theoretical background of the study. The terms and definitions are outlined based on the existing related work. Then, relevant studies are covered, explaining the background behind the methods commonly used in the area of automatic bot detection. The motivation and goals of the research are explained.
+
+% The second chapter is dedicated to the data collection, development of a bot detection model and development of a web interface to the model.
+
+% The third chapter presents the findings of the thesis, outlines directions for future research and provides conclusions on the work done throughout the study.
