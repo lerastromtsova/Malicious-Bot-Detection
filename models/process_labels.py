@@ -88,3 +88,17 @@ def compare_labels_with_louvain_model():
     print(bot_clusters_according_to_louvain)
     print(human_clusters_according_to_louvain)
 
+
+def input_labels_to_db(graph):
+    bots = list(n for n, d in graph.degree() if d > 5)
+    for user in graph.nodes:
+        if user in bots:
+            db_client.dataVKnodup.users.update_one(
+                {'vk_id': int(user)},
+                {'$set': {'url_sharing_bot': True}}
+            )
+            print(user)
+
+
+g_url_sharing = nx.read_gexf('../outputs/bipartire_url_sharing.gexf')
+input_labels_to_db(g_url_sharing)
