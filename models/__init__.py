@@ -20,7 +20,7 @@ def bot_check_results(
     :param user: a user to check.
     :return: True if the user is predicted to be a bot, otherwise False
     """
-    if user['gosvon_bot'] or user['url_sharing_bot']:
+    if ('gosvon_bot' in user and user['gosvon_bot']) or ('url_sharing_bot' in user and user['url_sharing_bot']):
         return True
     return False
 
